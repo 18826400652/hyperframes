@@ -1,0 +1,3 @@
+{ "component": "dy-lower-third", "duration": 4, "peak": 2,
+  "variants": { "normal": {},
+    "long": { "name": "<b>&\" 李老师和他的 AI 工作室团队", "title": "<b>&\" 10 年短视频运营操盘手,前大厂内容负责人,服务过上百个品牌", "tags": "千万播放|实战派|带货达人|AI 工具测评|<b>&\" 超长标签也要能换行显示" } } }
