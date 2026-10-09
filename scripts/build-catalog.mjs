@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const KINDS = ["scene", "overlay", "transition", "ui", "global", "subtitle", "tool"];
 
-function readVariables(html) {
+export function readVariables(html) {
   const m = html.match(/data-composition-variables='([\s\S]*?)'/);
   if (!m) return [];
   return JSON.parse(m[1]).map(v => ({ id: v.id, type: v.type, label: v.label || "", default: v.default ?? "" }));
