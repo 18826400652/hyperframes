@@ -57,6 +57,14 @@
       if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); }
     },
 
+    // 在 [top, bottom] 安全区内垂直居中;放不下时交给 fitBox(上移,再缩放)
+    centerBox(el, top = 260, bottom = 1520) {
+      el.style.scale = ""; el.style.top = "";
+      const h = el.offsetHeight;
+      el.style.top = Math.max(top, Math.round((top + bottom) / 2 - h / 2)) + "px";
+      if (el.offsetTop + h > bottom) this.fitBox(el, bottom, top);
+    },
+
     // 立即执行一次,字体加载完成后再执行一次
     refit(fn) {
       fn();

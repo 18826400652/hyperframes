@@ -25,7 +25,7 @@ export function allCaseIds() {
 const attr = s => s.replace(/&/g, "&amp;").replace(/'/g, "&#39;");
 
 // 每个变体占一个时段;变体值为对象(单实例)或数组(多实例同时挂载)
-export function buildFixture(c, theme) {
+export function buildFixture(c, theme, sheetVariant = "normal") {
   const dir = path.join(OUT, `${c.id}-${theme}`);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
@@ -65,7 +65,7 @@ ${hosts}  </div>
 `;
   fs.writeFileSync(path.join(dir, "index.html"), html);
   const at = names.flatMap((_, i) => c.peaks.map(p => +(i * c.duration + p).toFixed(3)));
-  const normalIdx = Math.max(0, names.indexOf("normal"));
+  const normalIdx = Math.max(0, names.indexOf(sheetVariant));
   return { dir, at, sheetAt: +(normalIdx * c.duration + c.peaks[0]).toFixed(3) };
 }
 

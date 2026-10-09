@@ -58,11 +58,10 @@
 [data-theme="bento"] .hf-em { background: linear-gradient(100deg, #c4b8ff, var(--hf-accent-2)); -webkit-background-clip: text; background-clip: text; }
 
 /* ---------- 卡片 ---------- */
-.hf-card { background: var(--hf-surface); border: 2px solid var(--hf-surface-border); border-radius: var(--hf-radius); box-shadow: var(--hf-surface-shadow); }
-[data-theme="minimal"] .hf-card, :root:not([data-theme]) .hf-card { border-width: 1px; }
+.hf-card { background: var(--hf-surface); border: 1px solid var(--hf-surface-border); border-radius: var(--hf-radius); box-shadow: var(--hf-surface-shadow); }
+[data-theme="neon"] .hf-card { border-width: 2px; }
 [data-theme="neon"] .hf-card { clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 32px 100%, 0 calc(100% - 32px)); }
 [data-theme="editorial"] .hf-card { border-width: 0 0 2px 0; border-radius: 0; background: transparent; }
-[data-theme="bento"] .hf-card { border-width: 1px; }
 
 /* ---------- 背景层:<div class="hf-bg" data-variant="1"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div> ---------- */
 .hf-bg { position: absolute; inset: 0; overflow: hidden; background: var(--hf-bg); }
