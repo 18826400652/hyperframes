@@ -15,11 +15,11 @@
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
         #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         /* 半透明黑底:浅色画面上也能看清;整体止于 211px,下方留给 dy-ai-badge */
-        #pb { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; gap: 10px; padding: 8px 12px; border-radius: 16px; background: rgba(0,0,0,.55); }
+        #pb { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; gap: 10px; padding: 8px 12px; border-radius: 16px; background: rgba(0,0,0,.6); }
         .pb-seg { flex: 1; min-width: 0; }
         .pb-track { height: 10px; border-radius: 5px; background: rgba(255,255,255,.3); overflow: hidden; }
         .pb-fill { height: 100%; width: 0; background: var(--accent); }
-        .pb-lab { margin-top: 8px; text-align: center; font-size: 30px; font-weight: 800; line-height: 1.2; color: rgba(255,255,255,.82); text-shadow: 0 2px 8px rgba(0,0,0,.7); }
+        .pb-lab { margin-top: 8px; text-align: center; font-size: 30px; font-weight: 800; line-height: 1.2; color: rgba(255,255,255,.9); text-shadow: 0 2px 8px rgba(0,0,0,.7); }
       </style>
       <div id="root" data-composition-id="dy-progress-bar" data-width="1080" data-height="1920">
         <div id="pb"></div>
@@ -49,7 +49,7 @@
         labs.forEach((_, i) => {
           tl.to("#pb-f-" + i, { width: "100%", duration: seg, ease: "none" }, i * seg);
           tl.to("#pb-l-" + i, { color: "#ffffff", scale: 1.15, duration: 0.25 }, i * seg);
-          if (i < labs.length - 1) tl.to("#pb-l-" + i, { color: "rgba(255,255,255,.82)", scale: 1, duration: 0.25 }, (i + 1) * seg);
+          if (i < labs.length - 1) tl.to("#pb-l-" + i, { color: "rgba(255,255,255,.9)", scale: 1, duration: 0.25 }, (i + 1) * seg);
         });
         tl.to("#pb", { opacity: 0, duration: 0.3 }, Math.max(0.4, total - 0.3));
         window.__timelines["dy-progress-bar"] = tl;

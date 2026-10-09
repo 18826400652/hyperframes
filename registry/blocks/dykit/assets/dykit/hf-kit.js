@@ -4,15 +4,30 @@
   const cssVar = (el, name) => getComputedStyle(el).getPropertyValue(name).trim();
 
   window.HF = {
-    // 组件级主题覆盖:theme 非空时设置 data-theme;accent / accent2 非空时覆盖强调色。
-    // 覆盖强调色时也在本节点写上当前主题名,让主题块在这一层重新计算依赖强调色的装饰(如渐变强调词)
+    // 组件级主题覆盖:theme 非空时设置 data-theme;accent / accent2 为合法颜色时覆盖强调色(非法值忽略)。
+    // 覆盖强调色时也在本节点写上当前主题名,让主题块在这一层重新计算依赖强调色的装饰(如渐变强调词);
+    // 并按新强调色的亮度重新选择其上的文字色(--hf-on-accent / --hf-on-accent-2),保证对比度
     applyTheme(root, v) {
-      if (v.theme || v.accent || v.accent2) {
+      const ok = c => !!c && (typeof CSS === "undefined" || !CSS.supports || CSS.supports("color", c));
+      const accent = ok(v.accent) ? v.accent : "", accent2 = ok(v.accent2) ? v.accent2 : "";
+      if (v.theme || accent || accent2) {
         const up = root.parentElement && root.parentElement.closest("[data-theme]");
         root.dataset.theme = v.theme || (up ? up.dataset.theme : "minimal");
       }
-      if (v.accent) root.style.setProperty("--hf-accent", v.accent);
-      if (v.accent2) root.style.setProperty("--hf-accent-2", v.accent2);
+      if (accent) { root.style.setProperty("--hf-accent", accent); root.style.setProperty("--hf-on-accent", this.onColor(root, accent)); }
+      if (accent2) { root.style.setProperty("--hf-accent-2", accent2); root.style.setProperty("--hf-on-accent-2", this.onColor(root, accent2)); }
+    },
+
+    // 给定底色,返回对比度更高的文字色(近黑或白)
+    onColor(root, color) {
+      const probe = document.createElement("i");
+      probe.style.color = color; root.appendChild(probe);
+      const m = getComputedStyle(probe).color.match(/[\d.]+/g) || [0, 0, 0];
+      probe.remove();
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const L = 0.2126 * lin(+m[0]) + 0.7152 * lin(+m[1]) + 0.0722 * lin(+m[2]);
+      const dark = 0.0033; // #0a0a12 的相对亮度
+      return (L + 0.05) / (dark + 0.05) >= 1.05 / (L + 0.05) ? "#0a0a12" : "#ffffff";
     },
 
     // 读取主题的动画参数
@@ -46,7 +61,8 @@
     // 读取挂载点时长(子合成的 #root 直接位于挂载点内)
     duration(root, fallback = 4) {
       // 运行时会把挂载点的 data-duration 改名为 data-hf-authored-duration
-      const host = root.parentElement && root.parentElement.closest("[data-duration],[data-hf-authored-duration]");
+      // 只读紧邻的挂载点,不向上找到外层根合成的时长
+      const host = root.parentElement;
       const d = host ? parseFloat(host.getAttribute("data-duration") || host.getAttribute("data-hf-authored-duration")) : NaN;
       return d > 0 ? d : fallback;
     },

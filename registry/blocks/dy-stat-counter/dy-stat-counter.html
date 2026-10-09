@@ -30,12 +30,15 @@
         if (v.delta) delta.textContent = v.delta; else delta.remove();
         const numEl = document.getElementById("dy-stat-num");
         const o = { n: 0 };
-        const render = () => { numEl.textContent = v.prefix + Math.round(o.n).toLocaleString("en-US") + v.suffix; };
+        // 保留输入的小数位数
+        const decimals = Math.min(4, (String(v.value).split(".")[1] || "").length);
+        const fmt = n => v.prefix + Number(n).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + v.suffix;
+        const render = () => { numEl.textContent = fmt(o.n); };
         render();
         // 按最终数值确定字号,计数过程中不再跳动
         HF.refit(() => {
           const keep = numEl.textContent;
-          numEl.textContent = v.prefix + Math.round(Number(v.value)).toLocaleString("en-US") + v.suffix;
+          numEl.textContent = fmt(Number(v.value));
           HF.fit(numEl, 816, 72); numEl.textContent = keep;
           HF.fitLines(label, 2, 28);
           if (delta.isConnected) HF.fitLines(delta, 2, 28);

@@ -1,3 +1,17 @@
-{ "component": "dy-vs-compare", "duration": 6, "peak": 3.5,
-  "variants": { "normal": {},
-    "long": { "leftName": "<b>&\" 国产大模型旗舰版", "rightName": "<b>&\" 海外大模型最新版", "rows": "价格|¥99 / 月|¥299 / 月起|L;上下文长度|128K tokens|1M tokens|R;中文理解与写作|非常出色|还算可以|L;<b>&\" 代码能力|中上|顶尖|R" } } }
+{
+  "component": "dy-vs-compare",
+  "duration": 6,
+  "peak": 3.5,
+  "variants": {
+    "normal": {},
+    "long": {
+      "leftName": "<b>&\" 国产大模型旗舰版",
+      "rightName": "<b>&\" 海外大模型最新版",
+      "rows": "价格|¥99 / 月|¥299 / 月起|L;上下文长度|128K tokens|1M tokens|R;中文理解与写作|非常出色|还算可以|L;<b>&\" 代码能力|中上|顶尖|R"
+    },
+    "override": {
+      "leftColor": "#7c5cff",
+      "accent": "#e8590c"
+    }
+  }
+}

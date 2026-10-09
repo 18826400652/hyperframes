@@ -1,3 +1,20 @@
-{ "component": "dy-stat-counter", "duration": 4.5, "peak": 3,
-  "variants": { "normal": {},
-    "long": { "label": "<b>&\" 单条视频最高播放量(统计截止到本月底全平台数据)", "value": 128600000, "prefix": "约 ", "suffix": " 次播放", "delta": "<b>&\" 较上月 ↑ 320%,创下账号历史新高" } } }
+{
+  "component": "dy-stat-counter",
+  "duration": 4.5,
+  "peak": 3,
+  "variants": {
+    "normal": {},
+    "long": {
+      "label": "<b>&\" 单条视频最高播放量(统计截止到本月底全平台数据)",
+      "value": 128600000,
+      "prefix": "约 ",
+      "suffix": " 次播放",
+      "delta": "<b>&\" 较上月 ↑ 320%,创下账号历史新高"
+    },
+    "override": {
+      "accent": "#e8590c",
+      "value": 3.5,
+      "suffix": " 倍"
+    }
+  }
+}

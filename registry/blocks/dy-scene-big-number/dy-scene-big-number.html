@@ -35,7 +35,9 @@
         if (v.note) note.textContent = v.note; else note.remove();
 
         const target = Number(v.value) || 0, o = { n: 0 };
-        const text = n => v.prefix + Math.round(n).toLocaleString("en-US") + v.suffix;
+        // 保留输入的小数位数(3.5 显示为 3.5,不四舍五入成 4)
+        const decimals = Math.min(4, (String(v.value).split(".")[1] || "").length);
+        const text = n => v.prefix + Number(n).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + v.suffix;
         const render = () => { num.textContent = text(o.n); };
         HF.refit(() => {
           // 按最终数值测量字号,再恢复当前帧的数字

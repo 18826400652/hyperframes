@@ -1,3 +1,20 @@
-{ "component": "dy-tool-card", "duration": 5, "peak": 2.5,
-  "variants": { "normal": {},
-    "long": { "name": "<b>&\" 某某 AI 演示文稿生成器", "logo": "AI", "tagline": "<b>&\" 30 秒把一段文字变成一整套带配图和动画的 PPT", "tags": "免费|中文|免注册|支持导出 PPTX|<b>&\" 团队协作", "rating": "4.8", "price": "<b>&\" 基础功能免费,高级版 ¥29/月", "url": "<b>&\" 评论区置顶获取链接 👆" } } }
+{
+  "component": "dy-tool-card",
+  "duration": 5,
+  "peak": 2.5,
+  "variants": {
+    "normal": {},
+    "long": {
+      "name": "<b>&\" 某某 AI 演示文稿生成器",
+      "logo": "AI",
+      "tagline": "<b>&\" 30 秒把一段文字变成一整套带配图和动画的 PPT",
+      "tags": "免费|中文|免注册|支持导出 PPTX|<b>&\" 团队协作",
+      "rating": "4.8",
+      "price": "<b>&\" 基础功能免费,高级版 ¥29/月",
+      "url": "<b>&\" 评论区置顶获取链接 👆"
+    },
+    "override": {
+      "accent": "#e8590c"
+    }
+  }
+}

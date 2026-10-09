@@ -47,7 +47,7 @@ const add = await new Promise(resolve => {
 });
 server.close();
 if (add.code !== 0) fail("hyperframes add: " + add.out.trim().split("\n").slice(-8).join(" | "));
-for (const f of ["compositions/dy-scene-title.html", "assets/dykit/dykit.css", "assets/dykit/hf-kit.js", "assets/dykit/theme.css", "assets/dykit/fonts/fonts.css"]) {
+for (const f of ["compositions/dy-scene-title.html", "assets/dykit/dykit.css", "assets/dykit/hf-kit.js", "assets/dykit/theme.css", "assets/dykit/fonts/fonts.css", "assets/dykit/media/rec-placeholder.mp4"]) {
   if (!fs.existsSync(path.join(proj, f))) fail("not installed: " + f);
 }
 

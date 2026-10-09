@@ -50,6 +50,8 @@
         };
         const ia = fill(document.getElementById("sc-a"), v.leftTitle, v.left);
         const ib = fill(document.getElementById("sc-b"), v.rightTitle, v.right);
+        // 某一侧完全为空时不显示空卡片,也去掉 VS
+        ["sc-a", "sc-b"].forEach(id => { const c = document.getElementById(id); if (!c.children.length) { c.remove(); const vs = document.getElementById("sc-vs"); if (vs) vs.remove(); } });
 
         HF.refit(() => {
           document.querySelectorAll("#sc-wrap .sc-head").forEach(h => HF.fitLines(h, 2, 32));
@@ -59,9 +61,10 @@
         const m = HF.motion(root), D = HF.duration(root, 6);
         const horiz = v.layout === "horizontal";
         const tl = gsap.timeline({ paused: true });
-        tl.fromTo("#sc-a", horiz ? { x: -80, opacity: 0 } : { y: -60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
-        tl.fromTo("#sc-vs", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: m.dur, ease: "back.out(2)" }, 0.5);
-        tl.fromTo("#sc-b", horiz ? { x: 80, opacity: 0 } : { y: 60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.8);
+        const has = id => !!document.getElementById(id);
+        if (has("sc-a")) tl.fromTo("#sc-a", horiz ? { x: -80, opacity: 0 } : { y: -60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        if (has("sc-vs")) tl.fromTo("#sc-vs", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: m.dur, ease: "back.out(2)" }, 0.5);
+        if (has("sc-b")) tl.fromTo("#sc-b", horiz ? { x: 80, opacity: 0 } : { y: 60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.8);
         // 重点一侧的条目逐条出现
         ib.forEach((d, i) => tl.fromTo(d, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: m.ease }, 1.2 + i * m.stagger));
         tl.to(wrap, { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.6 + ib.length * m.stagger, D - 0.35));

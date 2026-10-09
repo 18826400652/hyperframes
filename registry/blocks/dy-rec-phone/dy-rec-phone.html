@@ -69,7 +69,7 @@
 
         // 标注
         let cues = [];
-        try { cues = JSON.parse(v.cues || "[]"); } catch (e) { cues = []; }
+        try { const p = JSON.parse(v.cues || "[]"); cues = Array.isArray(p) ? p.filter(c => c && typeof c === "object") : []; } catch (e) { cues = []; }
         const pct = n => Math.max(0, Math.min(100, Number(n) || 0));
         const m = HF.motion(root), D = HF.duration(root, 8);
         const tl = gsap.timeline({ paused: true });

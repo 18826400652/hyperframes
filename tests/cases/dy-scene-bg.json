@@ -4,7 +4,11 @@
   "peak": 2,
   "variants": {
     "normal": {},
-    "v2": { "variant": "2" },
-    "override": { "theme": "neon" }
+    "v2": {
+      "variant": "2"
+    },
+    "override": {
+      "theme": "neon"
+    }
   }
 }

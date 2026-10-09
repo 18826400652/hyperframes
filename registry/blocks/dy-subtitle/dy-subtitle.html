@@ -21,8 +21,8 @@
         const v = Object.assign({ lines:"今天教你三个涨粉技巧|第一招:前三秒必须有钩子|第二招:评论区自己先留言", secondsPerLine:2, theme:"", keyColor:"" }, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
-        // 逐字高亮色:变量优先,否则取主题强调色(GSAP 需要具体颜色值)
-        const key = v.keyColor || getComputedStyle(root).getPropertyValue("--hf-accent").trim();
+        // 逐字高亮色:合法的变量值优先,否则取主题强调色(GSAP 需要具体颜色值)
+        const key = (v.keyColor && CSS.supports("color", v.keyColor)) ? v.keyColor : getComputedStyle(root).getPropertyValue("--hf-accent").trim();
         const box = document.getElementById("dy-subtitle-box");
         const lines = HF.split(v.lines);
         const per = Math.max(0.6, Number(v.secondsPerLine) || 2);
