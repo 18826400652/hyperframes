@@ -7,6 +7,7 @@
     "check": "npx --yes hyperframes@0.8.143 check",
     "render": "npx --yes hyperframes@0.8.143 render",
     "publish": "npx --yes hyperframes@0.8.143 publish",
-    "test": "node tests/run.mjs"
+    "test": "node tests/registry.test.mjs && node tests/run.mjs",
+    "build:registry": "node scripts/build-registry.mjs"
   }
 }

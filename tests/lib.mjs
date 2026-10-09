@@ -46,10 +46,9 @@ export function buildFixture(c, theme) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1080, height=1920" />
-  <link rel="stylesheet" href="assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="assets/theme.css" />
+  <link rel="stylesheet" href="assets/dykit/dykit.css" />
   <script src="assets/gsap.min.js"></script>
-  <script src="assets/hf-kit.js"></script>
+  <script src="assets/dykit/hf-kit.js"></script>
   <style>* { margin: 0; padding: 0; box-sizing: border-box; } html, body { width: 1080px; height: 1920px; overflow: hidden; } #root { position: relative; width: 100%; height: 100%; overflow: hidden; } #base { position: absolute; inset: 0; background: var(--hf-bg); }</style>
 </head>
 <body>

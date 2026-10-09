@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-scene-bg",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-scene-bg",
+  "description": "dykit 抖音竖屏组件 dy-scene-bg(1080×1920,支持 4 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-scene-bg.html",
+      "target": "compositions/dy-scene-bg.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "labels", "type": "string", "label": "章节(| 分隔)", "default": "开头|方法|案例|总结"},
+  {"id": "duration", "type": "number", "label": "覆盖总时长(秒)", "default": 20},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #pb { position: absolute; left: 60px; right: 60px; top: 150px; display: flex; gap: 10px; }
+        .pb-seg { flex: 1; }
+        .pb-track { height: 10px; border-radius: 5px; background: rgba(255,255,255,.3); overflow: hidden; }
+        .pb-fill { height: 100%; width: 0; background: var(--accent); }
+        .pb-lab { margin-top: 12px; text-align: center; font-size: 30px; font-weight: 800; color: rgba(255,255,255,.55); text-shadow: 0 2px 8px rgba(0,0,0,.7); }
+      </style>
+      <div id="root" data-composition-id="dy-progress-bar" data-width="1080" data-height="1920">
+        <div id="pb"></div>
+      </div>
+      <script>
+        const v = Object.assign({"labels": "开头|方法|案例|总结", "duration": 20, "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        const labs = String(v.labels).split("|").filter(Boolean), total = Math.max(1, Number(v.duration)), seg = total / labs.length;
+        const bar = document.getElementById("pb");
+        labs.forEach((t, i) => {
+          const el = document.createElement("div"); el.className = "pb-seg";
+          el.innerHTML = '<div class="pb-track"><div class="pb-fill" id="pb-f-' + i + '"></div></div><div class="pb-lab" id="pb-l-' + i + '"></div>';
+          el.querySelector(".pb-lab").textContent = t; bar.appendChild(el);
+        });
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#pb", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
+        labs.forEach((_, i) => {
+          tl.to("#pb-f-" + i, { width: "100%", duration: seg, ease: "none" }, i * seg);
+          tl.to("#pb-l-" + i, { color: "#ffffff", scale: 1.15, duration: 0.25 }, i * seg);
+          if (i < labs.length - 1) tl.to("#pb-l-" + i, { color: "rgba(255,255,255,.55)", scale: 1, duration: 0.25 }, (i + 1) * seg);
+        });
+        tl.to("#pb", { opacity: 0, duration: 0.3 }, Math.max(0.4, total - 0.3));
+        window.__timelines["dy-progress-bar"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

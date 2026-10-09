@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-comment-bubble",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-comment-bubble",
+  "description": "dykit 抖音竖屏组件 dy-comment-bubble(1080×1920)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-comment-bubble.html",
+      "target": "compositions/dy-comment-bubble.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

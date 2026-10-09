@@ -1,0 +1,131 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry.json",
+  "name": "dykit",
+  "homepage": "https://github.com/18826400652/hyperframes",
+  "items": [
+    {
+      "name": "dykit",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-action-bar",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-ai-badge",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-before-after",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-bench-bars",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-chapter-title",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-chat-demo",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-checklist",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-code-block",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-comment-bubble",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-concept-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-countdown",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-end-cta",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-follow-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-hook-title",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-lower-third",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-news-flash",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-poll",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-product-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-progress-bar",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-prompt-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-rank-item",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-safe-zone",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-scene-bg",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-scene-title",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-stat-counter",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-sticker-pop",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-subtitle",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-tool-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-vs-compare",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-workflow-flow",
+      "type": "hyperframes:block"
+    }
+  ]
+}

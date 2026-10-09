@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "name", "type": "string", "label": "工具名", "default": "某某 AI"},
+  {"id": "logo", "type": "string", "label": "Logo 文字(1-2字)", "default": "AI"},
+  {"id": "tagline", "type": "string", "label": "一句话介绍", "default": "30 秒把文字变成 PPT"},
+  {"id": "tags", "type": "string", "label": "标签(| 分隔)", "default": "免费|中文|免注册"},
+  {"id": "rating", "type": "string", "label": "评分", "default": "4.8"},
+  {"id": "price", "type": "string", "label": "价格", "default": "基础功能免费"},
+  {"id": "url", "type": "string", "label": "获取方式", "default": "评论区置顶 👆"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#7c5cff"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #tc { position: absolute; left: 60px; right: 170px; top: 460px; padding: 50px 44px; background: rgba(255,255,255,.97); border-radius: 44px; box-shadow: 0 24px 80px rgba(0,0,0,.5); text-align: center; }
+        #tc-logo { width: 190px; height: 190px; margin: -145px auto 22px; border-radius: 50px; background: linear-gradient(135deg, var(--accent), #3b4bd8); color: #fff; font-size: 84px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 16px 40px rgba(124,92,255,.5); }
+        #tc-name { font-size: 76px; font-weight: 900; color: #111; }
+        #tc-tag { font-size: 44px; font-weight: 700; color: #555; margin-top: 10px; line-height: 1.4; }
+        #tc-tags { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+        .tc-t { font-size: 36px; font-weight: 800; color: var(--accent); background: rgba(124,92,255,.12); padding: 8px 24px; border-radius: 40px; }
+        #tc-meta { display: flex; justify-content: center; gap: 36px; margin-top: 28px; font-size: 40px; font-weight: 800; color: #111; }
+        #tc-star { color: #f5a623; }
+        #tc-url { margin-top: 28px; font-size: 44px; font-weight: 900; color: #fff; background: var(--accent); border-radius: 40px; padding: 16px 0; }
+      </style>
+      <div id="root" data-composition-id="dy-tool-card" data-width="1080" data-height="1920">
+        <div id="tc"><div id="tc-logo"></div><div id="tc-name"></div><div id="tc-tag"></div><div id="tc-tags"></div><div id="tc-meta"><span id="tc-star"></span><span id="tc-price"></span></div><div id="tc-url"></div></div>
+      </div>
+      <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"name": "某某 AI", "logo": "AI", "tagline": "30 秒把文字变成 PPT", "tags": "免费|中文|免注册", "rating": "4.8", "price": "基础功能免费", "url": "评论区置顶 👆", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("tc-logo").textContent = v.logo;
+        document.getElementById("tc-name").textContent = v.name;
+        document.getElementById("tc-tag").textContent = v.tagline;
+        document.getElementById("tc-star").textContent = "★ " + v.rating;
+        document.getElementById("tc-price").textContent = v.price;
+        document.getElementById("tc-url").textContent = v.url;
+        const tg = String(v.tags).split("|").filter(Boolean), box = document.getElementById("tc-tags");
+        tg.forEach(t => { const d = document.createElement("div"); d.className = "tc-t"; d.textContent = t; box.appendChild(d); });
+        const hfRefit = () => { hfFit(document.getElementById("tc-name"), 0, 40); hfFitBox(document.getElementById("tc"), 1520, 420); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#tc", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)" }, 0);
+        tl.fromTo("#tc-logo", { rotate: -20, scale: 0.4 }, { rotate: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 0.25);
+        tl.fromTo(".tc-t", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.12 }, 0.8);
+        tl.fromTo("#tc-meta, #tc-url", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.15 }, 1.3);
+        tl.to("#tc-url", { scale: 1.04, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, 2);
+        tl.to("#tc", { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.in" }, 4.4);
+        window.__timelines["dy-tool-card"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

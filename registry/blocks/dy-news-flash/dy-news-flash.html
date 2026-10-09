@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "tag", "type": "string", "label": "栏目", "default": "AI 快讯"},
+  {"id": "date", "type": "string", "label": "日期", "default": "10 月 9 日"},
+  {"id": "company", "type": "string", "label": "主体", "default": "某某公司"},
+  {"id": "headline", "type": "string", "label": "标题", "default": "发布新一代多模态大模型"},
+  {"id": "points", "type": "string", "label": "要点(| 分隔)", "default": "支持图文音视频输入|推理成本下降 50%|即日起开放 API"},
+  {"id": "source", "type": "string", "label": "来源", "default": "来源:官方发布会"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #nf { position: absolute; left: 60px; right: 170px; top: 400px; background: rgba(14,14,26,.94); border-radius: 36px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+        #nf-top { display: flex; align-items: center; justify-content: space-between; padding: 20px 36px; background: var(--accent); color: #fff; font-size: 42px; font-weight: 900; }
+        #nf-date { font-size: 34px; font-weight: 700; opacity: .95; }
+        #nf-main { padding: 36px 40px 30px; }
+        #nf-co { font-size: 40px; font-weight: 900; color: var(--accent); }
+        #nf-h { font-size: 64px; font-weight: 900; color: #fff; line-height: 1.3; margin: 8px 0 26px; }
+        .nf-p { display: flex; gap: 16px; font-size: 44px; font-weight: 700; color: #e8e8f4; line-height: 1.4; margin-bottom: 16px; }
+        .nf-p::before { content: "▶"; color: var(--accent); font-size: 32px; padding-top: 8px; }
+        #nf-src { font-size: 30px; color: #8a8aa6; margin-top: 18px; }
+      </style>
+      <div id="root" data-composition-id="dy-news-flash" data-width="1080" data-height="1920">
+        <div id="nf"><div id="nf-top"><span id="nf-tag"></span><span id="nf-date"></span></div><div id="nf-main"><div id="nf-co"></div><div id="nf-h"></div><div id="nf-pts"></div><div id="nf-src"></div></div></div>
+      </div>
+      <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"tag": "AI 快讯", "date": "10 月 9 日", "company": "某某公司", "headline": "发布新一代多模态大模型", "points": "支持图文音视频输入|推理成本下降 50%|即日起开放 API", "source": "来源:官方发布会", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("nf-tag").textContent = "● " + v.tag;
+        document.getElementById("nf-date").textContent = v.date;
+        document.getElementById("nf-co").textContent = v.company;
+        document.getElementById("nf-h").textContent = v.headline;
+        document.getElementById("nf-src").textContent = v.source;
+        const ps = String(v.points).split("|").filter(Boolean), box = document.getElementById("nf-pts");
+        ps.forEach((t, i) => { const d = document.createElement("div"); d.className = "nf-p"; d.id = "nf-p-" + i; d.textContent = t; box.appendChild(d); });
+        const hfRefit = () => { hfFitBox(document.getElementById("nf"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#nf", { x: -700, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
+        tl.fromTo("#nf-co, #nf-h", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.15 }, 0.5);
+        ps.forEach((_, i) => tl.fromTo("#nf-p-" + i, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 1.2 + i * 0.7));
+        tl.fromTo("#nf-src", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.2 + ps.length * 0.7);
+        tl.to("#nf", { x: 700, opacity: 0, duration: 0.45, ease: "power2.in" }, 1.2 + ps.length * 0.7 + 2);
+        window.__timelines["dy-news-flash"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

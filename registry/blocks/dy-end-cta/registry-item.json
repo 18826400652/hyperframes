@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-end-cta",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-end-cta",
+  "description": "dykit 抖音竖屏组件 dy-end-cta(1080×1920)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-end-cta.html",
+      "target": "compositions/dy-end-cta.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

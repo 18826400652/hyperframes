@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "标题", "default": "AI 工作流"},
+  {"id": "steps", "type": "string", "label": "步骤(| 分隔)", "default": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布"},
+  {"id": "aiSteps", "type": "string", "label": "AI 步骤序号(逗号分隔,从1起)", "default": "2,3"},
+  {"id": "accent", "type": "color", "label": "AI 步骤色", "default": "#7c5cff"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #wf { position: absolute; left: 90px; right: 200px; top: 330px; display: flex; flex-direction: column; align-items: center; }
+        #wf-title { font-size: 64px; font-weight: 900; color: #fff; text-shadow: 0 6px 24px rgba(0,0,0,.7); margin-bottom: 30px; }
+        .wf-n { width: 100%; display: flex; align-items: center; gap: 26px; padding: 26px 34px; border-radius: 28px; background: rgba(14,14,26,.92); border: 3px solid #3a3a58; font-size: 50px; font-weight: 900; color: #fff; }
+        .wf-n b { flex: none; width: 70px; height: 70px; border-radius: 50%; background: #3a3a58; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .wf-ai { border-color: var(--accent); box-shadow: 0 0 50px rgba(124,92,255,.55); } .wf-ai b { background: var(--accent); }
+        .wf-ai::after { content: "AI"; margin-left: auto; font-size: 30px; color: #fff; background: var(--accent); padding: 4px 18px; border-radius: 20px; }
+        .wf-a { width: 8px; height: 56px; background: linear-gradient(#3a3a58, #25f4ee); border-radius: 4px; position: relative; transform-origin: top; }
+        .wf-a::after { content: ""; position: absolute; bottom: -6px; left: -14px; border: 18px solid transparent; border-top-color: #25f4ee; border-bottom: 0; }
+      </style>
+      <div id="root" data-composition-id="dy-workflow-flow" data-width="1080" data-height="1920">
+        <div id="wf"><div id="wf-title"></div><div id="wf-list" style="width:100%"></div></div>
+      </div>
+      <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"title": "AI 工作流", "steps": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布", "aiSteps": "2,3", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("wf-title").textContent = v.title;
+        const st = String(v.steps).split("|").filter(Boolean), ai = String(v.aiSteps).split(",").map(Number), list = document.getElementById("wf-list");
+        st.forEach((t, i) => {
+          if (i) { const a = document.createElement("div"); a.className = "wf-a"; a.id = "wf-a-" + i; a.style.margin = "0 auto"; list.appendChild(a); }
+          const n = document.createElement("div"); n.className = "wf-n" + (ai.includes(i + 1) ? " wf-ai" : ""); n.id = "wf-n-" + i; n.innerHTML = "<b>" + (i + 1) + "</b><span></span>"; n.children[1].textContent = t; list.appendChild(n);
+        });
+        const hfRefit = () => { hfFitBox(document.getElementById("wf"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#wf-title", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
+        st.forEach((_, i) => {
+          const t = 0.5 + i * 0.7;
+          if (i) tl.fromTo("#wf-a-" + i, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.25, ease: "power2.out" }, t - 0.25);
+          tl.fromTo("#wf-n-" + i, { x: -100, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, t);
+        });
+        tl.to("#wf", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, 0.5 + st.length * 0.7 + 2);
+        window.__timelines["dy-workflow-flow"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

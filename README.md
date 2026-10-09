@@ -1,4 +1,31 @@
-# 抖音自媒体组件库 (HyperFrames)
+# 抖音自媒体组件库 dykit (HyperFrames)
+
+## 在其他 HyperFrames 项目中接入
+
+1. 在项目的 `hyperframes.json` 中设置 registry:
+   ```json
+   { "registry": "https://raw.githubusercontent.com/18826400652/hyperframes/main/registry" }
+   ```
+2. 安装需要的组件(会自动安装依赖的 `dykit` 主题与资源包):
+   ```bash
+   npx hyperframes add dy-scene-title
+   ```
+3. 在 `index.html` 的 `<head>` 中加入两行(放在 gsap 之后),并在根合成元素上选择主题:
+   ```html
+   <link rel="stylesheet" href="assets/dykit/dykit.css" />
+   <script src="assets/dykit/hf-kit.js"></script>
+   <!-- <div id="root" data-composition-id="main" data-theme="neon" ...> -->
+   ```
+   主题可选 `minimal`(默认)/ `neon` / `editorial` / `bento`;单个组件也可以用 `theme` 变量单独指定。
+
+> registry 需要本仓库公开且合并到 `main` 分支后才能被其他项目访问。
+
+## 开发
+
+- `npm test`:registry 一致性 + 端到端安装测试,以及全部组件 × 4 主题的检查。
+- 修改 `compositions/dy-*.html` 或 `assets/dykit/` 后运行 `npm run build:registry` 重新生成 `registry/`(测试会检查是否已同步)。
+- `node tests/sheet.mjs <组件>` 生成 4 主题对比图。
+
 
 竖屏 1080×1920,全部透明背景,可叠加在口播/素材视频上。组件都在 `compositions/`,文案、颜色通过变量覆盖。
 
@@ -43,10 +70,10 @@
 命令:`npm run dev` 预览 · `npm run check` 检查 · `npm run render` 输出 MP4(`--variables` 可全局覆盖)。
 
 ## 字体
-中文字体已随项目打包在 `assets/fonts/`(Noto Sans SC 可变字体 + 代码块用 JetBrains Mono,均为 SIL OFL 开源许可),
+中文字体已随项目打包在 `assets/dykit/fonts/`(Noto Sans SC、Noto Serif SC 可变字体 + 代码块用 JetBrains Mono,均为 SIL OFL 开源许可),
 在任何机器(包括云端渲染)上效果一致。根合成必须在 `<head>` 里引入一次:
 
-    <link rel="stylesheet" href="assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="assets/dykit/dykit.css" />
 
 组件里的苹方/微软雅黑等系统字体只作兜底。GSAP 已本地化在 `assets/`。
 

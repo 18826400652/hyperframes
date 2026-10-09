@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-safe-zone",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-safe-zone",
+  "description": "dykit 抖音竖屏组件 dy-safe-zone(1080×1920)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-safe-zone.html",
+      "target": "compositions/dy-safe-zone.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

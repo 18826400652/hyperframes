@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "leftName", "type": "string", "label": "左侧名称", "default": "方案 A"},
+  {"id": "rightName", "type": "string", "label": "右侧名称", "default": "方案 B"},
+  {"id": "rows", "type": "string", "label": "对比行(项目|左|右|胜方L或R;用分号分行)", "default": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L"},
+  {"id": "leftColor", "type": "color", "label": "左侧色", "default": "#fe2c55"},
+  {"id": "accent", "type": "color", "label": "右侧色", "default": "#25f4ee"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #vs { position: absolute; left: 60px; right: 60px; top: 380px; display: flex; flex-direction: column; gap: 22px; }
+        #vs-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .vs-name { flex: 1; min-width: 0; text-align: center; font-size: 60px; font-weight: 900; color: #111; padding: 20px 0; border-radius: 24px; }
+        #vs-badge { width: 130px; height: 130px; margin: 0 -10px; z-index: 2; border-radius: 50%; background: #fff; color: #111; font-size: 60px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(255,255,255,.5); }
+        .vs-row { display: flex; align-items: stretch; gap: 14px; }
+        .vs-cell { flex: 1; text-align: center; font-size: 54px; font-weight: 900; color: #fff; background: rgba(12,12,18,.88); border: 4px solid transparent; border-radius: 22px; padding: 26px 8px; }
+        .vs-lab { width: 180px; text-align: center; align-self: center; font-size: 38px; font-weight: 700; color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,.8); }
+      </style>
+      <div id="root" data-composition-id="dy-vs-compare" data-width="1080" data-height="1920">
+        <div id="vs"><div id="vs-head"><div class="vs-name" id="vs-l"></div><div id="vs-badge">VS</div><div class="vs-name" id="vs-r"></div></div><div id="vs-rows"></div></div>
+      </div>
+      <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"leftName": "方案 A", "rightName": "方案 B", "rows": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L", "leftColor": "#fe2c55", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        const L = document.getElementById("vs-l"), R = document.getElementById("vs-r");
+        L.textContent = v.leftName; R.textContent = v.rightName;
+        L.style.background = v.leftColor; R.style.background = v.accent;
+        const rows = String(v.rows).split(";").filter(Boolean).map(r => r.split("|"));
+        const box = document.getElementById("vs-rows");
+        box.style.cssText = "display:flex;flex-direction:column;gap:22px";
+        rows.forEach((r, i) => {
+          const el = document.createElement("div"); el.className = "vs-row"; el.id = "vs-row-" + i;
+          const mk = (cls, txt) => { const d = document.createElement("div"); d.className = cls; d.textContent = txt || ""; return d; };
+          const a = mk("vs-cell", r[1]), lab = mk("vs-lab", r[0]), b = mk("vs-cell", r[2]);
+          if (r[3] === "L") { a.style.borderColor = v.leftColor; a.style.boxShadow = "0 0 40px " + v.leftColor; }
+          if (r[3] === "R") { b.style.borderColor = v.accent; b.style.boxShadow = "0 0 40px " + v.accent; }
+          el.append(a, lab, b); box.appendChild(el);
+        });
+        const hfRefit = () => { hfFit(L, 0, 30); hfFit(R, 0, 30); hfFitBox(document.getElementById("vs"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#vs-l", { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        tl.fromTo("#vs-r", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        tl.fromTo("#vs-badge", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2)" }, 0.3);
+        rows.forEach((_, i) => tl.fromTo("#vs-row-" + i, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.9 + i * 0.6));
+        tl.to("#vs", { opacity: 0, y: -40, duration: 0.4, ease: "power2.in" }, 5.5);
+        window.__timelines["dy-vs-compare"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

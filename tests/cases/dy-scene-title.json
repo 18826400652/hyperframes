@@ -1,0 +1,11 @@
+{
+  "component": "dy-scene-title",
+  "duration": 4,
+  "peak": 2.5,
+  "variants": {
+    "normal": { "kicker": "AI 效率指南 · 07", "title": "3 个 AI 工具让你下班提前 2 小时", "em": "提前 2 小时", "sub": "会议、PPT、邮件,一次讲清" },
+    "long": { "kicker": "99% 的人都不知道的 AI 效率秘密合集 <b>&\"", "title": "<b>&\" 如何用 AI 在一天之内做完原本需要一整周才能完成的全部工作量", "em": "一整周", "sub": "从会议纪要到周报总结,再到 PPT 和邮件,全部流程一次讲清楚,建议收藏反复看" },
+    "sparse": { "title": "AI 提效" },
+    "em-missing": { "title": "今天聊聊大模型", "em": "到底是什么" }
+  }
+}
