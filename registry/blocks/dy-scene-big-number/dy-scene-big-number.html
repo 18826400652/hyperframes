@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "label", "type": "string", "label": "说明", "default": "用 AI 之后,每周节省"},
+  {"id": "value", "type": "number", "label": "数值", "default": 12},
+  {"id": "prefix", "type": "string", "label": "前缀", "default": ""},
+  {"id": "suffix", "type": "string", "label": "单位", "default": " 小时"},
+  {"id": "note", "type": "string", "label": "备注", "default": "按每天 2 小时文案工作估算"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #sn-wrap { position: absolute; left: 80px; right: 160px; top: 600px; display: flex; flex-direction: column; align-items: flex-start; gap: 32px; }
+        #sn-label { width: 100%; font-size: 60px; font-weight: 800; line-height: 1.3; }
+        #sn-num { max-width: 100%; font-family: var(--hf-font-title); font-size: 160px; font-weight: var(--hf-title-weight); line-height: 1.1; font-variant-numeric: tabular-nums; }
+        #sn-note { width: 100%; font-size: 32px; font-weight: 500; line-height: 1.5; color: var(--hf-muted); }
+      </style>
+      <div id="root" data-composition-id="dy-scene-big-number" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="sn-wrap">
+          <div class="hf-text" id="sn-label"></div>
+          <div class="hf-em" id="sn-num"></div>
+          <div class="hf-text" id="sn-note"></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ label: "用 AI 之后,每周节省", value: 12, prefix: "", suffix: " 小时", note: "按每天 2 小时文案工作估算", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const label = document.getElementById("sn-label"), num = document.getElementById("sn-num"), note = document.getElementById("sn-note");
+        if (v.label) label.textContent = v.label; else label.remove();
+        if (v.note) note.textContent = v.note; else note.remove();
+
+        const target = Number(v.value) || 0, o = { n: 0 };
+        const text = n => v.prefix + Math.round(n).toLocaleString("en-US") + v.suffix;
+        const render = () => { num.textContent = text(o.n); };
+        HF.refit(() => {
+          // 按最终数值测量字号,再恢复当前帧的数字
+          const keep = num.textContent; num.textContent = text(target);
+          HF.fit(num, 840, 88);
+          num.textContent = keep;
+          if (label.isConnected) HF.fitLines(label, 2, 44);
+          if (note.isConnected) HF.fitLines(note, 3, 32);
+          HF.centerBox(document.getElementById("sn-wrap"));
+        });
+        render();
+
+        const m = HF.motion(root), D = HF.duration(root, 4.5);
+        const tl = gsap.timeline({ paused: true });
+        const parts = [label, num, note].filter(e => e.isConnected);
+        tl.fromTo(parts, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.1);
+        tl.to(o, { n: target, duration: 1.6, ease: "power3.out", onUpdate: render }, 0.3);
+        tl.fromTo(num, { scale: 1 }, { scale: 1.06, duration: 0.15, yoyo: true, repeat: 1, transformOrigin: "0% 50%" }, 1.9);
+        tl.to("#sn-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(2.3, D - 0.35));
+        window.__timelines["dy-scene-big-number"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
