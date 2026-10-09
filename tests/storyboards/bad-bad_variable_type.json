@@ -56,7 +56,8 @@
       "variables": {
         "label": "用了这个方法,每周省下",
         "value": "5万",
-        "suffix": " 小时"
+        "suffix": " 小时",
+        "note": ""
       },
       "duration": 4.5,
       "overlays": [],
@@ -72,7 +73,7 @@
         "beforeValue": "2 小时",
         "afterLabel": "AI 按议题整理",
         "afterValue": "3 分钟",
-        "gain": "效率提升 40 倍"
+        "gain": ""
       },
       "duration": 5,
       "overlays": [],
@@ -85,7 +86,8 @@
       "component": "dy-scene-ending",
       "variables": {
         "headline": "觉得有用,记得三连",
-        "next": "用 AI 写周报"
+        "next": "用 AI 写周报",
+        "cta": "点赞 · 收藏"
       },
       "duration": 5.3,
       "overlays": [],

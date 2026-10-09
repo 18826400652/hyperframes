@@ -13,7 +13,7 @@
   },
   "dy-before-after": {
     "kind": "overlay",
-    "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签",
+    "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签(两张卡片自带固定角标『以前』『用 AI』)",
     "suitableFor": "口播讲用 AI 前后时间或成本的变化",
     "minDuration": 5
   },
@@ -55,7 +55,7 @@
   },
   "dy-concept-card": {
     "kind": "overlay",
-    "purpose": "名词解释卡:术语 + 人话版 + 打个比方",
+    "purpose": "名词解释卡:术语 + 人话版 + 打个比方(两段自带固定小标题『人话版』『打个比方』)",
     "suitableFor": "口播解释一个专业名词或概念",
     "minDuration": 6
   },
@@ -235,7 +235,7 @@
   },
   "dy-vs-compare": {
     "kind": "overlay",
-    "purpose": "PK 对比表:两个名称 + 多行项目,胜方高亮",
+    "purpose": "PK 对比表:两个名称 + 多行项目,胜方高亮(中间自带固定『VS』)",
     "suitableFor": "口播逐项对比两个产品、模型或方案的参数",
     "minDuration": 4
   },

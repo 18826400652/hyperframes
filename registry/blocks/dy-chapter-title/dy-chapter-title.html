@@ -26,19 +26,21 @@
         const v = Object.assign({"index": "01", "title": "先说结论", "sub": "90% 的人都做错了", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
-        document.getElementById("ch-no").textContent = v.index;
+        // 序号或副标题为空时去掉对应元素,不留空位
+        const no = document.getElementById("ch-no"), sub = document.getElementById("ch-sub");
+        if (v.index !== "" && v.index != null) no.textContent = v.index; else no.remove();
         document.getElementById("ch-title").textContent = v.title;
-        document.getElementById("ch-sub").textContent = v.sub;
+        if (v.sub) sub.textContent = v.sub; else sub.remove();
         HF.refit(() => {
           HF.fitLines(document.getElementById("ch-title"), 3, 56);
-          HF.fitLines(document.getElementById("ch-sub"), 3, 30);
+          if (sub.isConnected) HF.fitLines(sub, 3, 30);
         });
         const D = HF.duration(root, 4);
         const tl = gsap.timeline({ paused: true });
         tl.to("#ch-bar", { width: 520, duration: 0.5, ease: "power3.out" }, 0);
-        tl.fromTo("#ch-no", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.1);
+        if (no.isConnected) tl.fromTo("#ch-no", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.1);
         tl.fromTo("#ch-title", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.25);
-        tl.fromTo("#ch-sub", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.5);
+        if (sub.isConnected) tl.fromTo("#ch-sub", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.5);
         tl.to("#ch, #ch-bar", { x: 160, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(1.2, D - 0.9));
         window.__timelines["dy-chapter-title"] = tl;
       </script>

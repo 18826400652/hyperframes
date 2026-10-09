@@ -17,12 +17,15 @@ const script = read(path.join(dir, "example-script.txt"));
 const exIssues = validateFormat(example, catalog, { script });
 ok(exIssues.length === 0, "example has issues: " + JSON.stringify(exIssues));
 
+// script_too_long 样例同时改了口播,完整性比对用它自己的口播
 const expect = {
   "bad-pending_missing_file.json": "unknown_component",
+  "bad-script_too_long_recording.json": "script_too_long",
 };
 for (const f of fs.readdirSync(dir).filter(f => /^bad-.*\.json$/.test(f) && f !== "bad-json.json")) {
   const code = expect[f] || f.slice(4, -5);
-  const issues = validateFormat(JSON.parse(read(path.join(dir, f))), catalog, { script });
+  const sb = JSON.parse(read(path.join(dir, f)));
+  const issues = validateFormat(sb, catalog, { script: f.startsWith("bad-script_too_long") ? undefined : script });
   ok(issues.some(i => i.code === code), `${f}: expected ${code}, got ${JSON.stringify(issues.map(i => i.code))}`);
 }
 

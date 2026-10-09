@@ -17,6 +17,20 @@ const STATUSES = ["pending", "accepted"];
 const MAX_DURATION = 30;
 
 const strip = s => String(s).replace(/\s/g, "");
+const COLOR_VAR = /^(theme|accent|accent2|leftColor|colorB|keyColor|color)$/;
+// 不参与"数字必须来自口播"检查的变量:坐标、时间、配置类
+const NUMBER_EXEMPT = new Set(["cues", "ratio", "focus", "x", "y", "rotate", "speed", "max", "hold", "secondsPerLine", "from", "active", "index", "rank", "variant", "layout", "direction"]);
+const MAX_SCENE_SECONDS = 8.5, MAX_RECORDING_SECONDS = 12.5;
+// 中文数字转阿拉伯数字(覆盖口播常见的 0~99 与逐位读法,如"二零二四")
+function normalizeNumbers(text) {
+  const d = { 零: 0, 〇: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+  return String(text)
+    .replace(/([一二两三四五六七八九])?十([一二三四五六七八九])?/g, (_, a, b) => String((a ? d[a] : 1) * 10 + (b ? d[b] : 0)))
+    .replace(/[零〇一二两三四五六七八九]/g, c => String(d[c]))
+    .replace(/(\d),(?=\d{3})/g, "$1")
+    .replace(/(\d+)个半/g, "$1.5");
+}
+const numbersIn = v => (normalizeNumbers(typeof v === "number" ? String(v) : v).match(/\d+(?:\.\d+)?/g) || []);
 const chars = s => Array.from(strip(s)).length;
 const isObj = v => v && typeof v === "object" && !Array.isArray(v);
 
@@ -46,6 +60,23 @@ function checkVariables(comp, vars, scene, field, issues) {
   }
 }
 
+// 显示文字的变量必须显式填写(空串表示不显示),否则会露出组件自带的示例文案
+function checkDefaults(comp, vars, needVars, scene, field, issues) {
+  for (const d of comp.variables) {
+    if (d.type !== "string" || COLOR_VAR.test(d.id) || !d.default || needVars.has(d.id)) continue;
+    if (!isObj(vars) || !(d.id in vars)) issues.push({ scene, field: `${field}.${d.id}`, code: "default_text", message: `未填写 ${d.id},会显示组件示例文案「${String(d.default).slice(0, 20)}」;请填写或设为 ""` });
+  }
+}
+
+function checkNumbers(vars, scriptDigits, scene, field, issues) {
+  for (const [k, v] of Object.entries(isObj(vars) ? vars : {})) {
+    if (COLOR_VAR.test(k) || NUMBER_EXEMPT.has(k) || (typeof v !== "string" && typeof v !== "number")) continue;
+    for (const n of numbersIn(v)) {
+      if (!scriptDigits.includes(n)) issues.push({ scene, field: `${field}.${k}`, code: "number_not_in_script", message: `数字 ${n} 在口播里找不到;数字只能来自口播` });
+    }
+  }
+}
+
 export function validateFormat(sb, catalog, opts = {}) {
   const issues = [];
   const top = (code, field, message) => issues.push({ scene: null, field, code, message });
@@ -60,6 +91,7 @@ export function validateFormat(sb, catalog, opts = {}) {
     if (!n || !STATUSES.includes(n.status)) top("bad_new_component", "newComponents", `${n && n.id}: status 只能是 pending / accepted`);
   }
   const find = lookup(catalog, sb, opts.root || ROOT);
+  const scriptDigits = normalizeNumbers((typeof opts.script === "string" ? opts.script : sb.scenes.map(x => (isObj(x) && typeof x.script === "string" ? x.script : "")).join("")).replace(/\s/g, ""));
 
   sb.scenes.forEach((s, i) => {
     const want = "s" + String(i + 1).padStart(2, "0");
@@ -72,7 +104,16 @@ export function validateFormat(sb, catalog, opts = {}) {
     const comp = find(s.component);
     if (!comp) add("component", "unknown_component", `组件不存在: ${s.component}`);
     else if (comp.kind !== "new" && !MAIN_KINDS.includes(comp.kind)) add("component", "forbidden_main", `${s.component}(${comp.kind})不能作为画面主组件`);
-    if (comp) checkVariables(comp, s.variables, id, "variables", issues);
+    const needVars = new Set((Array.isArray(s.needs) ? s.needs : []).map(n => n && n.variable));
+    if (comp) {
+      checkVariables(comp, s.variables, id, "variables", issues);
+      checkDefaults(comp, s.variables, needVars, id, "variables", issues);
+    }
+    checkNumbers(s.variables, scriptDigits, id, "variables", issues);
+    const limit = s.component === "dy-rec-phone" ? MAX_RECORDING_SECONDS : MAX_SCENE_SECONDS;
+    if (typeof s.script === "string" && chars(s.script) / cps > limit) {
+      add("script", "script_too_long", `这段口播约 ${Math.round(chars(s.script) / cps)} 秒,超过 ${Math.floor(limit)} 秒,请拆成多个画面`);
+    }
 
     const min = Math.max(comp ? comp.minDuration : 0, typeof s.script === "string" ? chars(s.script) / cps : 0);
     if (typeof s.duration !== "number" || !(s.duration > 0)) add("duration", "duration_too_short", "缺少时长");
@@ -89,6 +130,8 @@ export function validateFormat(sb, catalog, opts = {}) {
         if (!oc) { add(f, "unknown_component", `组件不存在: ${o && o.component}`); return; }
         if (oc.kind !== "new" && !OVERLAY_KINDS.includes(oc.kind)) add(f, "bad_overlay", `${o.component}(${oc.kind})不能作为叠加组件`);
         checkVariables(oc, o.variables, id, `${f}.variables`, issues);
+        checkDefaults(oc, o.variables, new Set(), id, `${f}.variables`, issues);
+        checkNumbers(o.variables, scriptDigits, id, `${f}.variables`, issues);
         if (!(typeof o.at === "number" && o.at >= 0 && typeof o.duration === "number" && o.duration > 0 && o.at + o.duration <= s.duration + 1e-6)) {
           add(f, "overlay_out_of_range", "at 与 duration 必须落在画面时长内");
         }
@@ -120,14 +163,15 @@ export function validateFormat(sb, catalog, opts = {}) {
 }
 
 // 渲染检查:每个画面生成一个临时工程(主组件 + 叠加组件,清单主题),用 hyperframes check --strict 检查真实文案
-// 主组件为叠加类时在其下垫 dy-scene-bg;值为空串的变量不传入(使用组件默认值 / 占位素材)
+// 主组件为叠加类时在其下垫 dy-scene-bg
 const CLI = ["--yes", "hyperframes@0.8.143"];
 const CAPTION_ZONE = "x0=0;y0=0.79;x1=1;y1=1;severity=error";
 const attr = s => s.replace(/&/g, "&amp;").replace(/'/g, "&#39;");
-const filled = vars => Object.fromEntries(Object.entries(isObj(vars) ? vars : {}).filter(([, v]) => v !== ""));
+// 待补素材(needs)的变量为空串时不传入,改用组件占位素材;其他空串照常传入(表示不显示)
+const filled = (vars, needVars = new Set()) => Object.fromEntries(Object.entries(isObj(vars) ? vars : {}).filter(([k, v]) => !(v === "" && needVars.has(k))));
 
-function host(id, component, start, duration, vars, z) {
-  return `    <div id="${id}" data-composition-id="${component}" data-composition-src="compositions/${component}.html" data-start="${start}" data-duration="${duration}" data-width="1080" data-height="1920" data-variable-values='${attr(JSON.stringify(filled(vars)))}' style="position:absolute;inset:0;z-index:${z}"></div>`;
+function host(id, component, start, duration, vars, z, needVars) {
+  return `    <div id="${id}" data-composition-id="${component}" data-composition-src="compositions/${component}.html" data-start="${start}" data-duration="${duration}" data-width="1080" data-height="1920" data-variable-values='${attr(JSON.stringify(filled(vars, needVars)))}' style="position:absolute;inset:0;z-index:${z}"></div>`;
 }
 
 export function renderCheck(sb, opts = {}) {
@@ -147,7 +191,7 @@ export function renderCheck(sb, opts = {}) {
     const D = s.duration;
     const hosts = [];
     if (find(s.component)?.kind === "overlay") hosts.push(host("bg", "dy-scene-bg", 0, D, {}, 1));
-    hosts.push(host("main", s.component, 0, D, s.variables, 2));
+    hosts.push(host("main", s.component, 0, D, s.variables, 2, new Set((s.needs || []).map(n => n.variable))));
     (s.overlays || []).forEach((o, k) => hosts.push(host(`ov${k}`, o.component, o.at, o.duration, o.variables, 3 + k)));
     fs.writeFileSync(path.join(dir, "index.html"), `<!doctype html>
 <html lang="zh-CN" data-resolution="portrait">
