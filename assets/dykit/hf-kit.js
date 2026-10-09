@@ -78,7 +78,9 @@
         const scale = Math.max(0.5, (bottom - top) / h);
         el.style.transformOrigin = "50% 0"; el.style.scale = String(scale);
         // 缩到下限仍超出安全区:内容太多。发出警告,hyperframes check --strict 会把它判为失败
-        if (top + h * scale > bottom + 1) console.warn(`[dykit] #${el.id || el.className} 内容过多,缩小到 50% 仍超出安全区 ${Math.round(top + h * scale - bottom)}px`);
+        // 只在字体加载完成后的排版里判断,避免后备字体的第一次排版误报
+        const fontsReady = !document.fonts || document.fonts.status === "loaded";
+        if (fontsReady && top + h * scale > bottom + 1) console.warn(`[dykit] #${el.id || el.className} 内容过多,缩小到 50% 仍超出安全区 ${Math.round(top + h * scale - bottom)}px`);
       }
     },
 

@@ -18,19 +18,33 @@ const MAX_DURATION = 30;
 
 const strip = s => String(s).replace(/\s/g, "");
 const COLOR_VAR = /^(theme|accent|accent2|leftColor|colorB|keyColor|color)$/;
-// 不参与"数字必须来自口播"检查的变量:坐标、时间、配置类
-const NUMBER_EXEMPT = new Set(["cues", "ratio", "focus", "x", "y", "rotate", "speed", "max", "hold", "secondsPerLine", "from", "active", "index", "rank", "variant", "layout", "direction"]);
+// 配置类变量:不是显示给观众的文字/数字,不要求显式填写,也不做数字检查
+const CONFIG_VARS = new Set(["cues", "ratio", "focus", "x", "y", "rotate", "speed", "max", "hold", "secondsPerLine", "from", "active", "variant", "layout", "direction"]);
+// 另外不做数字检查的变量:序号、名次、代码、链接、文件名
+const NUMBER_EXEMPT = new Set([...CONFIG_VARS, "index", "rank", "code", "url", "file"]);
 const MAX_SCENE_SECONDS = 8.5, MAX_RECORDING_SECONDS = 12.5;
-// 中文数字转阿拉伯数字(覆盖口播常见的 0~99 与逐位读法,如"二零二四")
+
+// 中文数字转阿拉伯数字:含 十/百/千 的按位值计算("三千五百" → 3500,"一百万" → "100万"),
+// 不含单位的逐位读("二零二四" → 2024),"点"后为小数("九十九点九" → 99.9),"X个半" → X.5;
+// "一起""一些"等习惯用语里的"一"不当数字
+const CN_DIGIT = { 零: 0, 〇: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+const CN_UNIT = { 十: 10, 百: 100, 千: 1000 };
+function cnInt(run) {
+  if (!/[十百千]/.test(run)) return [...run].map(c => CN_DIGIT[c]).join("");
+  let total = 0, cur = 0;
+  for (const c of run) {
+    if (c in CN_UNIT) { total += (cur || 1) * CN_UNIT[c]; cur = 0; } else cur = CN_DIGIT[c];
+  }
+  return String(total + cur);
+}
 function normalizeNumbers(text) {
-  const d = { 零: 0, 〇: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
   return String(text)
-    .replace(/([一二两三四五六七八九])?十([一二三四五六七八九])?/g, (_, a, b) => String((a ? d[a] : 1) * 10 + (b ? d[b] : 0)))
-    .replace(/[零〇一二两三四五六七八九]/g, c => String(d[c]))
+    .replace(/一(?=[起些样直定般切下边旦])/g, "")
+    .replace(/([零〇一二两三四五六七八九十百千]+)(?:点([零〇一二三四五六七八九]+))?/g, (_, i, d) => cnInt(i) + (d ? "." + [...d].map(c => CN_DIGIT[c]).join("") : ""))
     .replace(/(\d),(?=\d{3})/g, "$1")
     .replace(/(\d+)个半/g, "$1.5");
 }
-const numbersIn = v => (normalizeNumbers(typeof v === "number" ? String(v) : v).match(/\d+(?:\.\d+)?/g) || []);
+const numbersIn = v => (normalizeNumbers(typeof v === "number" ? String(v) : v).match(/\d+(?:\.\d+)?/g) || []).map(n => String(Number(n)));
 const chars = s => Array.from(strip(s)).length;
 const isObj = v => v && typeof v === "object" && !Array.isArray(v);
 
@@ -63,16 +77,17 @@ function checkVariables(comp, vars, scene, field, issues) {
 // 显示文字的变量必须显式填写(空串表示不显示),否则会露出组件自带的示例文案
 function checkDefaults(comp, vars, needVars, scene, field, issues) {
   for (const d of comp.variables) {
-    if (d.type !== "string" || COLOR_VAR.test(d.id) || !d.default || needVars.has(d.id)) continue;
-    if (!isObj(vars) || !(d.id in vars)) issues.push({ scene, field: `${field}.${d.id}`, code: "default_text", message: `未填写 ${d.id},会显示组件示例文案「${String(d.default).slice(0, 20)}」;请填写或设为 ""` });
+    const shows = (d.type === "string" && d.default !== "") || (d.type === "number" && d.default !== "" && d.default !== null);
+    if (!shows || COLOR_VAR.test(d.id) || CONFIG_VARS.has(d.id) || needVars.has(d.id)) continue;
+    if (!isObj(vars) || !(d.id in vars)) issues.push({ scene, field: `${field}.${d.id}`, code: "default_text", message: `未填写 ${d.id},会显示组件示例${d.type === "number" ? "数字" : "文案"}「${String(d.default).slice(0, 20)}」;请填写或设为 ""` });
   }
 }
 
-function checkNumbers(vars, scriptDigits, scene, field, issues) {
+function checkNumbers(vars, scriptNumbers, scene, field, issues) {
   for (const [k, v] of Object.entries(isObj(vars) ? vars : {})) {
     if (COLOR_VAR.test(k) || NUMBER_EXEMPT.has(k) || (typeof v !== "string" && typeof v !== "number")) continue;
     for (const n of numbersIn(v)) {
-      if (!scriptDigits.includes(n)) issues.push({ scene, field: `${field}.${k}`, code: "number_not_in_script", message: `数字 ${n} 在口播里找不到;数字只能来自口播` });
+      if (!scriptNumbers.has(n)) issues.push({ scene, field: `${field}.${k}`, code: "number_not_in_script", message: `数字 ${n} 在口播里找不到;数字只能来自口播` });
     }
   }
 }
@@ -91,7 +106,7 @@ export function validateFormat(sb, catalog, opts = {}) {
     if (!n || !STATUSES.includes(n.status)) top("bad_new_component", "newComponents", `${n && n.id}: status 只能是 pending / accepted`);
   }
   const find = lookup(catalog, sb, opts.root || ROOT);
-  const scriptDigits = normalizeNumbers((typeof opts.script === "string" ? opts.script : sb.scenes.map(x => (isObj(x) && typeof x.script === "string" ? x.script : "")).join("")).replace(/\s/g, ""));
+  const scriptNumbers = new Set(numbersIn((typeof opts.script === "string" ? opts.script : sb.scenes.map(x => (isObj(x) && typeof x.script === "string" ? x.script : "")).join("")).replace(/\s/g, "")));
 
   sb.scenes.forEach((s, i) => {
     const want = "s" + String(i + 1).padStart(2, "0");
@@ -109,7 +124,7 @@ export function validateFormat(sb, catalog, opts = {}) {
       checkVariables(comp, s.variables, id, "variables", issues);
       checkDefaults(comp, s.variables, needVars, id, "variables", issues);
     }
-    checkNumbers(s.variables, scriptDigits, id, "variables", issues);
+    checkNumbers(s.variables, scriptNumbers, id, "variables", issues);
     const limit = s.component === "dy-rec-phone" ? MAX_RECORDING_SECONDS : MAX_SCENE_SECONDS;
     if (typeof s.script === "string" && chars(s.script) / cps > limit) {
       add("script", "script_too_long", `这段口播约 ${Math.round(chars(s.script) / cps)} 秒,超过 ${Math.floor(limit)} 秒,请拆成多个画面`);
@@ -131,7 +146,7 @@ export function validateFormat(sb, catalog, opts = {}) {
         if (oc.kind !== "new" && !OVERLAY_KINDS.includes(oc.kind)) add(f, "bad_overlay", `${o.component}(${oc.kind})不能作为叠加组件`);
         checkVariables(oc, o.variables, id, `${f}.variables`, issues);
         checkDefaults(oc, o.variables, new Set(), id, `${f}.variables`, issues);
-        checkNumbers(o.variables, scriptDigits, id, `${f}.variables`, issues);
+        checkNumbers(o.variables, scriptNumbers, id, `${f}.variables`, issues);
         if (!(typeof o.at === "number" && o.at >= 0 && typeof o.duration === "number" && o.duration > 0 && o.at + o.duration <= s.duration + 1e-6)) {
           add(f, "overlay_out_of_range", "at 与 duration 必须落在画面时长内");
         }
