@@ -104,6 +104,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-scene-compare",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-scene-image-text",
       "type": "hyperframes:block"
     },

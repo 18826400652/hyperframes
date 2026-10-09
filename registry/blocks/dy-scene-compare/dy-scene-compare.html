@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "leftTitle", "type": "string", "label": "左/上 标题", "default": "以前"},
+  {"id": "rightTitle", "type": "string", "label": "右/下 标题(重点一侧)", "default": "用 AI 之后"},
+  {"id": "left", "type": "string", "label": "左/上 条目(| 分隔)", "default": "手动整理会议记录|逐页做 PPT|反复改邮件措辞"},
+  {"id": "right", "type": "string", "label": "右/下 条目(| 分隔)", "default": "录音自动出纪要|一句话生成初稿|一键改写语气"},
+  {"id": "layout", "type": "string", "label": "排列(vertical 上下 / horizontal 左右)", "default": "vertical"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #sc-wrap { position: absolute; left: 80px; right: 160px; top: 400px; display: flex; flex-direction: column; align-items: stretch; gap: 24px; }
+        #sc-wrap.sc-h { flex-direction: row; align-items: center; gap: 16px; }
+        .sc-card { flex: 1; min-width: 0; padding: 40px; }
+        .sc-head { font-family: var(--hf-font-title); font-size: 60px; font-weight: var(--hf-title-weight); line-height: 1.25; color: var(--hf-muted); margin-bottom: 16px; }
+        .sc-item { position: relative; padding-left: 32px; font-size: 44px; font-weight: 700; line-height: 1.45; }
+        .sc-item + .sc-item { margin-top: 12px; }
+        .sc-item::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 12px; height: 12px; border-radius: 50%; background: var(--hf-muted); }
+        .sc-h .sc-card { padding: 32px 24px; }
+        .sc-h .sc-head { font-size: 44px; }
+        .sc-h .sc-item { font-size: 32px; padding-left: 24px; }
+        .sc-h .sc-item::before { width: 10px; height: 10px; }
+        #sc-b { border-color: var(--hf-accent); }
+        #sc-b .sc-head { color: var(--hf-accent); }
+        #sc-b .sc-item::before { background: var(--hf-accent); }
+        #sc-vs { flex: none; align-self: center; width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--hf-accent); color: var(--hf-on-accent); font-family: var(--hf-font-title); font-size: 44px; font-weight: 900; }
+      </style>
+      <div id="root" data-composition-id="dy-scene-compare" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="sc-wrap">
+          <div class="sc-card hf-card hf-text" id="sc-a"></div>
+          <div id="sc-vs">VS</div>
+          <div class="sc-card hf-card hf-text" id="sc-b"></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ leftTitle: "以前", rightTitle: "用 AI 之后", left: "手动整理会议记录|逐页做 PPT|反复改邮件措辞", right: "录音自动出纪要|一句话生成初稿|一键改写语气", layout: "vertical", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const wrap = document.getElementById("sc-wrap");
+        if (v.layout === "horizontal") wrap.classList.add("sc-h");
+
+        const fill = (card, head, items) => {
+          if (head) { const h = document.createElement("div"); h.className = "sc-head"; h.textContent = head; card.append(h); }
+          return HF.split(items).map(t => { const d = document.createElement("div"); d.className = "sc-item"; d.textContent = t; card.append(d); return d; });
+        };
+        const ia = fill(document.getElementById("sc-a"), v.leftTitle, v.left);
+        const ib = fill(document.getElementById("sc-b"), v.rightTitle, v.right);
+
+        HF.refit(() => {
+          document.querySelectorAll("#sc-wrap .sc-head").forEach(h => HF.fitLines(h, 2, 32));
+          HF.centerBox(wrap);
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 6);
+        const horiz = v.layout === "horizontal";
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#sc-a", horiz ? { x: -80, opacity: 0 } : { y: -60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        tl.fromTo("#sc-vs", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: m.dur, ease: "back.out(2)" }, 0.5);
+        tl.fromTo("#sc-b", horiz ? { x: 80, opacity: 0 } : { y: 60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.8);
+        // 重点一侧的条目逐条出现
+        ib.forEach((d, i) => tl.fromTo(d, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: m.ease }, 1.2 + i * m.stagger));
+        tl.to(wrap, { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.6 + ib.length * m.stagger, D - 0.35));
+        window.__timelines["dy-scene-compare"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
