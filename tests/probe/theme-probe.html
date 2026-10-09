@@ -7,10 +7,12 @@
     <template>
       <style>
         #root { position: absolute; inset: 0; color: var(--hf-text); font-family: var(--hf-font-body); }
+        #probe-bg { inset: auto; left: 80px; top: 1300px; width: 160px; height: 80px; }
         #probe-out { position: absolute; left: 80px; top: 600px; font-size: 60px; padding: 16px 24px; background: var(--hf-bg); }
       </style>
       <div id="root" data-composition-id="theme-probe" data-width="1080" data-height="1920">
-        <div id="probe-out"><span class="hf-em" id="probe-em">强调</span> <span id="probe-name"></span></div>
+        <div class="hf-bg" id="probe-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="probe-out"><span class="hf-em" id="probe-em">强调</span> <span id="probe-name"></span> <span class="hf-card" id="probe-card">卡</span></div>
       </div>
       <script>
         const v = Object.assign({ theme: "" }, window.__hyperframes.getVariables());
@@ -25,6 +27,11 @@
         const em = document.getElementById("probe-em");
         if (theme === "neon" && getComputedStyle(em).textShadow === "none") throw new Error("theme-probe: neon .hf-em has no glow");
         if (theme === "editorial" && getComputedStyle(em).backgroundImage === "none") throw new Error("theme-probe: editorial .hf-em has no marker");
+        // 嵌套覆盖时,外层主题的装饰不得漏进来(只看最近一层主题)
+        const card = document.getElementById("probe-card"), grid = document.querySelector("#probe-bg .hf-bg-b");
+        if (theme !== "neon" && getComputedStyle(em).textShadow !== "none") throw new Error("theme-probe: " + theme + " .hf-em leaked neon glow");
+        if (theme !== "neon" && getComputedStyle(card).clipPath !== "none") throw new Error("theme-probe: " + theme + " .hf-card leaked neon clip-path");
+        if (theme !== "neon" && theme !== "bento" && getComputedStyle(grid).backgroundImage !== "none") throw new Error("theme-probe: " + theme + " .hf-bg-b leaked decoration");
         document.getElementById("probe-name").textContent = theme;
         if (v.theme) document.getElementById("probe-out").style.top = "900px";
         const tl = gsap.timeline({ paused: true });

@@ -4,9 +4,13 @@
   const cssVar = (el, name) => getComputedStyle(el).getPropertyValue(name).trim();
 
   window.HF = {
-    // 组件级主题覆盖:theme 非空时设置 data-theme;accent / accent2 非空时覆盖强调色
+    // 组件级主题覆盖:theme 非空时设置 data-theme;accent / accent2 非空时覆盖强调色。
+    // 覆盖强调色时也在本节点写上当前主题名,让主题块在这一层重新计算依赖强调色的装饰(如渐变强调词)
     applyTheme(root, v) {
-      if (v.theme) root.dataset.theme = v.theme;
+      if (v.theme || v.accent || v.accent2) {
+        const up = root.parentElement && root.parentElement.closest("[data-theme]");
+        root.dataset.theme = v.theme || (up ? up.dataset.theme : "minimal");
+      }
       if (v.accent) root.style.setProperty("--hf-accent", v.accent);
       if (v.accent2) root.style.setProperty("--hf-accent-2", v.accent2);
     },

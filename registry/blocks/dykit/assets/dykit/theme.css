@@ -1,8 +1,9 @@
 /* 主题系统:根合成上设置 data-theme="minimal|neon|editorial|bento";组件也可用 theme 变量单独覆盖。
-   组件只引用这里的变量和 .hf-* 类,不写死颜色和字体。 */
+   所有因主题而异的值都写成变量,且每个主题块都完整声明全部变量:
+   嵌套覆盖时只取最近一层主题的值,外层主题的装饰不会漏进来。组件只引用这些变量和 .hf-* 类。 */
 
 :root, [data-theme="minimal"] {
-  --hf-bg: #000000; --hf-bg-2: #0d0d10;
+  --hf-bg: #000000; --hf-bg-2: #0d0d10; --hf-bg-v2: var(--hf-bg);
   --hf-surface: #111114; --hf-surface-border: #2a2a2e; --hf-surface-shadow: none;
   --hf-text: #f5f5f7; --hf-muted: #8e8e93;
   --hf-accent: #2997ff; --hf-accent-2: #a259ff; --hf-on-accent: #ffffff;
@@ -11,79 +12,107 @@
   --hf-font-mono: "JetBrains Mono", "Noto Sans SC Variable", monospace;
   --hf-title-weight: 800; --hf-radius: 20px;
   --hf-ease: power3.out; --hf-ease-out: power2.in; --hf-dur: 0.5; --hf-stagger: 0.15;
+  /* 装饰 */
+  --hf-title-shadow: none;
+  --hf-em-bg: linear-gradient(90deg, var(--hf-accent), var(--hf-accent-2)); --hf-em-clip: text; --hf-em-fill: transparent; --hf-em-shadow: none; --hf-em-pad: 0;
+  --hf-kicker-font: var(--hf-font-body); --hf-kicker-color: var(--hf-muted); --hf-kicker-bg: none; --hf-kicker-border: 0 solid transparent; --hf-kicker-rule: 0 solid transparent; --hf-kicker-pad: 0; --hf-kicker-radius: 0;
+  --hf-card-bg: var(--hf-surface); --hf-card-bw: 1px; --hf-card-radius: var(--hf-radius); --hf-card-clip: none;
+  --hf-bg-a-img: radial-gradient(circle 760px at 50% -4%, rgba(41, 151, 255, 0.18), transparent);
+  --hf-bg-a2-img: radial-gradient(circle 760px at 50% 104%, rgba(162, 89, 255, 0.2), transparent);
+  --hf-bg-a-size: calc(100% + 120px) calc(100% + 120px); --hf-bg-a-repeat: no-repeat; --hf-bg-a-opacity: 1;
+  --hf-bg-b-img: none; --hf-bg-b2-img: none; --hf-bg-b-size: 100% 100%; --hf-bg-b-pos: 0 0; --hf-bg-b-mask: none;
+  --hf-bg-c-img: none; --hf-bg-c-size: auto; --hf-bg-c-mask: none;
 }
 [data-theme="neon"] {
-  --hf-bg: #06060d; --hf-bg-2: #0c1424;
+  --hf-bg: #06060d; --hf-bg-2: #0c1424; --hf-bg-v2: var(--hf-bg);
   --hf-surface: rgba(10, 20, 30, 0.82); --hf-surface-border: rgba(37, 244, 238, 0.75);
   --hf-surface-shadow: 0 0 24px rgba(37, 244, 238, 0.35), inset 0 0 24px rgba(37, 244, 238, 0.12);
   --hf-text: #e8f7ff; --hf-muted: #9fb3c8;
   --hf-accent: #25f4ee; --hf-accent-2: #fe2c55; --hf-on-accent: #06060d;
   --hf-font-title: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --hf-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --hf-font-mono: "JetBrains Mono", "Noto Sans SC Variable", monospace;
   --hf-title-weight: 900; --hf-radius: 0px;
   --hf-ease: power4.out; --hf-ease-out: power3.in; --hf-dur: 0.45; --hf-stagger: 0.12;
+  --hf-title-shadow: 0 0 18px rgba(37, 244, 238, 0.85), 0 0 56px rgba(37, 244, 238, 0.45);
+  --hf-em-bg: none; --hf-em-clip: border-box; --hf-em-fill: #ff5c80; --hf-em-shadow: 0 0 18px rgba(254, 44, 85, 0.95), 0 0 56px rgba(254, 44, 85, 0.6); --hf-em-pad: 0;
+  --hf-kicker-font: var(--hf-font-mono); --hf-kicker-color: var(--hf-accent); --hf-kicker-bg: none; --hf-kicker-border: 0 solid transparent; --hf-kicker-rule: 0 solid transparent; --hf-kicker-pad: 0; --hf-kicker-radius: 0;
+  --hf-card-bg: var(--hf-surface); --hf-card-bw: 2px; --hf-card-radius: 0px;
+  --hf-card-clip: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 32px 100%, 0 calc(100% - 32px));
+  --hf-bg-a-img: radial-gradient(circle 460px at 50% 36%, rgba(254, 44, 85, 0.28), transparent);
+  --hf-bg-a2-img: none;
+  --hf-bg-a-size: calc(100% + 120px) calc(100% + 120px); --hf-bg-a-repeat: no-repeat; --hf-bg-a-opacity: 1;
+  --hf-bg-b-img: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1000'><g stroke='rgba(37,244,238,0.30)' stroke-width='2'><line x1='259.2' y1='0' x2='-1020.0' y2='1000'/><line x1='282.6' y1='0' x2='-890.0' y2='1000'/><line x1='306.0' y1='0' x2='-760.0' y2='1000'/><line x1='329.4' y1='0' x2='-630.0' y2='1000'/><line x1='352.8' y1='0' x2='-500.0' y2='1000'/><line x1='376.2' y1='0' x2='-370.0' y2='1000'/><line x1='399.6' y1='0' x2='-240.0' y2='1000'/><line x1='423.0' y1='0' x2='-110.0' y2='1000'/><line x1='446.4' y1='0' x2='20.0' y2='1000'/><line x1='469.8' y1='0' x2='150.0' y2='1000'/><line x1='493.2' y1='0' x2='280.0' y2='1000'/><line x1='516.6' y1='0' x2='410.0' y2='1000'/><line x1='540.0' y1='0' x2='540.0' y2='1000'/><line x1='563.4' y1='0' x2='670.0' y2='1000'/><line x1='586.8' y1='0' x2='800.0' y2='1000'/><line x1='610.2' y1='0' x2='930.0' y2='1000'/><line x1='633.6' y1='0' x2='1060.0' y2='1000'/><line x1='657.0' y1='0' x2='1190.0' y2='1000'/><line x1='680.4' y1='0' x2='1320.0' y2='1000'/><line x1='703.8' y1='0' x2='1450.0' y2='1000'/><line x1='727.2' y1='0' x2='1580.0' y2='1000'/><line x1='750.6' y1='0' x2='1710.0' y2='1000'/><line x1='774.0' y1='0' x2='1840.0' y2='1000'/><line x1='797.4' y1='0' x2='1970.0' y2='1000'/><line x1='820.8' y1='0' x2='2100.0' y2='1000'/><line x1='0' y1='8.9' x2='1080' y2='8.9'/><line x1='0' y1='34.4' x2='1080' y2='34.4'/><line x1='0' y1='76.0' x2='1080' y2='76.0'/><line x1='0' y1='133.2' x2='1080' y2='133.2'/><line x1='0' y1='205.6' x2='1080' y2='205.6'/><line x1='0' y1='293.0' x2='1080' y2='293.0'/><line x1='0' y1='395.2' x2='1080' y2='395.2'/><line x1='0' y1='512.0' x2='1080' y2='512.0'/><line x1='0' y1='643.3' x2='1080' y2='643.3'/><line x1='0' y1='788.9' x2='1080' y2='788.9'/><line x1='0' y1='948.7' x2='1080' y2='948.7'/><line x1='0' y1='1000.0' x2='1080' y2='1000.0'/></g></svg>");
+  --hf-bg-b2-img: var(--hf-bg-b-img);
+  --hf-bg-b-size: 100% 1000px; --hf-bg-b-pos: center bottom;
+  --hf-bg-b-mask: linear-gradient(transparent 0, transparent 920px, #000 1370px);
+  --hf-bg-c-img: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px); --hf-bg-c-size: auto; --hf-bg-c-mask: none;
 }
 [data-theme="editorial"] {
-  --hf-bg: #f2ede3; --hf-bg-2: #e8e1d3;
+  --hf-bg: #f2ede3; --hf-bg-2: #e8e1d3; --hf-bg-v2: #e8e1d3;
   --hf-surface: rgba(255, 255, 255, 0.55); --hf-surface-border: #1a1a1a; --hf-surface-shadow: none;
   --hf-text: #1a1a1a; --hf-muted: #5a5650;
   --hf-accent: #c8201a; --hf-accent-2: #ffd43b; --hf-on-accent: #ffffff;
   --hf-font-title: "Noto Serif SC Variable", "Songti SC", "SimSun", serif;
+  --hf-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --hf-font-mono: "JetBrains Mono", "Noto Sans SC Variable", monospace;
   --hf-title-weight: 900; --hf-radius: 4px;
   --hf-ease: power2.out; --hf-ease-out: power2.in; --hf-dur: 0.6; --hf-stagger: 0.18;
+  --hf-title-shadow: none;
+  --hf-em-bg: linear-gradient(transparent 52%, var(--hf-accent-2) 52%, var(--hf-accent-2) 90%, transparent 90%); --hf-em-clip: border-box; --hf-em-fill: currentColor; --hf-em-shadow: none; --hf-em-pad: 0 0.12em;
+  --hf-kicker-font: var(--hf-font-title); --hf-kicker-color: var(--hf-accent); --hf-kicker-bg: none; --hf-kicker-border: 0 solid transparent; --hf-kicker-rule: 3px solid var(--hf-text); --hf-kicker-pad: 0 0 12px 0; --hf-kicker-radius: 0;
+  --hf-card-bg: transparent; --hf-card-bw: 0 0 2px 0; --hf-card-radius: 0px; --hf-card-clip: none;
+  --hf-bg-a-img: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>");
+  --hf-bg-a2-img: var(--hf-bg-a-img);
+  --hf-bg-a-size: 300px 300px; --hf-bg-a-repeat: repeat; --hf-bg-a-opacity: 0.5;
+  --hf-bg-b-img: none; --hf-bg-b2-img: none; --hf-bg-b-size: 100% 100%; --hf-bg-b-pos: 0 0; --hf-bg-b-mask: none;
+  --hf-bg-c-img: none; --hf-bg-c-size: auto; --hf-bg-c-mask: none;
 }
 [data-theme="bento"] {
-  --hf-bg: #0a0a12; --hf-bg-2: #14122a;
+  --hf-bg: #0a0a12; --hf-bg-2: #14122a; --hf-bg-v2: var(--hf-bg);
   --hf-surface: linear-gradient(160deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03));
   --hf-surface-border: rgba(255, 255, 255, 0.16); --hf-surface-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --hf-text: #ffffff; --hf-muted: #a5a5b8;
   --hf-accent: #9d8bff; --hf-accent-2: #25f4ee; --hf-on-accent: #0a0a12;
   --hf-font-title: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --hf-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --hf-font-mono: "JetBrains Mono", "Noto Sans SC Variable", monospace;
   --hf-title-weight: 800; --hf-radius: 36px;
   --hf-ease: power3.out; --hf-ease-out: power2.in; --hf-dur: 0.5; --hf-stagger: 0.15;
+  --hf-title-shadow: none;
+  --hf-em-bg: linear-gradient(100deg, #c4b8ff, var(--hf-accent-2)); --hf-em-clip: text; --hf-em-fill: transparent; --hf-em-shadow: none; --hf-em-pad: 0;
+  --hf-kicker-font: var(--hf-font-body); --hf-kicker-color: #c9c3ff; --hf-kicker-bg: rgba(255, 255, 255, 0.08); --hf-kicker-border: 1px solid rgba(255, 255, 255, 0.18); --hf-kicker-rule: 1px solid rgba(255, 255, 255, 0.18); --hf-kicker-pad: 12px 28px; --hf-kicker-radius: 40px;
+  --hf-card-bg: var(--hf-surface); --hf-card-bw: 1px; --hf-card-radius: var(--hf-radius); --hf-card-clip: none;
+  --hf-bg-a-img: radial-gradient(circle 620px at 8% 10%, rgba(124, 92, 255, 0.55), transparent);
+  --hf-bg-a2-img: radial-gradient(circle 620px at 92% 10%, rgba(124, 92, 255, 0.55), transparent);
+  --hf-bg-a-size: calc(100% + 120px) calc(100% + 120px); --hf-bg-a-repeat: no-repeat; --hf-bg-a-opacity: 1;
+  --hf-bg-b-img: radial-gradient(circle 560px at 96% 90%, rgba(37, 244, 238, 0.32), transparent);
+  --hf-bg-b2-img: radial-gradient(circle 560px at 4% 90%, rgba(37, 244, 238, 0.32), transparent);
+  --hf-bg-b-size: 100% 100%; --hf-bg-b-pos: 0 0; --hf-bg-b-mask: none;
+  --hf-bg-c-img: radial-gradient(rgba(255, 255, 255, 0.12) 2px, transparent 2px); --hf-bg-c-size: 48px 48px;
+  --hf-bg-c-mask: radial-gradient(circle at 50% 40%, #000, transparent 75%);
 }
 
 /* ---------- 排版基准 ---------- */
-.hf-title { font-family: var(--hf-font-title); font-weight: var(--hf-title-weight); color: var(--hf-text); line-height: 1.16; letter-spacing: -1px; }
+.hf-title { font-family: var(--hf-font-title); font-weight: var(--hf-title-weight); color: var(--hf-text); line-height: 1.16; letter-spacing: -1px; text-shadow: var(--hf-title-shadow); }
 .hf-text { font-family: var(--hf-font-body); color: var(--hf-text); }
-.hf-kicker { display: inline-block; font-family: var(--hf-font-body); font-size: 32px; font-weight: 700; letter-spacing: 2px; color: var(--hf-muted); }
-[data-theme="neon"] .hf-title { text-shadow: 0 0 18px rgba(37, 244, 238, 0.85), 0 0 56px rgba(37, 244, 238, 0.45); }
-[data-theme="neon"] .hf-kicker { font-family: var(--hf-font-mono); color: var(--hf-accent); }
-[data-theme="editorial"] .hf-kicker { font-family: var(--hf-font-title); color: var(--hf-accent); border-bottom: 3px solid var(--hf-text); padding-bottom: 12px; }
-[data-theme="bento"] .hf-kicker { padding: 12px 28px; border-radius: 40px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #c9c3ff; }
+.hf-kicker { display: inline-block; font-family: var(--hf-kicker-font); font-size: 32px; font-weight: 700; letter-spacing: 2px; color: var(--hf-kicker-color);
+  background: var(--hf-kicker-bg); border: var(--hf-kicker-border); border-bottom: var(--hf-kicker-rule); padding: var(--hf-kicker-pad); border-radius: var(--hf-kicker-radius); }
 
 /* ---------- 关键词强调 ---------- */
-.hf-em { white-space: nowrap; background: linear-gradient(90deg, var(--hf-accent), var(--hf-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-[data-theme="neon"] .hf-em { background: none; color: #ff5c80; -webkit-text-fill-color: #ff5c80; text-shadow: 0 0 18px rgba(254, 44, 85, 0.95), 0 0 56px rgba(254, 44, 85, 0.6); }
-[data-theme="editorial"] .hf-em { color: inherit; -webkit-text-fill-color: currentColor; padding: 0 0.12em; background: linear-gradient(transparent 52%, var(--hf-accent-2) 52%, var(--hf-accent-2) 90%, transparent 90%); -webkit-background-clip: border-box; background-clip: border-box; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-[data-theme="bento"] .hf-em { background: linear-gradient(100deg, #c4b8ff, var(--hf-accent-2)); -webkit-background-clip: text; background-clip: text; }
+.hf-em { white-space: nowrap; background: var(--hf-em-bg); -webkit-background-clip: var(--hf-em-clip); background-clip: var(--hf-em-clip);
+  color: var(--hf-em-fill); -webkit-text-fill-color: var(--hf-em-fill); text-shadow: var(--hf-em-shadow); padding: var(--hf-em-pad);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
 /* ---------- 卡片 ---------- */
-.hf-card { background: var(--hf-surface); border: 1px solid var(--hf-surface-border); border-radius: var(--hf-radius); box-shadow: var(--hf-surface-shadow); }
-[data-theme="neon"] .hf-card { border-width: 2px; }
-[data-theme="neon"] .hf-card { clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 32px 100%, 0 calc(100% - 32px)); }
-[data-theme="editorial"] .hf-card { border-width: 0 0 2px 0; border-radius: 0; background: transparent; }
+.hf-card { background: var(--hf-card-bg); border: 0 solid var(--hf-surface-border); border-width: var(--hf-card-bw); border-radius: var(--hf-card-radius); box-shadow: var(--hf-surface-shadow); clip-path: var(--hf-card-clip); }
 
 /* ---------- 背景层:<div class="hf-bg" data-variant="1"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div> ---------- */
 .hf-bg { position: absolute; inset: 0; overflow: hidden; background: var(--hf-bg); }
+.hf-bg[data-variant="2"] { background: var(--hf-bg-v2); }
 .hf-bg > i { position: absolute; inset: 0; display: block; pointer-events: none; background-repeat: no-repeat; }
-.hf-bg > i.hf-bg-a { background-size: calc(100% + 120px) calc(100% + 120px); background-position: -60px -60px; }
-/* minimal:顶部极淡的光 */
-.hf-bg .hf-bg-a { background-image: radial-gradient(circle 760px at 50% -4%, rgba(41, 151, 255, 0.18), transparent); }
-.hf-bg[data-variant="2"] .hf-bg-a { background-image: radial-gradient(circle 760px at 50% 104%, rgba(162, 89, 255, 0.2), transparent); }
-/* neon:粉色光晕 + 透视网格 + 扫描线 */
-[data-theme="neon"] .hf-bg .hf-bg-a { background-image: radial-gradient(circle 460px at 50% 36%, rgba(254, 44, 85, 0.28), transparent); }
-[data-theme="neon"] .hf-bg .hf-bg-b { top: auto; height: 1000px; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1000'><g stroke='rgba(37,244,238,0.30)' stroke-width='2'><line x1='259.2' y1='0' x2='-1020.0' y2='1000'/><line x1='282.6' y1='0' x2='-890.0' y2='1000'/><line x1='306.0' y1='0' x2='-760.0' y2='1000'/><line x1='329.4' y1='0' x2='-630.0' y2='1000'/><line x1='352.8' y1='0' x2='-500.0' y2='1000'/><line x1='376.2' y1='0' x2='-370.0' y2='1000'/><line x1='399.6' y1='0' x2='-240.0' y2='1000'/><line x1='423.0' y1='0' x2='-110.0' y2='1000'/><line x1='446.4' y1='0' x2='20.0' y2='1000'/><line x1='469.8' y1='0' x2='150.0' y2='1000'/><line x1='493.2' y1='0' x2='280.0' y2='1000'/><line x1='516.6' y1='0' x2='410.0' y2='1000'/><line x1='540.0' y1='0' x2='540.0' y2='1000'/><line x1='563.4' y1='0' x2='670.0' y2='1000'/><line x1='586.8' y1='0' x2='800.0' y2='1000'/><line x1='610.2' y1='0' x2='930.0' y2='1000'/><line x1='633.6' y1='0' x2='1060.0' y2='1000'/><line x1='657.0' y1='0' x2='1190.0' y2='1000'/><line x1='680.4' y1='0' x2='1320.0' y2='1000'/><line x1='703.8' y1='0' x2='1450.0' y2='1000'/><line x1='727.2' y1='0' x2='1580.0' y2='1000'/><line x1='750.6' y1='0' x2='1710.0' y2='1000'/><line x1='774.0' y1='0' x2='1840.0' y2='1000'/><line x1='797.4' y1='0' x2='1970.0' y2='1000'/><line x1='820.8' y1='0' x2='2100.0' y2='1000'/><line x1='0' y1='8.9' x2='1080' y2='8.9'/><line x1='0' y1='33.2' x2='1080' y2='33.2'/><line x1='0' y1='71.8' x2='1080' y2='71.8'/><line x1='0' y1='124.0' x2='1080' y2='124.0'/><line x1='0' y1='189.5' x2='1080' y2='189.5'/><line x1='0' y1='267.9' x2='1080' y2='267.9'/><line x1='0' y1='359.1' x2='1080' y2='359.1'/><line x1='0' y1='462.8' x2='1080' y2='462.8'/><line x1='0' y1='578.9' x2='1080' y2='578.9'/><line x1='0' y1='707.2' x2='1080' y2='707.2'/><line x1='0' y1='847.6' x2='1080' y2='847.6'/><line x1='0' y1='1000.0' x2='1080' y2='1000.0'/></g></svg>") center bottom / 100% 100% no-repeat;
-  -webkit-mask-image: linear-gradient(transparent, #000 45%); mask-image: linear-gradient(transparent, #000 45%); }
-[data-theme="neon"] .hf-bg .hf-bg-c { background-repeat: repeat; background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px); }
-[data-theme="neon"] .hf-bg[data-variant="2"] .hf-bg-b { top: 0; bottom: auto; transform: scaleY(-1); }
-/* editorial:纸张颗粒 */
-[data-theme="editorial"] .hf-bg .hf-bg-a { opacity: 0.5; background-repeat: repeat;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
-[data-theme="editorial"] .hf-bg[data-variant="2"] { background: var(--hf-bg-2); }
-/* bento:紫青光斑 + 点阵 */
-[data-theme="bento"] .hf-bg .hf-bg-a { background-image: radial-gradient(circle 620px at 8% 10%, rgba(124, 92, 255, 0.55), transparent); }
-[data-theme="bento"] .hf-bg .hf-bg-b { background-image: radial-gradient(circle 560px at 96% 90%, rgba(37, 244, 238, 0.32), transparent); }
-[data-theme="bento"] .hf-bg .hf-bg-c { background-repeat: repeat; background-image: radial-gradient(rgba(255, 255, 255, 0.12) 2px, transparent 2px); background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(circle at 50% 40%, #000, transparent 75%); mask-image: radial-gradient(circle at 50% 40%, #000, transparent 75%); }
-[data-theme="bento"] .hf-bg[data-variant="2"] .hf-bg-a { background-image: radial-gradient(circle 620px at 92% 10%, rgba(124, 92, 255, 0.55), transparent); }
-[data-theme="bento"] .hf-bg[data-variant="2"] .hf-bg-b { background-image: radial-gradient(circle 560px at 4% 90%, rgba(37, 244, 238, 0.32), transparent); }
+.hf-bg > i.hf-bg-a { background-image: var(--hf-bg-a-img); background-size: var(--hf-bg-a-size); background-repeat: var(--hf-bg-a-repeat); background-position: -60px -60px; opacity: var(--hf-bg-a-opacity); }
+.hf-bg[data-variant="2"] > i.hf-bg-a { background-image: var(--hf-bg-a2-img); }
+.hf-bg > i.hf-bg-b { background-image: var(--hf-bg-b-img); background-size: var(--hf-bg-b-size); background-position: var(--hf-bg-b-pos); -webkit-mask-image: var(--hf-bg-b-mask); mask-image: var(--hf-bg-b-mask); }
+.hf-bg[data-variant="2"] > i.hf-bg-b { background-image: var(--hf-bg-b2-img); }
+.hf-bg > i.hf-bg-c { background-image: var(--hf-bg-c-img); background-size: var(--hf-bg-c-size); background-repeat: repeat; -webkit-mask-image: var(--hf-bg-c-mask); mask-image: var(--hf-bg-c-mask); }
