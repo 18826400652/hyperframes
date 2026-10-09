@@ -22,7 +22,7 @@
         .rp-tap i { position: absolute; left: -40px; top: -40px; width: 80px; height: 80px; border-radius: 50%; border: 6px solid var(--hf-accent); }
         .rp-tap b { position: absolute; left: -18px; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: var(--hf-accent); opacity: 0.85; }
         .rp-box { border: 6px solid var(--hf-accent); border-radius: 16px; box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.45); }
-        .rp-label { position: absolute; left: 0; max-width: 100%; padding: 16px 24px; font-size: 32px; font-weight: 700; line-height: 1.4; white-space: normal; }
+        .rp-label { position: absolute; left: 0; width: max-content; max-width: 600px; padding: 16px 24px; border-radius: var(--hf-radius); background: var(--hf-accent); color: var(--hf-on-accent); font-family: var(--hf-font-body); font-size: 32px; font-weight: 700; line-height: 1.4; white-space: normal; }
         .rp-label.rp-up { bottom: calc(100% + 20px); }
         .rp-label.rp-down { top: calc(100% + 20px); }
       </style>
@@ -92,7 +92,9 @@
             const el = document.createElement("div"); el.className = "rp-cue rp-box";
             Object.assign(el.style, { left: x + "%", top: y + "%", width: w + "%", height: h + "%" });
             if (c.label) {
-              const lab = document.createElement("div"); lab.className = "rp-label hf-card hf-text " + (y > 25 ? "rp-up" : "rp-down");
+              const lab = document.createElement("div"); lab.className = "rp-label " + (y > 25 ? "rp-up" : "rp-down");
+              // 最宽到屏幕右边缘(按框宽换算成百分比),长文案换行而不是被裁切
+              lab.style.maxWidth = `min(600px, calc(${((100 - x) / Math.max(w, 1)) * 100}% - 24px))`;
               lab.textContent = c.label; el.append(lab);
             }
             layer.append(el);
