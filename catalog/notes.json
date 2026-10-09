@@ -185,6 +185,12 @@
     "suitableFor": "口播讲有先后顺序的操作流程或方法步骤",
     "minDuration": 5
   },
+  "dy-scene-timeline": {
+    "kind": "scene",
+    "purpose": "时间线页:标题 + 竖排『时间::事件』节点,进度线推进并高亮当前节点",
+    "suitableFor": "口播按时间顺序讲发展历程、这几年的变化、版本演进;连续几个画面讲同一条时间线时用 active 逐个高亮",
+    "minDuration": 4
+  },
   "dy-scene-title": {
     "kind": "scene",
     "purpose": "开场标题页:角标 + 大标题(强调词高亮)+ 副标题",

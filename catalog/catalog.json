@@ -1240,6 +1240,45 @@
       ]
     },
     {
+      "id": "dy-scene-timeline",
+      "kind": "scene",
+      "purpose": "时间线页:标题 + 竖排『时间::事件』节点,进度线推进并高亮当前节点",
+      "suitableFor": "口播按时间顺序讲发展历程、这几年的变化、版本演进;连续几个画面讲同一条时间线时用 active 逐个高亮",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "AI 这几年的变化"
+        },
+        {
+          "id": "items",
+          "type": "string",
+          "label": "节点(| 分隔;每个写 时间::事件)",
+          "default": "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程"
+        },
+        {
+          "id": "active",
+          "type": "number",
+          "label": "高亮第几个节点(0 为按时间依次高亮;连续画面讲同一条时间线时逐个填 1、2、3…,从第 2 个起直接接着上一画面,不重放入场)",
+          "default": 0
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
       "id": "dy-scene-title",
       "kind": "scene",
       "purpose": "开场标题页:角标 + 大标题(强调词高亮)+ 副标题",

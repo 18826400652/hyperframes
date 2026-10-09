@@ -1,0 +1,245 @@
+{
+  "version": 1,
+  "title": "3 分钟用 AI 写周报",
+  "theme": "neon",
+  "charsPerSecond": 4,
+  "scenes": [
+    {
+      "id": "s01",
+      "script": "你知道吗?现在用 AI 写一份周报,只需要 3 分钟。",
+      "component": "dy-scene-title",
+      "variables": {
+        "kicker": "AI 效率指南",
+        "title": "AI 写周报只要 3 分钟",
+        "em": "3 分钟",
+        "sub": ""
+      },
+      "duration": 5.8,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s02",
+      "script": "很多人觉得 AI 很难上手,其实它这几年变化特别快。",
+      "component": "dy-scene-quote",
+      "variables": {
+        "text": "AI 难上手?它这几年变化特别快",
+        "em": "变化特别快",
+        "source": ""
+      },
+      "duration": 6.0,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s03",
+      "script": "2022 年底,ChatGPT 发布,大家第一次能和 AI 正常聊天。",
+      "component": "dy-scene-timeline",
+      "variables": {
+        "title": "AI 这几年的变化",
+        "items": "2022 年底::ChatGPT 发布,能聊天了|2023 年::能看懂图片和文件|2024 年::能操作电脑和手机|今年::独立完成整套工作流程",
+        "active": 1
+      },
+      "duration": 7.8,
+      "overlays": [],
+      "transitionIn": "dy-tr-wipe",
+      "needs": []
+    },
+    {
+      "id": "s04",
+      "script": "2023 年,AI 开始能看懂图片和文件。",
+      "component": "dy-scene-timeline",
+      "variables": {
+        "title": "AI 这几年的变化",
+        "items": "2022 年底::ChatGPT 发布,能聊天了|2023 年::能看懂图片和文件|2024 年::能操作电脑和手机|今年::独立完成整套工作流程",
+        "active": 2
+      },
+      "duration": 4.8,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s05",
+      "script": "2024 年,AI 能直接帮你操作电脑和手机。",
+      "component": "dy-scene-timeline",
+      "variables": {
+        "title": "AI 这几年的变化",
+        "items": "2022 年底::ChatGPT 发布,能聊天了|2023 年::能看懂图片和文件|2024 年::能操作电脑和手机|今年::独立完成整套工作流程",
+        "active": 3
+      },
+      "duration": 5.3,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s06",
+      "script": "到了今年,AI 已经能独立完成一整套工作流程。",
+      "component": "dy-scene-timeline",
+      "variables": {
+        "title": "AI 这几年的变化",
+        "items": "2022 年底::ChatGPT 发布,能聊天了|2023 年::能看懂图片和文件|2024 年::能操作电脑和手机|今年::独立完成整套工作流程",
+        "active": 4
+      },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s07",
+      "script": "那具体怎么用 AI 写周报呢?只要三步。",
+      "component": "dy-chapter-title",
+      "variables": {
+        "index": "",
+        "title": "怎么用 AI 写周报?",
+        "sub": "只要三步"
+      },
+      "duration": 4.5,
+      "overlays": [],
+      "transitionIn": "dy-tr-zoom",
+      "needs": []
+    },
+    {
+      "id": "s08",
+      "script": "第一步,打开 AI 助手,把这周的聊天记录和文档拖进去。",
+      "component": "dy-rec-phone",
+      "variables": {
+        "src": "",
+        "title": "第一步:拖入记录和文档",
+        "cues": ""
+      },
+      "duration": 6.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": [
+        {
+          "type": "recording",
+          "variable": "src",
+          "hint": "录制第一步(约 6.5 秒):打开 AI 助手→把本周的聊天记录和文档拖进对话框"
+        }
+      ]
+    },
+    {
+      "id": "s09",
+      "script": "第二步,输入提示词:请按项目整理本周进展、问题和下周计划。",
+      "component": "dy-rec-phone",
+      "variables": {
+        "src": "",
+        "title": "第二步:输入提示词",
+        "cues": ""
+      },
+      "duration": 7.3,
+      "overlays": [
+        {
+          "component": "dy-prompt-card",
+          "variables": {
+            "title": "直接复制这句",
+            "fields": "提示词|请按项目整理本周进展、问题和下周计划",
+            "cta": ""
+          },
+          "at": 0.5,
+          "duration": 6.5
+        }
+      ],
+      "transitionIn": null,
+      "needs": [
+        {
+          "type": "recording",
+          "variable": "src",
+          "hint": "录制第二步(约 7 秒):在对话框输入『请按项目整理本周进展、问题和下周计划』并发送"
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "script": "第三步,检查一遍数字和人名,直接复制发出去。",
+      "component": "dy-rec-phone",
+      "variables": {
+        "src": "",
+        "title": "第三步:检查后复制发出",
+        "cues": ""
+      },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": [
+        {
+          "type": "recording",
+          "variable": "src",
+          "hint": "录制第三步(约 5.5 秒):检查生成结果里的数字和人名→复制→发出去"
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "script": "以前我写周报要花一个半小时,现在三分钟就能搞定。",
+      "component": "dy-before-after",
+      "variables": {
+        "beforeLabel": "我写周报要花",
+        "beforeValue": "一个半小时",
+        "afterLabel": "现在就能搞定",
+        "afterValue": "三分钟",
+        "gain": ""
+      },
+      "duration": 6.0,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s12",
+      "script": "算下来,一年能省出整整 70 个小时。",
+      "component": "dy-scene-big-number",
+      "variables": {
+        "label": "算下来,一年能省出",
+        "value": 70,
+        "prefix": "",
+        "suffix": " 小时",
+        "note": ""
+      },
+      "duration": 4.3,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s13",
+      "script": "记住一句话:AI 不会取代你,但会用 AI 的人会。",
+      "component": "dy-scene-quote",
+      "variables": {
+        "text": "AI 不会取代你,但会用 AI 的人会",
+        "em": "会用 AI 的人",
+        "source": ""
+      },
+      "duration": 5.8,
+      "overlays": [],
+      "transitionIn": "dy-tr-glitch",
+      "needs": []
+    },
+    {
+      "id": "s14",
+      "script": "觉得有用就点赞收藏,下期教你用 AI 做 PPT。",
+      "component": "dy-scene-ending",
+      "variables": {
+        "headline": "觉得有用,点赞收藏",
+        "cta": "点赞 · 收藏",
+        "next": "用 AI 做 PPT"
+      },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    }
+  ],
+  "newComponents": [
+    {
+      "id": "dy-scene-timeline",
+      "status": "accepted",
+      "purpose": "时间线页:标题 + 纵向『时间::事件』节点,可固定高亮第 N 个,连续画面逐个推进同一条时间线"
+    }
+  ]
+}

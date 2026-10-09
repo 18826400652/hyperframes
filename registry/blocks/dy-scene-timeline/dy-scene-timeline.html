@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "标题", "default": "AI 这几年的变化"},
+  {"id": "items", "type": "string", "label": "节点(| 分隔;每个写 时间::事件)", "default": "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程"},
+  {"id": "active", "type": "number", "label": "高亮第几个节点(0 为按时间依次高亮;连续画面讲同一条时间线时逐个填 1、2、3…,从第 2 个起直接接着上一画面,不重放入场)", "default": 0},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #tl-wrap { position: absolute; left: 80px; right: 160px; top: 400px; display: flex; flex-direction: column; gap: 64px; }
+        #tl-title { font-size: 88px; }
+        #tl-list { position: relative; display: flex; flex-direction: column; gap: 44px; padding-left: 0; }
+        #tl-rail { position: absolute; left: 26px; top: 30px; bottom: 30px; width: 4px; border-radius: 2px; background: var(--hf-surface-border); transform-origin: 50% 0; }
+        #tl-fill { position: absolute; inset: 0; border-radius: 2px; background: var(--hf-accent); transform-origin: 50% 0; }
+        .tl-node { position: relative; display: flex; align-items: flex-start; gap: 40px; }
+        .tl-dot { position: relative; flex: none; width: 56px; height: 56px; margin-top: 6px; }
+        .tl-dot i { position: absolute; border-radius: 50%; }
+        .tl-dot .tl-off { inset: 8px; background: var(--hf-bg-2); border: 4px solid var(--hf-surface-border); }
+        .tl-dot .tl-on { inset: 8px; background: var(--hf-accent); opacity: 0; }
+        .tl-dot .tl-ring { inset: 0; border: 4px solid var(--hf-accent); opacity: 0; }
+        .tl-body { flex: 1; min-width: 0; }
+        .tl-time { display: inline-block; max-width: 100%; margin-left: -16px; padding: 4px 16px; border-radius: var(--hf-radius); font-family: var(--hf-font-title); font-weight: var(--hf-title-weight); font-size: 64px; line-height: 1.1; color: var(--hf-muted); overflow-wrap: anywhere; }
+        .tl-event { margin-top: 12px; font-size: 40px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+      </style>
+      <div id="root" data-composition-id="dy-scene-timeline" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="tl-wrap">
+          <div class="hf-title" id="tl-title"></div>
+          <div id="tl-list"><div id="tl-rail"><div id="tl-fill"></div></div></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ title: "AI 这几年的变化", items: "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程", active: 0, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const title = document.getElementById("tl-title"), list = document.getElementById("tl-list");
+        const rail = document.getElementById("tl-rail"), fill = document.getElementById("tl-fill");
+        if (v.title) title.textContent = v.title; else title.remove();
+
+        const nodes = HF.split(v.items).map(raw => {
+          const [time, event] = HF.pair(raw);
+          const row = document.createElement("div"); row.className = "tl-node";
+          const dot = document.createElement("div"); dot.className = "tl-dot";
+          const off = document.createElement("i"); off.className = "tl-off";
+          const on = document.createElement("i"); on.className = "tl-on";
+          const ring = document.createElement("i"); ring.className = "tl-ring";
+          dot.append(off, on, ring);
+          const body = document.createElement("div"); body.className = "tl-body hf-text";
+          const t = document.createElement("div"); t.className = "tl-time"; t.textContent = time; body.append(t);
+          let e = null;
+          if (event) { e = document.createElement("div"); e.className = "tl-event"; e.textContent = event; body.append(e); }
+          row.append(dot, body); list.append(row);
+          return { row, dot, on, ring, body, t, e };
+        });
+        if (nodes.length < 2) rail.remove();
+
+        // 节点圆点中心相对列表顶部的位置(用于进度线长度)
+        const centers = () => nodes.map(n => n.row.offsetTop + n.dot.offsetTop + n.dot.offsetHeight / 2);
+        HF.refit(() => {
+          if (title.isConnected) HF.fitLines(title, 2, 60);
+          nodes.forEach(n => { HF.fit(n.t, n.body.clientWidth, 44); if (n.e) HF.fitLines(n.e, 2, 30); });
+          if (rail.isConnected) {
+            const c = centers();
+            rail.style.top = c[0] + "px"; rail.style.bottom = "auto"; rail.style.height = (c[c.length - 1] - c[0]) + "px";
+          }
+          HF.centerBox(document.getElementById("tl-wrap"));
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 6), n = nodes.length;
+        const fixed = Math.round(Number(v.active)) || 0;
+        // 续接画面(active ≥ 2):上一个画面已经把时间线搭好,这里直接以搭好的状态出现,只移动高亮,不重放入场
+        const cont = fixed >= 2 && fixed <= n;
+        const tl = gsap.timeline({ paused: true });
+        // 进度线初始为 0 长度(由 GSAP 设置,不写在 CSS transform 里,避免与动画冲突)
+        if (rail.isConnected) tl.set(fill, { scaleY: 0 }, 0);
+        if (!cont) {
+          if (title.isConnected) tl.fromTo(title, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+          if (rail.isConnected) tl.fromTo(rail, { scaleY: 0 }, { scaleY: 1, duration: m.dur + n * m.stagger, ease: m.ease }, 0.3);
+          nodes.forEach((s, i) => tl.fromTo(s.row, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.3 + i * m.stagger));
+        }
+        const ready = cont ? 0.1 : 0.3 + n * m.stagger + m.dur;
+
+        // 高亮的时间用强调色底 + --hf-on-accent 文字(不直接用强调色做文字,保证任意强调色下的对比度)
+        const cs = getComputedStyle(root);
+        const accentColor = cs.getPropertyValue("--hf-accent").trim();
+        const onAccent = cs.getPropertyValue("--hf-on-accent").trim();
+        const textColor = cs.getPropertyValue("--hf-text").trim();
+        nodes.forEach(s => gsap.set(s.t, { backgroundColor: "rgba(0,0,0,0)" }));
+        const dim = 0.4;
+        // 进度线长度:第 i 个节点占整条线的比例
+        const frac = i => { const c = centers(); return c.length < 2 ? 0 : (c[i] - c[0]) / (c[c.length - 1] - c[0]); };
+        const fillTo = (i, t) => {
+          if (!rail.isConnected) return;
+          tl.to(fill, { scaleY: frac(i), duration: 0.4, ease: m.ease }, t);
+        };
+        // 点亮第 i 个节点:圆点填色 + 外圈,时间变强调色;之前的节点保持完成态(圆点填色、时间正文色)
+        const light = (i, t) => {
+          const s = nodes[i];
+          tl.to(s.on, { opacity: 1, duration: 0.3 }, t);
+          tl.fromTo(s.ring, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.25, duration: 0.35, ease: m.ease }, t);
+          tl.to(s.t, { color: onAccent, backgroundColor: accentColor, duration: 0.3 }, t);
+          tl.fromTo(s.body, { opacity: dim }, { opacity: 1, duration: 0.3 }, t);
+          fillTo(i, t);
+        };
+        const settle = (i, t) => {
+          const s = nodes[i];
+          tl.to(s.ring, { opacity: 0, duration: 0.3 }, t);
+          tl.to(s.t, { color: textColor, backgroundColor: "rgba(0,0,0,0)", duration: 0.3 }, t);
+        };
+
+        if (fixed >= 1 && fixed <= n) {
+          // 固定高亮第 N 个:之前的为完成态,之后的变暗;续接画面从第 0 秒起就是这个状态
+          nodes.forEach((s, i) => {
+            if (i < fixed - 1) {
+              if (cont) tl.set(s.on, { opacity: 1 }, 0); else tl.to(s.on, { opacity: 1, duration: 0.3 }, ready);
+              tl.set(s.t, { color: textColor }, cont ? 0 : ready);
+            } else if (i > fixed - 1) {
+              if (cont) tl.set(s.body, { opacity: dim }, 0); else tl.to(s.body, { opacity: dim, duration: 0.3 }, ready);
+            }
+          });
+          if (cont && rail.isConnected) tl.set(fill, { scaleY: frac(fixed - 2) }, 0);
+          light(fixed - 1, ready);
+        } else if (n) {
+          // 按时间依次高亮:可用时长平均分给每个节点
+          const span = Math.max(0.6, (D - 0.35 - ready) / n);
+          nodes.forEach((s, i) => { if (i > 0) tl.to(s.body, { opacity: dim, duration: 0.2 }, ready); });
+          nodes.forEach((s, i) => {
+            const t = ready + i * span;
+            if (i > 0) settle(i - 1, t);
+            light(i, t);
+          });
+        }
+        // 固定高亮且不是最后一个节点时,下一个画面会接着讲这条时间线,不做退场(避免画面闪一下)
+        if (!(fixed >= 1 && fixed < n)) tl.to("#tl-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(ready + 0.6, D - 0.35));
+        window.__timelines["dy-scene-timeline"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

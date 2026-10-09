@@ -132,6 +132,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-scene-timeline",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-scene-title",
       "type": "hyperframes:block"
     },

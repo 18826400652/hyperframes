@@ -62,6 +62,7 @@
 | dy-scene-image-text | 图文页(可放大图片局部) | src, caption, focus(x,y,w,h 百分比) | 6s |
 | dy-scene-big-number | 数据大字页 | label, value, prefix, suffix, note | 4.5s |
 | dy-scene-compare | 对比页(上下 / 左右) | leftTitle, rightTitle, left, right, layout | 6s |
+| dy-scene-timeline | 时间线页(`时间::事件` 用 `\|` 分隔,逐个高亮;连续画面用 active 1、2、3… 接着讲) | title, items, active | 6s |
 | dy-scene-quote | 金句页 | text, em, source | 4s |
 | dy-scene-ending | 结尾页(三连 + 下期预告) | headline, cta, next | 4s |
 
