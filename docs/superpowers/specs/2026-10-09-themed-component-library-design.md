@@ -157,3 +157,14 @@
 - **仓库体积**:新增衬线字体约 6MB,字体合计约 11MB。可以接受;如果介意,可以只保留标题常用字重。
 - **录屏素材**:测试阶段用 ffmpeg 生成占位竖屏视频;标注定位效果需要用户的真实录屏最终验证。
 - **审美偏差**:每阶段都给用户看图确认,用户反馈的偏好写进第 5 阶段技能的规范里。
+
+## 10. 模块化与分发(2026-10-09 补充)
+
+用户要求组件库能被其他 HyperFrames 项目快速接入,且仓库将公开。采用 HyperFrames 官方 registry 机制:
+
+- **命名空间**:组件库称为 `dykit`。资源统一放在 `assets/dykit/`(`dykit.css` 入口、`theme.css`、`hf-kit.js`、`fonts/`);所有组件文件名和 `data-composition-id` 以 `dy-` 开头(新组件如 `dy-scene-title`、`dy-rec-phone`、`dy-tr-wipe`)。
+- **接入方式**:消费项目在 `hyperframes.json` 中设置 `"registry": "https://raw.githubusercontent.com/18826400652/hyperframes/main/registry"`,运行 `npx hyperframes add dy-scene-title` 即可安装组件,依赖的 `dykit` 资源包会自动一并安装;然后在 `index.html` 的 `<head>` 加两行:
+  `<link rel="stylesheet" href="assets/dykit/dykit.css" />`、`<script src="assets/dykit/hf-kit.js"></script>`。
+- **registry 目录**:`registry/` 由 `scripts/build-registry.mjs` 从 `compositions/` 和 `assets/dykit/` 生成并提交(官方下载器要求文件位于 `blocks/<名称>/` 下,不能引用目录外文件)。`--check` 模式用于确认 registry 与源文件一致。
+- **验收**:端到端测试在本地 HTTPS 服务上模拟远程 registry,把组件安装进一个空项目,并在该项目上 `check` 通过。
+- registry 要等仓库公开、并合并到 `main` 分支后,其他项目才能真正使用。

@@ -22,6 +22,7 @@
 - 主题化组件的 `<style>` 中禁止十六进制颜色字面量;颜色一律用 `var(--hf-*)`。变量声明里的默认值不受此限。
 - 用户文案一律用 `textContent` 写入,不用 `innerHTML` 拼接用户文本。
 - 每个组件提供 `theme`(string,默认 `""`)和 `accent`(string,默认 `""`)变量。非空时覆盖主题。
+- 新组件统一 `dy-` 前缀(见 Task 3b);资源路径为 `assets/dykit/`。
 - 模仿抖音界面的 7 个组件(`dy-action-bar`、`dy-comment-bubble`、`dy-follow-card`、`dy-product-card`、`dy-progress-bar`、`dy-ai-badge`、`dy-safe-zone`)不改。
 - 每个阶段结束提交并 `git push origin feat/dy-ai-components`,把 4 主题对比图发给用户,用户确认后才进入下一阶段。
 
@@ -144,6 +145,24 @@ tests/.out/                      生成物(加入 .gitignore)
 - [ ] **Step 5: `node tests/sheet.mjs scene-title`**,并渲染 4 秒 MP4 样片:`npx --yes hyperframes@0.8.143 render tests/.out/scene-title-neon -o tests/.out/scene-title-neon.mp4`。
 - [ ] **Step 6: Commit + push**:`git commit -m "scene-title 开场标题页" && git push origin feat/dy-ai-components`
 - [ ] **Step 7: 阶段 1 验收**:把 `scene-bg`、`scene-title` 的对比图和 MP4 发给用户,等用户确认后再继续。
+
+### Task 3b: 模块化 dykit + registry 分发(用户追加需求,见 Spec 第 10 节)
+
+**Files:**
+- Move: `assets/theme.css`、`assets/hf-kit.js`、`assets/fonts/` → `assets/dykit/`;Create `assets/dykit/dykit.css`(`@import` 字体与主题)
+- Rename: `compositions/scene-bg.html` → `dy-scene-bg.html`,`scene-title.html` → `dy-scene-title.html`(composition id 与 `__timelines` 键同步改),`tests/cases/` 同步
+- Create: `scripts/build-registry.mjs`、`registry/`(生成物)、`tests/registry.test.mjs`
+- Modify: `tests/lib.mjs`(用例项目引入 `assets/dykit/dykit.css` 与 `assets/dykit/hf-kit.js`)、`index.html`、`package.json`(`"test"` 先跑 registry 测试)、README(接入说明)
+
+**Interfaces:**
+- Produces: 之后所有新组件命名为 `dy-<名称>`,文件 `compositions/dy-<名称>.html`,composition id 同名;Task 4–12 中的 `scene-*`、`rec-phone`、`tr-*` 一律加 `dy-` 前缀。
+- Produces: registry 条目:`dykit`(资源包,类型 block,仅含 `assets/dykit/**` 资源文件)+ 每个 `compositions/dy-*.html` 一个 block(文件类型 `hyperframes:composition`,目标 `compositions/<名称>.html`,`registryDependencies: ["dykit"]`)。
+
+- [ ] **Step 1: 写测试 `tests/registry.test.mjs`**:(1) `node scripts/build-registry.mjs --check` 退出码为 0;(2) 用 openssl 生成 localhost 自签证书,起本地 HTTPS 服务托管仓库根目录;建一个空项目(含 `assets/gsap.min.js`、`hyperframes.json` 的 registry 指向本地服务),运行 `npx --yes hyperframes@0.8.143 add dy-scene-title --dir <tmp> --no-clipboard`(环境变量 `NODE_EXTRA_CA_CERTS`、`NO_PROXY=localhost,127.0.0.1`);断言 `compositions/dy-scene-title.html`、`assets/dykit/dykit.css`、`assets/dykit/hf-kit.js`、`assets/dykit/fonts/fonts.css` 存在;(3) 在该项目 `index.html` 加两行引入并挂载组件,`check --strict` 通过。
+- [ ] **Step 2: 运行 `node tests/registry.test.mjs`**,预期 FAIL(构建脚本不存在)。
+- [ ] **Step 3: 迁移目录、改名,实现 `scripts/build-registry.mjs`**,生成 `registry/`。
+- [ ] **Step 4: 运行 `node tests/registry.test.mjs` 和 `node tests/run.mjs`**,预期全部 PASS;`npm run check` 通过。
+- [ ] **Step 5: Commit + push** `模块化 dykit 与 registry 分发`
 
 ## 阶段 2:其余 7 个场景
 
