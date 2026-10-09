@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-scene-image-text",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-scene-image-text",
+  "description": "dykit 抖音竖屏组件 dy-scene-image-text(1080×1920,支持 4 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-scene-image-text.html",
+      "target": "compositions/dy-scene-image-text.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}
