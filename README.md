@@ -114,7 +114,7 @@
 | dy-action-bar | 右侧点赞 / 评论 / 收藏 / 转发栏 | likes, comments, favs, shares | 5s |
 | dy-follow-card | 关注引导卡(点击→已关注) | name, handle, fans, avatarText | 4.5s |
 | dy-product-card | 带货商品卡 | tag, name, price, origin, coupon, stock, stockPct, hint | 5s |
-| dy-progress-bar | 顶部章节进度条(覆盖全片) | labels, duration(须等于挂载时长), accent | 全片 |
+| dy-progress-bar | 顶部章节进度条(覆盖全片,半透明黑底，浅色画面上也清晰;标签多时自动缩字号) | labels, duration(须等于挂载时长), accent | 全片 |
 | dy-ai-badge | "内容由 AI 辅助生成"角标(位于进度条与内容区之间) | text | 全片 |
 | dy-safe-zone | 抖音安全区参考线(仅设计时用) | - | - |
 
