@@ -3,7 +3,7 @@
   {"id": "question", "type": "string", "label": "问题", "default": "你会选哪个?"},
   {"id": "optionA", "type": "string", "label": "选项A", "default": "先买再说"},
   {"id": "optionB", "type": "string", "label": "选项B", "default": "再等等看"},
-  {"id": "pctA", "type": "number", "label": "A 占比%", "default": "64"},
+  {"id": "pctA", "type": "number", "label": "A 占比%", "default": 64},
   {"id": "cta", "type": "string", "label": "引导语", "default": "评论区扣 A 或 B 👇"},
   {"id": "accent", "type": "color", "label": "A 色", "default": "#fe2c55"},
   {"id": "colorB", "type": "color", "label": "B 色", "default": "#25f4ee"}
@@ -12,11 +12,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #pl { position: absolute; left: 60px; right: 60px; top: 480px; display: flex; flex-direction: column; gap: 28px; }
         #pl-q { font-size: 76px; font-weight: 900; color: #fff; text-align: center; text-shadow: 0 6px 24px rgba(0,0,0,.7); margin-bottom: 12px; }
         .pl-opt { position: relative; height: 150px; border-radius: 28px; background: rgba(12,12,18,.88); overflow: hidden; display: flex; align-items: center; padding: 0 40px; gap: 24px; }
@@ -33,7 +34,9 @@
           <div id="pl-cta"></div></div>
       </div>
       <script>
-        const v = Object.assign({"question": "你会选哪个?", "optionA": "先买再说", "optionB": "再等等看", "pctA": "64", "cta": "评论区扣 A 或 B 👇", "accent": "#fe2c55", "colorB": "#25f4ee"}, window.__hyperframes.getVariables());
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"question": "你会选哪个?", "optionA": "先买再说", "optionB": "再等等看", "pctA": 64, "cta": "评论区扣 A 或 B 👇", "accent": "#fe2c55", "colorB": "#25f4ee"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         document.getElementById("pl-q").textContent = v.question;
@@ -46,6 +49,8 @@
         const pA = document.getElementById("pl-pa"), pB = document.getElementById("pl-pb");
         const render = () => { pA.textContent = Math.round(o.n * pa) + "%"; pB.textContent = Math.round(o.n * (100 - pa)) + "%"; };
         render();
+        const hfRefit = () => { hfFitBox(document.getElementById("pl"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#pl-q", { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#pl-a", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.3);

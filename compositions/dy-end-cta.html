@@ -9,11 +9,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #dy-end-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.75) 100%); }
         #dy-end-wrap { position: absolute; left: 60px; right: 200px; bottom: 480px; display: flex; flex-direction: column; gap: 22px; }
         #dy-end-head { font-size: 104px; font-weight: 900; color: #fff; -webkit-text-stroke: 8px #000; paint-order: stroke fill; line-height: 1.15; }

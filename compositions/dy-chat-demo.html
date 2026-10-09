@@ -3,18 +3,19 @@
   {"id": "prompt", "type": "string", "label": "用户提问", "default": "帮我用三句话讲清楚什么是大模型"},
   {"id": "reply", "type": "string", "label": "AI 回答", "default": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。"},
   {"id": "aiName", "type": "string", "label": "AI 名称", "default": "AI 助手"},
-  {"id": "hold", "type": "number", "label": "回答后停留(秒)", "default": "1.5"},
+  {"id": "hold", "type": "number", "label": "回答后停留(秒)", "default": 1.5},
   {"id": "accent", "type": "color", "label": "主色", "default": "#7c5cff"}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #cd { position: absolute; left: 60px; right: 170px; top: 380px; padding: 40px; background: rgba(14,14,26,.92); border-radius: 40px; border: 3px solid rgba(124,92,255,.6); box-shadow: 0 0 80px rgba(124,92,255,.3); display: flex; flex-direction: column; gap: 28px; }
         .cd-b { max-width: 88%; padding: 26px 32px; border-radius: 32px; font-size: 46px; font-weight: 700; line-height: 1.5; color: #fff; white-space: pre-wrap; }
         #cd-u { align-self: flex-end; background: var(--accent); border-bottom-right-radius: 8px; }
@@ -27,7 +28,9 @@
         <div id="cd"><div class="cd-b" id="cd-u"></div><div id="cd-dots"><i></i><i></i><i></i></div><div class="cd-b" id="cd-a"><div id="cd-who"></div><div id="cd-t"></div></div></div>
       </div>
       <script>
-        const v = Object.assign({"prompt": "帮我用三句话讲清楚什么是大模型", "reply": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。", "aiName": "AI 助手", "hold": "1.5", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"prompt": "帮我用三句话讲清楚什么是大模型", "reply": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。", "aiName": "AI 助手", "hold": 1.5, "accent": "#7c5cff"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         const mkType = (el, text) => { el.innerHTML = '<span></span><span style="opacity:0"></span>'; const on = el.firstChild, off = el.lastChild; off.textContent = text; return n => { const k = Math.max(0, Math.min(text.length, Math.round(n))); on.textContent = text.slice(0, k); off.textContent = text.slice(k); }; };
@@ -36,6 +39,8 @@
         const po = { n: 0 }, ro = { n: 0 };
         const pd = Math.min(2.5, v.prompt.length * 0.06), rd = Math.min(6, Math.max(1.5, v.reply.length * 0.05));
         setP(0); setR(0);
+        const hfRefit = () => { hfFitBox(document.getElementById("cd"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#cd", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#cd-u", { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0.4);

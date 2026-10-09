@@ -10,11 +10,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #dy-hook-title-wrap { position: absolute; left: 60px; right: 60px; top: 300px; display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
         #dy-hook-title-kicker { background: #fff; color: #111; font-size: 44px; font-weight: 800; padding: 10px 28px; border-radius: 12px; }
         .dy-hook-line { font-size: 120px; font-weight: 900; color: #fff; line-height: 1.15; letter-spacing: 2px; text-shadow: 0 6px 0 rgba(0,0,0,.55), 0 0 30px rgba(0,0,0,.35); -webkit-text-stroke: 12px #000; paint-order: stroke fill; }
@@ -34,6 +35,8 @@
         </div>
       </div>
       <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
         const v = Object.assign({ kicker:"99%的人都不知道", line1:"一招让你的视频", before:"播放量涨", keyword:"10倍", accent:"#fe2c55" }, window.__hyperframes.getVariables());
         const $ = (id) => document.getElementById(id);
         $("dy-hook-title-kicker").textContent = v.kicker;
@@ -41,6 +44,8 @@
         $("dy-hook-title-before").textContent = v.before;
         $("dy-hook-title-kwtext").textContent = v.keyword;
         $("root").style.setProperty("--accent", v.accent);
+        const hfRefit = () => { hfFit($("dy-hook-title-kicker"), 940, 28); hfFit($("dy-hook-title-l1"), 940, 84); const l2 = $("dy-hook-title-l2"); l2.style.flexWrap = "nowrap"; hfFit(l2, 940, 84); if (l2.style.whiteSpace === "normal") { l2.style.whiteSpace = "nowrap"; l2.style.flexWrap = "wrap"; } };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#dy-hook-title-kicker", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 0.1);
         tl.fromTo("#dy-hook-title-l1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.3);

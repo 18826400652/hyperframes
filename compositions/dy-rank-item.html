@@ -9,11 +9,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #dy-rank-wrap { position: absolute; left: 60px; right: 60px; top: 260px; display: flex; align-items: center; gap: 28px; }
         #dy-rank-badge { font-size: 170px; font-weight: 900; font-style: italic; color: var(--accent); line-height: 1; -webkit-text-stroke: 6px #fff; paint-order: stroke fill; text-shadow: 0 8px 0 rgba(0,0,0,.4); }
         #dy-rank-no { font-size: 44px; font-weight: 900; color: #fff; background: var(--accent); padding: 4px 14px; border-radius: 10px; align-self: flex-start; margin-top: 10px; }
