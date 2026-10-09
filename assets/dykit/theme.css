@@ -53,7 +53,7 @@
 
 /* ---------- 关键词强调 ---------- */
 .hf-em { white-space: nowrap; background: linear-gradient(90deg, var(--hf-accent), var(--hf-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-[data-theme="neon"] .hf-em { background: none; color: var(--hf-accent-2); -webkit-text-fill-color: var(--hf-accent-2); text-shadow: 0 0 18px rgba(254, 44, 85, 0.95), 0 0 56px rgba(254, 44, 85, 0.6); }
+[data-theme="neon"] .hf-em { background: none; color: #ff5c80; -webkit-text-fill-color: #ff5c80; text-shadow: 0 0 18px rgba(254, 44, 85, 0.95), 0 0 56px rgba(254, 44, 85, 0.6); }
 [data-theme="editorial"] .hf-em { color: inherit; -webkit-text-fill-color: currentColor; padding: 0 0.12em; background: linear-gradient(transparent 52%, var(--hf-accent-2) 52%, var(--hf-accent-2) 90%, transparent 90%); -webkit-background-clip: border-box; background-clip: border-box; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 [data-theme="bento"] .hf-em { background: linear-gradient(100deg, #c4b8ff, var(--hf-accent-2)); -webkit-background-clip: text; background-clip: text; }
 

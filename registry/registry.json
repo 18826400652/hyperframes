@@ -112,6 +112,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-scene-quote",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-scene-steps",
       "type": "hyperframes:block"
     },
