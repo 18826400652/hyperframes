@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "variant", "type": "string", "label": "背景样式(1 或 2)", "default": "1"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; }
+      </style>
+      <div id="root" data-composition-id="scene-bg" data-width="1080" data-height="1920">
+        <div class="hf-bg" id="sbg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+      </div>
+      <script>
+        const v = Object.assign({ variant: "1", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        document.getElementById("sbg").dataset.variant = v.variant === "2" ? "2" : "1";
+        // 装饰层缓慢漂移:每 4 秒不超过 40px
+        const tl = gsap.timeline({ paused: true });
+        tl.to("#sbg .hf-bg-a", { x: 60, y: 30, duration: 8, ease: "none" }, 0);
+        tl.to("#sbg .hf-bg-b", { x: -45, y: -20, duration: 8, ease: "none" }, 0);
+        window.__timelines["scene-bg"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
