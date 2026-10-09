@@ -126,6 +126,25 @@
 | dy-ai-badge | "内容由 AI 辅助生成"角标(位于进度条与内容区之间) | text | 全片 |
 | dy-safe-zone | 抖音安全区参考线(仅设计时用) | - | - |
 
+## 口播稿生成画面清单(dykit-storyboard 技能)
+
+在 Claude Code 里打开本仓库,把完整口播稿发给 Claude,说"帮我出画面清单"(可指定主题和视频名)。技能 `.claude/skills/dykit-storyboard/` 会:
+
+1. 把口播按意思切成 3~8 秒的画面,为每个画面从组件目录(`catalog/catalog.json`)里选组件、提炼文案;
+2. 输出 `storyboards/<视频名>.json`,并用校验脚本检查到通过;
+3. 现有组件表达不了的内容,按 `component-guide.md` 生成新组件,出 4 主题对比图给你确认,确认后才入库推送。
+
+清单每个画面包含:口播原文 `script`、组件 `component` 与变量 `variables`、估算时长 `duration`(每秒 4 字,可由配音实际时长覆盖)、叠加组件 `overlays`、转场 `transitionIn`、需要你补的素材 `needs`(录屏 / 截图)。主组件为叠加类(透明背景)时,组装时在下面垫 `dy-scene-bg`;转场挂在画面开始前 0.25 秒、时长 0.5 秒。
+
+手动校验一份清单:
+
+    npm run storyboard:check -- storyboards/<视频名>.json --script storyboards/<视频名>.txt          # 格式 + 渲染检查
+    npm run storyboard:check -- storyboards/<视频名>.json --no-render                               # 只查格式(秒级)
+
+校验内容:组件与变量是否存在、显示文字的变量是否都填写(漏填会露出组件示例文案)、数字是否都来自口播、口播是否逐字完整、时长与叠加是否合理;渲染检查把每个画面的真实文案装进组件,检查溢出、遮挡、对比度和底部字幕区。
+
+新组件入库后,运行 `npm run build:catalog` 更新目录(`catalog/notes.json` 里写明它适合什么口播内容),以后同类口播会直接选中它。
+
 ## 使用
 
 在 `index.html` 里挂载，并用 `data-variable-values` 覆盖文案:
