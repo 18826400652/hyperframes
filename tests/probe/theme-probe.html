@@ -21,6 +21,7 @@
         const expectBg = { minimal: "#000000", neon: "#06060d", editorial: "#f2ede3", bento: "#0a0a12" }[theme];
         const bg = getComputedStyle(root).getPropertyValue("--hf-bg").trim().toLowerCase();
         if (bg !== expectBg) throw new Error("theme-probe: --hf-bg for " + theme + " is '" + bg + "', expected " + expectBg);
+        if (typeof HF.duration !== "function" || HF.duration(root, 0) !== 2) throw new Error("theme-probe: HF.duration should read host data-duration (2), got " + (typeof HF.duration === "function" ? HF.duration(root, 0) : "n/a") + " parent=" + (root.parentElement ? root.parentElement.tagName + "#" + root.parentElement.id + " attrs=" + [...root.parentElement.attributes].map(a => a.name).join(",") : "none"));
         const em = document.getElementById("probe-em");
         if (theme === "neon" && getComputedStyle(em).textShadow === "none") throw new Error("theme-probe: neon .hf-em has no glow");
         if (theme === "editorial" && getComputedStyle(em).backgroundImage === "none") throw new Error("theme-probe: editorial .hf-em has no marker");

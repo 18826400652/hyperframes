@@ -18,10 +18,9 @@
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         document.getElementById("sbg").dataset.variant = v.variant === "2" ? "2" : "1";
-        // 装饰层缓慢漂移:每 4 秒不超过 40px
         const tl = gsap.timeline({ paused: true });
-        tl.to("#sbg .hf-bg-a", { x: 60, y: 30, duration: 8, ease: "none" }, 0);
-        tl.to("#sbg .hf-bg-b", { x: -45, y: -20, duration: 8, ease: "none" }, 0);
+        // 光斑层背景比画面大 120px,在 -60px..0 之间漂移,始终铺满
+        tl.fromTo("#sbg .hf-bg-a", { backgroundPosition: "-60px -60px" }, { backgroundPosition: "0px -30px", duration: 8, ease: "none" }, 0);
         window.__timelines["scene-bg"] = tl;
       </script>
     </template>

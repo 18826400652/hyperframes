@@ -30,6 +30,23 @@
       if (over()) el.style.whiteSpace = "normal";
     },
 
+    // 多行文字:超过 maxLines 行或横向溢出时缩字号,最小 minPx
+    fitLines(el, maxLines, minPx) {
+      el.style.fontSize = "";
+      let fs = parseFloat(getComputedStyle(el).fontSize);
+      const lh = () => parseFloat(getComputedStyle(el).lineHeight) || fs * 1.2;
+      const over = () => el.scrollHeight > lh() * maxLines + 2 || el.scrollWidth > el.clientWidth + 1;
+      while (over() && fs > minPx) { fs -= 4; el.style.fontSize = fs + "px"; }
+    },
+
+    // 读取挂载点时长(子合成的 #root 直接位于挂载点内)
+    duration(root, fallback = 4) {
+      // 运行时会把挂载点的 data-duration 改名为 data-hf-authored-duration
+      const host = root.parentElement && root.parentElement.closest("[data-duration],[data-hf-authored-duration]");
+      const d = host ? parseFloat(host.getAttribute("data-duration") || host.getAttribute("data-hf-authored-duration")) : NaN;
+      return d > 0 ? d : fallback;
+    },
+
     // 超出底部安全区时先上移(不高于 minTop),仍放不下再等比缩小
     fitBox(el, bottom = 1520, minTop = 260) {
       el.style.scale = ""; el.style.top = "";
