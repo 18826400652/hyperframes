@@ -1064,6 +1064,11 @@
       "type": "hyperframes:asset"
     },
     {
+      "path": "assets/dykit/media/rec-placeholder.mp4",
+      "target": "assets/dykit/media/rec-placeholder.mp4",
+      "type": "hyperframes:asset"
+    },
+    {
       "path": "assets/dykit/theme.css",
       "target": "assets/dykit/theme.css",
       "type": "hyperframes:style"

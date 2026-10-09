@@ -92,6 +92,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-rec-phone",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-safe-zone",
       "type": "hyperframes:block"
     },
@@ -145,6 +149,18 @@
     },
     {
       "name": "dy-tool-card",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-tr-glitch",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-tr-wipe",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-tr-zoom",
       "type": "hyperframes:block"
     },
     {

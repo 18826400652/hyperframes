@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "accent2", "type": "string", "label": "辅色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+        .tz-disc { position: absolute; left: 50%; top: 50%; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; border-radius: 50%; }
+        #tz-ring { background: var(--hf-accent-2); }
+        #tz-fill { background: var(--hf-accent); }
+      </style>
+      <div id="root" data-composition-id="dy-tr-zoom" data-width="1080" data-height="1920">
+        <div class="tz-disc" id="tz-ring"></div>
+        <div class="tz-disc" id="tz-fill"></div>
+      </div>
+      <script>
+        const v = Object.assign({ theme: "", accent: "", accent2: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        // 前半段圆形从中心放大盖满画面(直径 2400 > 对角线 2203),后半段放大并淡出,形成推镜感
+        const D = HF.duration(root, 0.5), half = D / 2;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#tz-ring", { scale: 0 }, { scale: 1, duration: half * 0.85, ease: "power2.in" }, 0);
+        tl.fromTo("#tz-fill", { scale: 0 }, { scale: 1, duration: half * 0.85, ease: "power2.in" }, half * 0.15);
+        tl.to(["#tz-fill", "#tz-ring"], { scale: 1.3, opacity: 0, duration: half * 0.9, ease: "power2.out", stagger: half * 0.1 }, half);
+        window.__timelines["dy-tr-zoom"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

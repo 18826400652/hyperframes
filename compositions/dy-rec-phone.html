@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "src", "type": "string", "label": "录屏视频路径(相对项目根目录,静音播放)", "default": "assets/dykit/media/rec-placeholder.mp4"},
+  {"id": "title", "type": "string", "label": "上方标题(可选)", "default": ""},
+  {"id": "cues", "type": "string", "label": "标注 JSON:[{t,dur,type:tap|box|zoom,x,y,w,h,label}],坐标为录屏画面百分比", "default": "[]"},
+  {"id": "ratio", "type": "string", "label": "录屏宽高比(如 9:19.5;留空自动读取)", "default": ""},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #rp-title { position: absolute; left: 80px; right: 160px; top: 240px; font-size: 60px; }
+        #rp-phone { position: absolute; padding: 16px; border-radius: 56px; background: var(--hf-bg-2); border: 3px solid var(--hf-surface-border); box-shadow: var(--hf-surface-shadow); }
+        #rp-screen { position: relative; overflow: hidden; border-radius: 40px; background: var(--hf-bg); }
+        #rp-cam { position: absolute; inset: 0; transform-origin: 0 0; }
+        .rp-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+        .rp-cue { position: absolute; opacity: 0; }
+        .rp-tap { width: 0; height: 0; }
+        .rp-tap i { position: absolute; left: -40px; top: -40px; width: 80px; height: 80px; border-radius: 50%; border: 6px solid var(--hf-accent); }
+        .rp-tap b { position: absolute; left: -18px; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: var(--hf-accent); opacity: 0.85; }
+        .rp-box { border: 6px solid var(--hf-accent); border-radius: 16px; box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.45); }
+        .rp-label { position: absolute; left: 0; max-width: 100%; padding: 16px 24px; font-size: 32px; font-weight: 700; line-height: 1.4; white-space: normal; }
+        .rp-label.rp-up { bottom: calc(100% + 20px); }
+        .rp-label.rp-down { top: calc(100% + 20px); }
+      </style>
+      <div id="root" data-composition-id="dy-rec-phone" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div class="hf-title" id="rp-title"></div>
+        <div id="rp-phone"><div id="rp-screen"><div id="rp-cam"><div id="rp-cues"></div></div></div></div>
+      </div>
+      <script>
+        const v = Object.assign({ src: "assets/dykit/media/rec-placeholder.mp4", title: "", cues: "[]", ratio: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const $ = id => document.getElementById(id);
+        const title = $("rp-title"), phone = $("rp-phone"), screen = $("rp-screen"), layer = $("rp-cues");
+
+        // 录屏视频由脚本创建:渲染器只对顶层变量解析 data-var-src,同一组件多次使用时
+        // 需要每个实例各自的 src 和唯一 id;脚本插入的媒体会触发渲染器的浏览器探测。
+        // 起点换算成全局时间(data-hf-media-start-basis="global"),避免嵌套时序歧义。
+        let start = 0;
+        for (let el = root.parentElement; el; el = el.parentElement) start += parseFloat(el.getAttribute("data-start")) || 0;
+        window.__dyRecPhoneN = (window.__dyRecPhoneN || 0) + 1;
+        const video = document.createElement("video");
+        Object.assign(video, { id: "rp-video-" + window.__dyRecPhoneN, className: "rp-video", muted: true, playsInline: true, preload: "auto" });
+        for (const [k, val] of [["src", String(v.src || "assets/dykit/media/rec-placeholder.mp4")], ["muted", ""], ["playsinline", ""], ["data-start", String(start)], ["data-hf-media-start-basis", "global"]]) video.setAttribute(k, val);
+        $("rp-cam").prepend(video);
+        if (v.title) title.textContent = v.title; else title.remove();
+
+        // 安全区内排版:手机框按录屏宽高比缩放,完整显示不裁切
+        const LEFT = 80, WIDTH = 840, BOTTOM = 1520, BEZEL = 16 + 3;
+        const fixedRatio = (() => { const m = String(v.ratio).split(":").map(Number); return m.length === 2 && m[0] > 0 && m[1] > 0 ? m[0] / m[1] : 0; })();
+        const layout = () => {
+          const ratio = fixedRatio || (video.videoWidth && video.videoHeight ? video.videoWidth / video.videoHeight : 886 / 1920);
+          let top = 260;
+          if (title.isConnected) { HF.fitLines(title, 2, 44); top = title.offsetTop + title.offsetHeight + 32; }
+          const maxW = WIDTH - 2 * BEZEL, maxH = BOTTOM - top - 2 * BEZEL;
+          const w = Math.round(Math.min(maxW, maxH * ratio)), h = Math.round(w / ratio);
+          Object.assign(screen.style, { width: w + "px", height: h + "px" });
+          // 在标题下方到安全区底部之间垂直居中
+          const y = Math.round(top + (BOTTOM - top - (h + 2 * BEZEL)) / 2);
+          Object.assign(phone.style, { left: Math.round(LEFT + (WIDTH - w - 2 * BEZEL) / 2) + "px", top: y + "px" });
+        };
+        HF.refit(layout);
+        if (!fixedRatio) video.addEventListener("loadedmetadata", layout, { once: true });
+
+        // 标注
+        let cues = [];
+        try { cues = JSON.parse(v.cues || "[]"); } catch (e) { cues = []; }
+        const pct = n => Math.max(0, Math.min(100, Number(n) || 0));
+        const m = HF.motion(root), D = HF.duration(root, 8);
+        const tl = gsap.timeline({ paused: true });
+        const parts = [title, phone].filter(e => e.isConnected);
+        tl.fromTo(parts, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.1);
+
+        cues.forEach(c => {
+          const t = Number(c.t) || 0, dur = Math.max(0.6, Number(c.dur) || 1.5);
+          const x = pct(c.x), y = pct(c.y), w = pct(c.w), h = pct(c.h);
+          if (c.type === "tap") {
+            const el = document.createElement("div"); el.className = "rp-cue rp-tap";
+            Object.assign(el.style, { left: x + "%", top: y + "%" });
+            el.innerHTML = "<i></i><i></i><b></b>"; layer.append(el);
+            const rings = el.querySelectorAll("i");
+            tl.to(el, { opacity: 1, duration: 0.15 }, t);
+            const n = Math.max(1, Math.floor(dur / 0.6));
+            rings.forEach((r, k) => tl.fromTo(r, { scale: 0.4, opacity: 1 }, { scale: 2, opacity: 0, duration: 0.6, ease: "power2.out", repeat: n - 1 }, t + k * 0.3));
+            tl.to(el, { opacity: 0, duration: 0.15 }, t + dur - 0.15);
+          } else if (c.type === "box") {
+            const el = document.createElement("div"); el.className = "rp-cue rp-box";
+            Object.assign(el.style, { left: x + "%", top: y + "%", width: w + "%", height: h + "%" });
+            if (c.label) {
+              const lab = document.createElement("div"); lab.className = "rp-label hf-card hf-text " + (y > 25 ? "rp-up" : "rp-down");
+              lab.textContent = c.label; el.append(lab);
+            }
+            layer.append(el);
+            tl.fromTo(el, { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.3, ease: m.ease }, t);
+            tl.to(el, { opacity: 0, duration: 0.25 }, t + dur - 0.25);
+          } else if (c.type === "zoom" && w > 0 && h > 0) {
+            // 推近到区域(最多 2.5 倍),区域中心移到屏幕中央,平移量不露出画面外
+            const scale = Math.min(2.5, 100 / Math.max(w, h));
+            const shift = cc => Math.min(0, Math.max(100 - 100 * scale, 50 - scale * cc));
+            tl.to("#rp-cam", { scale, xPercent: shift(x + w / 2), yPercent: shift(y + h / 2), duration: 0.5, ease: m.ease }, t);
+            tl.to("#rp-cam", { scale: 1, xPercent: 0, yPercent: 0, duration: 0.5, ease: m.ease }, t + dur - 0.5);
+          }
+        });
+
+        tl.to(parts, { opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(0.8, D - 0.35));
+        window.__timelines["dy-rec-phone"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

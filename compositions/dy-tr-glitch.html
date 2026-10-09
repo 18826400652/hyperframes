@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "accent2", "type": "string", "label": "辅色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+        .tg-slice { position: absolute; left: -10%; width: 120%; height: 240px; background: var(--hf-accent); }
+        .tg-slice:nth-child(even) { background: var(--hf-accent-2); }
+        .tg-slice i { position: absolute; left: 0; right: 0; top: 30%; height: 12%; background: var(--hf-bg); opacity: 0.35; }
+      </style>
+      <div id="root" data-composition-id="dy-tr-glitch" data-width="1080" data-height="1920"></div>
+      <script>
+        const v = Object.assign({ theme: "", accent: "", accent2: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        // 8 条横向切片按固定偏移错位闪入,中点拼合盖满画面,随后反向错位闪出(不用随机数,保证每次渲染一致)
+        const OFFSETS = [12, -30, 45, -8, 22, -40, 16, -24];
+        const slices = OFFSETS.map((_, i) => {
+          const s = document.createElement("div"); s.className = "tg-slice"; s.style.top = i * 240 + "px";
+          s.append(document.createElement("i")); root.append(s); return s;
+        });
+        const D = HF.duration(root, 0.5), half = D / 2, step = "steps(4)";
+        const tl = gsap.timeline({ paused: true });
+        slices.forEach((s, i) => {
+          const o = OFFSETS[i];
+          tl.fromTo(s, { x: o * 6, opacity: 0 }, { x: 0, opacity: 1, duration: half * 0.7, ease: step }, half * 0.3 * ((i * 3) % 8) / 7);
+          tl.to(s, { x: -o * 6, opacity: 0, duration: half * 0.7, ease: step }, half + half * 0.3 * ((i * 5) % 8) / 7);
+        });
+        // 中点前后的整体抖动
+        tl.fromTo(root, { x: 0 }, { x: 18, duration: half * 0.2, ease: "steps(2)", yoyo: true, repeat: 1 }, half * 0.8);
+        window.__timelines["dy-tr-glitch"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "direction", "type": "enum", "label": "方向", "options": ["left", "up"], "default": "left"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "accent2", "type": "string", "label": "辅色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+        .tw-band { position: absolute; inset: 0; }
+        #tw-a { background: var(--hf-accent-2); }
+        #tw-b { background: var(--hf-accent); }
+      </style>
+      <div id="root" data-composition-id="dy-tr-wipe" data-width="1080" data-height="1920">
+        <div class="tw-band" id="tw-a"></div>
+        <div class="tw-band" id="tw-b"></div>
+      </div>
+      <script>
+        const v = Object.assign({ direction: "left", theme: "", accent: "", accent2: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        // 前半段两层色带依次盖满画面,中点完全遮挡(在此处切换下一场景),后半段向另一侧揭开
+        const D = HF.duration(root, 0.5), half = D / 2;
+        // 用 clip-path 裁切揭示,色带始终留在画面内
+        const up = v.direction === "up";
+        const hidden = up ? "inset(100% 0% 0% 0%)" : "inset(0% 100% 0% 0%)", full = "inset(0% 0% 0% 0%)", gone = up ? "inset(0% 0% 100% 0%)" : "inset(0% 0% 0% 100%)";
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#tw-a", { clipPath: hidden }, { clipPath: full, duration: half * 0.8, ease: "power3.in" }, 0);
+        tl.fromTo("#tw-b", { clipPath: hidden }, { clipPath: full, duration: half * 0.8, ease: "power3.in" }, half * 0.2);
+        tl.to("#tw-b", { clipPath: gone, duration: half * 0.8, ease: "power3.out" }, half);
+        tl.to("#tw-a", { clipPath: gone, duration: half * 0.8, ease: "power3.out" }, half + half * 0.2);
+        window.__timelines["dy-tr-wipe"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
