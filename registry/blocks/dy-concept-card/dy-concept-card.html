@@ -4,49 +4,52 @@
   {"id": "en", "type": "string", "label": "英文/读音", "default": "/ˈtoʊkən/ · 词元"},
   {"id": "plain", "type": "string", "label": "人话版", "default": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。"},
   {"id": "analogy", "type": "string", "label": "打个比方", "default": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。"},
-  {"id": "accent", "type": "color", "label": "主色", "default": "#25f4ee"}
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
     <template>
       <style>
-        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
-        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
-        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
-        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
-        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
-        #cc { position: absolute; left: 60px; right: 170px; top: 400px; padding: 52px 46px; background: rgba(14,14,26,.93); border-radius: 44px; border: 3px solid var(--accent); box-shadow: 0 0 80px rgba(37,244,238,.22); }
-        #cc-term { font-size: 140px; font-weight: 900; color: var(--accent); line-height: 1.1; overflow-wrap: break-word; }
-        #cc-en { font-size: 38px; color: #9a9ab8; font-weight: 700; margin-top: 6px; }
-        #cc-line { height: 6px; width: 0; background: var(--accent); border-radius: 3px; margin: 28px 0; }
-        .cc-k { display: inline-block; font-size: 32px; font-weight: 900; color: #111; background: var(--accent); padding: 4px 20px; border-radius: 10px; margin-bottom: 14px; }
-        .cc-v { font-size: 46px; font-weight: 700; color: #fff; line-height: 1.5; margin-bottom: 30px; }
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #cc { position: absolute; left: 60px; right: 170px; top: 400px; padding: 52px 46px; border: 3px solid var(--hf-accent); }
+        #cc-term { font-family: var(--hf-font-title); font-size: 140px; font-weight: 900; color: var(--hf-accent); line-height: 1.1; overflow-wrap: break-word; text-shadow: var(--hf-title-shadow); }
+        #cc-en { font-size: 38px; line-height: 1.4; color: var(--hf-muted); font-weight: 700; margin-top: 6px; }
+        #cc-line { height: 6px; width: 0; background: var(--hf-accent); border-radius: 3px; margin: 28px 0; }
+        .cc-k { display: inline-block; font-size: 32px; font-weight: 900; color: var(--hf-on-accent); background: var(--hf-accent); padding: 4px 20px; border-radius: calc(var(--hf-radius) * 0.5); margin-bottom: 14px; }
+        .cc-v { font-size: 46px; font-weight: 700; color: var(--hf-text); line-height: 1.5; margin-bottom: 30px; }
+        #cc-ana { margin-bottom: 0; }
       </style>
       <div id="root" data-composition-id="dy-concept-card" data-width="1080" data-height="1920">
-        <div id="cc"><div id="cc-term"></div><div id="cc-en"></div><div id="cc-line"></div>
+        <div class="hf-panel" id="cc"><div id="cc-term"></div><div id="cc-en"></div><div id="cc-line"></div>
           <div id="cc-b1"><div class="cc-k">人话版</div><div class="cc-v" id="cc-plain"></div></div>
-          <div id="cc-b2"><div class="cc-k">打个比方</div><div class="cc-v" id="cc-ana" style="margin-bottom:0"></div></div></div>
+          <div id="cc-b2"><div class="cc-k">打个比方</div><div class="cc-v" id="cc-ana"></div></div></div>
       </div>
       <script>
-        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
-        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
-        const v = Object.assign({"term": "Token", "en": "/ˈtoʊkən/ · 词元", "plain": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。", "analogy": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const v = Object.assign({"term": "Token", "en": "/ˈtoʊkən/ · 词元", "plain": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。", "analogy": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
-        root.style.setProperty("--accent", v.accent);
-        document.getElementById("cc-term").textContent = v.term;
-        document.getElementById("cc-en").textContent = v.en;
-        document.getElementById("cc-plain").textContent = v.plain;
-        document.getElementById("cc-ana").textContent = v.analogy;
-        const hfRefit = () => { hfFit(document.getElementById("cc-term"), 0, 60); hfFitBox(document.getElementById("cc"), 1520); };
-        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        HF.applyTheme(root, v);
+        const $ = id => document.getElementById(id);
+        $("cc-term").textContent = v.term;
+        $("cc-en").textContent = v.en;
+        $("cc-plain").textContent = v.plain;
+        $("cc-ana").textContent = v.analogy;
+        if (!v.en) $("cc-en").remove();
+        if (!v.analogy) $("cc-b2").remove();
+        HF.refit(() => {
+          const term = $("cc-term");
+          HF.fit(term, 0, 60); if (term.style.whiteSpace === "normal") HF.fitLines(term, 2, 60);
+          if ($("cc-en")) HF.fitLines($("cc-en"), 2, 28);
+          HF.fitBox($("cc"));
+        });
+        const D = HF.duration(root, 6);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#cc", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" }, 0);
         tl.fromTo("#cc-term", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.3);
         tl.to("#cc-line", { width: "100%", duration: 0.5, ease: "power2.out" }, 0.7);
         tl.fromTo("#cc-b1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.2);
-        tl.fromTo("#cc-b2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 2.4);
-        tl.to("#cc", { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.in" }, 5.6);
+        if ($("cc-b2")) tl.fromTo("#cc-b2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 2.4);
+        tl.to("#cc", { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(3.2, D - 0.4));
         window.__timelines["dy-concept-card"] = tl;
       </script>
     </template>

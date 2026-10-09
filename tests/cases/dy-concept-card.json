@@ -1,0 +1,3 @@
+{ "component": "dy-concept-card", "duration": 6, "peak": 3.5,
+  "variants": { "normal": {},
+    "long": { "term": "<b>&\" Retrieval-Augmented Generation", "en": "<b>&\" RAG · 检索增强生成", "plain": "<b>&\" 先去资料库里把相关内容找出来,再交给大模型参考着回答,这样回答更准确、也能引用最新的资料。", "analogy": "<b>&\" 就像开卷考试:不用把整本书背下来,遇到问题先翻到相关那一页,再根据书上的内容组织答案。" } } }

@@ -1,0 +1,3 @@
+{ "component": "dy-workflow-flow", "duration": 6.5, "peak": 4.5,
+  "variants": { "normal": {},
+    "long": { "title": "<b>&\" 一个人做自媒体的完整 AI 工作流", "steps": "<b>&\" 输入选题和参考资料|AI 写脚本并自动拆分镜头|AI 配音配图和生成字幕|人工检查事实和语气|一键发布到多个平台", "aiSteps": "2,3" } } }
