@@ -1,0 +1,3 @@
+{ "component": "dy-before-after", "duration": 6, "peak": 4,
+  "variants": { "normal": {},
+    "long": { "beforeLabel": "<b>&\" 手动整理会议录音并写成完整纪要", "beforeValue": "2 小时 30 分钟", "afterLabel": "<b>&\" AI 自动转写并生成纪要和待办", "afterValue": "3 分钟", "gain": "<b>&\" 效率提升 50 倍,每周省下一整天" } } }

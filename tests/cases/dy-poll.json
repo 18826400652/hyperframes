@@ -1,0 +1,3 @@
+{ "component": "dy-poll", "duration": 6, "peak": 3.5,
+  "variants": { "normal": {},
+    "long": { "question": "<b>&\" 如果只能选一个 AI 工具长期付费,你会选哪个?", "optionA": "<b>&\" 通用对话助手,什么都能聊", "optionB": "<b>&\" 专业写作工具,只做一件事", "pctA": 37, "cta": "<b>&\" 评论区扣 A 或 B,说说你的理由 👇" } } }

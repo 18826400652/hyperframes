@@ -8,7 +8,7 @@
   },
   "duration": 4,
   "title": "dy-before-after",
-  "description": "dykit 抖音竖屏组件 dy-before-after(1080×1920)。",
+  "description": "dykit 抖音竖屏组件 dy-before-after(1080×1920,支持 4 种主题)。",
   "tags": [
     "dykit",
     "douyin",
