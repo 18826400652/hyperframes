@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "text", "type": "string", "label": "标识文案", "default": "内容由 AI 辅助生成"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#7c5cff"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #ab { position: absolute; left: 60px; top: 225px; display: flex; align-items: center; gap: 12px; padding: 10px 24px 10px 14px; border-radius: 40px; background: rgba(0,0,0,.55); border: 2px solid rgba(255,255,255,.35); font-size: 30px; font-weight: 800; color: #fff; }
+        #ab-i { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; }
+      </style>
+      <div id="root" data-composition-id="dy-ai-badge" data-width="1080" data-height="1920">
+        <div id="ab"><div id="ab-i">AI</div><span id="ab-t"></span></div>
+      </div>
+      <script>
+        const v = Object.assign({"text": "内容由 AI 辅助生成", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("ab-t").textContent = v.text;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#ab", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.2);
+        window.__timelines["dy-ai-badge"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

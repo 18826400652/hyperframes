@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "from", "type": "number", "label": "起始数字", "default": "3"},
+  {"id": "label", "type": "string", "label": "结束文案", "default": "开始!"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#25f4ee"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        .cd { position: absolute; left: 0; right: 0; top: 560px; text-align: center; font-size: 560px; font-weight: 900; line-height: 1; color: var(--accent); -webkit-text-stroke: 8px #111; paint-order: stroke fill; opacity: 0; }
+        #cd-go { font-size: 280px; color: #ffe14d; }
+      </style>
+      <div id="root" data-composition-id="dy-countdown" data-width="1080" data-height="1920">
+        <div id="cd-wrap"></div><div id="cd-go" class="cd"></div>
+      </div>
+      <script>
+        const v = Object.assign({"from": "3", "label": "开始!", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        const n = Math.max(1, Math.round(Number(v.from)));
+        document.getElementById("cd-go").textContent = v.label;
+        const wrap = document.getElementById("cd-wrap");
+        for (let i = n; i >= 1; i--) { const d = document.createElement("div"); d.className = "cd"; d.id = "cd-" + i; d.textContent = i; wrap.appendChild(d); }
+        const tl = gsap.timeline({ paused: true });
+        for (let i = n; i >= 1; i--) {
+          const t = n - i;
+          tl.fromTo("#cd-" + i, { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }, t);
+          tl.to("#cd-" + i, { scale: 0.6, opacity: 0, duration: 0.2, ease: "power2.in" }, t + 0.75);
+        }
+        tl.fromTo("#cd-go", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "elastic.out(1,0.5)" }, n);
+        tl.to("#cd-go", { opacity: 0, duration: 0.2 }, n + 0.8);
+        window.__timelines["dy-countdown"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
