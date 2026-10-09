@@ -74,7 +74,12 @@
       if (el.offsetTop + h <= bottom) return;
       const top = Math.max(minTop, bottom - h);
       el.style.top = top + "px";
-      if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); }
+      if (top + h > bottom) {
+        const scale = Math.max(0.5, (bottom - top) / h);
+        el.style.transformOrigin = "50% 0"; el.style.scale = String(scale);
+        // 缩到下限仍超出安全区:内容太多。发出警告,hyperframes check --strict 会把它判为失败
+        if (top + h * scale > bottom + 1) console.warn(`[dykit] #${el.id || el.className} 内容过多,缩小到 50% 仍超出安全区 ${Math.round(top + h * scale - bottom)}px`);
+      }
     },
 
     // 在 [top, bottom] 安全区内垂直居中;放不下时交给 fitBox(上移,再缩放)

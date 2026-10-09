@@ -1,10 +1,10 @@
 // 画面清单校验测试:示例通过;每个错误样例报出对应错误码;口播比对只忽略空白;CLI 错误输出不带堆栈
-// 加 --render 时另跑渲染检查(Task 3)
+// 渲染检查部分较慢(每个画面一次 hyperframes check)
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib.mjs";
-import { validateFormat } from "../scripts/validate-storyboard.mjs";
+import { validateFormat, renderCheck } from "../scripts/validate-storyboard.mjs";
 
 const fails = [];
 const ok = (cond, msg) => { if (!cond) fails.push(msg); };
@@ -35,5 +35,13 @@ ok(bj.status === 1 && /bad_json/.test(bj.stdout + bj.stderr) && !/\n\s+at /.test
 const good = cli("storyboards/example.json", "--script", "tests/storyboards/example-script.txt", "--no-render");
 ok(good.status === 0 && /storyboard OK/.test(good.stdout), "example CLI failed: " + good.stdout + good.stderr);
 
-if (fails.length) { console.log("FAIL storyboard format\n  - " + fails.join("\n  - ")); process.exit(1); }
-console.log("PASS storyboard format");
+// 渲染检查:示例全部通过(录屏 src 为空时用占位视频);超长文案的清单被报出;CLI 完整校验通过
+const rendered = renderCheck(example);
+ok(rendered.length === example.scenes.length && rendered.every(r => r.ok), "example render: " + JSON.stringify(rendered.filter(r => !r.ok).map(r => r.scene)));
+const over = renderCheck(JSON.parse(read(path.join(dir, "overflow.json"))));
+ok(over.some(r => !r.ok), "overflow storyboard passed render check");
+const full = cli("storyboards/example.json", "--script", "tests/storyboards/example-script.txt");
+ok(full.status === 0 && /storyboard OK/.test(full.stdout), "full CLI failed: " + full.stdout.slice(-500));
+
+if (fails.length) { console.log("FAIL storyboard\n  - " + fails.join("\n  - ")); process.exit(1); }
+console.log("PASS storyboard (format + render)");
