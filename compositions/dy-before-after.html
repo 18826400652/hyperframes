@@ -11,11 +11,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #ba { position: absolute; left: 60px; right: 170px; top: 420px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
         .ba-c { width: 100%; padding: 34px 40px; border-radius: 36px; text-align: center; }
         #ba-b { background: rgba(40,40,52,.92); border: 3px solid #555; }
@@ -35,6 +36,8 @@
           <div id="ba-gain"></div></div>
       </div>
       <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
         const v = Object.assign({"beforeLabel": "手动做一份 PPT", "beforeValue": "2 小时", "afterLabel": "AI 一键生成", "afterValue": "3 分钟", "gain": "效率提升 40 倍", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
@@ -43,6 +46,8 @@
         document.getElementById("ba-al").textContent = v.afterLabel;
         document.getElementById("ba-av").textContent = v.afterValue;
         document.getElementById("ba-gain").textContent = "🚀 " + v.gain;
+        const hfRefit = () => { hfFit(document.getElementById("ba-bv"), 0, 56); hfFit(document.getElementById("ba-av"), 0, 56); hfFit(document.getElementById("ba-gain"), 900, 30); hfFitBox(document.getElementById("ba"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#ba-b", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
         tl.fromTo("#ba-arrow", { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.3 }, 1.2);

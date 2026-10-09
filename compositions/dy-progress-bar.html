@@ -1,18 +1,19 @@
 <!doctype html>
 <html lang="zh-CN" data-composition-variables='[
   {"id": "labels", "type": "string", "label": "章节(| 分隔)", "default": "开头|方法|案例|总结"},
-  {"id": "duration", "type": "number", "label": "覆盖总时长(秒)", "default": "20"},
+  {"id": "duration", "type": "number", "label": "覆盖总时长(秒)", "default": 20},
   {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #pb { position: absolute; left: 60px; right: 60px; top: 150px; display: flex; gap: 10px; }
         .pb-seg { flex: 1; }
         .pb-track { height: 10px; border-radius: 5px; background: rgba(255,255,255,.3); overflow: hidden; }
@@ -23,7 +24,7 @@
         <div id="pb"></div>
       </div>
       <script>
-        const v = Object.assign({"labels": "开头|方法|案例|总结", "duration": "20", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const v = Object.assign({"labels": "开头|方法|案例|总结", "duration": 20, "accent": "#fe2c55"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         const labs = String(v.labels).split("|").filter(Boolean), total = Math.max(1, Number(v.duration)), seg = total / labs.length;

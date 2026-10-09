@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-composition-variables='[
   {"id": "title", "type": "string", "label": "标题", "default": "数学推理能力评测"},
   {"id": "rows", "type": "string", "label": "名称|分数;分行", "default": "模型 A|92;模型 B|88;模型 C|76;模型 D|61"},
-  {"id": "max", "type": "number", "label": "满分", "default": "100"},
+  {"id": "max", "type": "number", "label": "满分", "default": 100},
   {"id": "unit", "type": "string", "label": "单位", "default": "分"},
   {"id": "note", "type": "string", "label": "数据来源/备注", "default": "数据仅供参考,以官方公布为准"},
   {"id": "accent", "type": "color", "label": "领先色", "default": "#25f4ee"}
@@ -11,11 +11,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #bb { position: absolute; left: 60px; right: 170px; top: 400px; padding: 44px; background: rgba(14,14,26,.93); border-radius: 40px; }
         #bb-title { font-size: 60px; font-weight: 900; color: #fff; margin-bottom: 30px; }
         .bb-r { display: flex; align-items: center; gap: 20px; margin-bottom: 26px; }
@@ -29,7 +30,9 @@
         <div id="bb"><div id="bb-title"></div><div id="bb-list"></div><div id="bb-note"></div></div>
       </div>
       <script>
-        const v = Object.assign({"title": "数学推理能力评测", "rows": "模型 A|92;模型 B|88;模型 C|76;模型 D|61", "max": "100", "unit": "分", "note": "数据仅供参考,以官方公布为准", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
+        const v = Object.assign({"title": "数学推理能力评测", "rows": "模型 A|92;模型 B|88;模型 C|76;模型 D|61", "max": 100, "unit": "分", "note": "数据仅供参考,以官方公布为准", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         document.getElementById("bb-title").textContent = v.title;
@@ -46,6 +49,8 @@
           const render = () => { vEl.textContent = Math.round(o.n) + v.unit; };
           render(); objs.push([o, render, Number(r[1])]);
         });
+        const hfRefit = () => { hfFitBox(document.getElementById("bb"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#bb", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         objs.forEach(([o, render, val], i) => {

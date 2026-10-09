@@ -10,14 +10,15 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #vs { position: absolute; left: 60px; right: 60px; top: 380px; display: flex; flex-direction: column; gap: 22px; }
         #vs-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .vs-name { flex: 1; text-align: center; font-size: 60px; font-weight: 900; color: #111; padding: 20px 0; border-radius: 24px; }
+        .vs-name { flex: 1; min-width: 0; text-align: center; font-size: 60px; font-weight: 900; color: #111; padding: 20px 0; border-radius: 24px; }
         #vs-badge { width: 130px; height: 130px; margin: 0 -10px; z-index: 2; border-radius: 50%; background: #fff; color: #111; font-size: 60px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(255,255,255,.5); }
         .vs-row { display: flex; align-items: stretch; gap: 14px; }
         .vs-cell { flex: 1; text-align: center; font-size: 54px; font-weight: 900; color: #fff; background: rgba(12,12,18,.88); border: 4px solid transparent; border-radius: 22px; padding: 26px 8px; }
@@ -27,6 +28,8 @@
         <div id="vs"><div id="vs-head"><div class="vs-name" id="vs-l"></div><div id="vs-badge">VS</div><div class="vs-name" id="vs-r"></div></div><div id="vs-rows"></div></div>
       </div>
       <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
         const v = Object.assign({"leftName": "方案 A", "rightName": "方案 B", "rows": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L", "leftColor": "#fe2c55", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
@@ -44,6 +47,8 @@
           if (r[3] === "R") { b.style.borderColor = v.accent; b.style.boxShadow = "0 0 40px " + v.accent; }
           el.append(a, lab, b); box.appendChild(el);
         });
+        const hfRefit = () => { hfFit(L, 0, 30); hfFit(R, 0, 30); hfFitBox(document.getElementById("vs"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#vs-l", { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#vs-r", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);

@@ -2,11 +2,11 @@
 <html lang="zh-CN" data-composition-variables='[
   {"id": "tag", "type": "string", "label": "角标", "default": "限时秒杀"},
   {"id": "name", "type": "string", "label": "商品名", "default": "超轻便携颈挂风扇"},
-  {"id": "price", "type": "number", "label": "现价", "default": "59"},
+  {"id": "price", "type": "number", "label": "现价", "default": 59},
   {"id": "origin", "type": "string", "label": "原价", "default": "¥169"},
   {"id": "coupon", "type": "string", "label": "优惠", "default": "拍下立减 20 元"},
   {"id": "stock", "type": "string", "label": "库存文案", "default": "仅剩 128 件"},
-  {"id": "stockPct", "type": "number", "label": "库存条(0-100)", "default": "18"},
+  {"id": "stockPct", "type": "number", "label": "库存条(0-100)", "default": 18},
   {"id": "hint", "type": "string", "label": "引导语", "default": "👇 点左下角小黄车"},
   {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
 ]'>
@@ -14,11 +14,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #pc { position: absolute; left: 60px; right: 170px; bottom: 460px; padding: 40px; background: rgba(255,255,255,.97); border-radius: 36px; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
         #pc-tag { position: absolute; top: -26px; left: 36px; background: var(--accent); color: #fff; font-size: 38px; font-weight: 900; padding: 8px 28px; border-radius: 14px; }
         #pc-name { font-size: 54px; font-weight: 900; color: #111; margin-top: 8px; }
@@ -39,7 +40,7 @@
         <div id="pc-hint"></div>
       </div>
       <script>
-        const v = Object.assign({"tag": "限时秒杀", "name": "超轻便携颈挂风扇", "price": "59", "origin": "¥169", "coupon": "拍下立减 20 元", "stock": "仅剩 128 件", "stockPct": "18", "hint": "👇 点左下角小黄车", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const v = Object.assign({"tag": "限时秒杀", "name": "超轻便携颈挂风扇", "price": 59, "origin": "¥169", "coupon": "拍下立减 20 元", "stock": "仅剩 128 件", "stockPct": 18, "hint": "👇 点左下角小黄车", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         document.getElementById("pc-tag").textContent = v.tag;

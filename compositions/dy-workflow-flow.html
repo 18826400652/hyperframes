@@ -9,11 +9,12 @@
   <body>
     <template>
       <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
         @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
         @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
         #wf { position: absolute; left: 90px; right: 200px; top: 330px; display: flex; flex-direction: column; align-items: center; }
         #wf-title { font-size: 64px; font-weight: 900; color: #fff; text-shadow: 0 6px 24px rgba(0,0,0,.7); margin-bottom: 30px; }
         .wf-n { width: 100%; display: flex; align-items: center; gap: 26px; padding: 26px 34px; border-radius: 28px; background: rgba(14,14,26,.92); border: 3px solid #3a3a58; font-size: 50px; font-weight: 900; color: #fff; }
@@ -27,6 +28,8 @@
         <div id="wf"><div id="wf-title"></div><div id="wf-list" style="width:100%"></div></div>
       </div>
       <script>
+        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
+        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
         const v = Object.assign({"title": "AI 工作流", "steps": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布", "aiSteps": "2,3", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
@@ -36,6 +39,8 @@
           if (i) { const a = document.createElement("div"); a.className = "wf-a"; a.id = "wf-a-" + i; a.style.margin = "0 auto"; list.appendChild(a); }
           const n = document.createElement("div"); n.className = "wf-n" + (ai.includes(i + 1) ? " wf-ai" : ""); n.id = "wf-n-" + i; n.innerHTML = "<b>" + (i + 1) + "</b><span></span>"; n.children[1].textContent = t; list.appendChild(n);
         });
+        const hfRefit = () => { hfFitBox(document.getElementById("wf"), 1520); };
+        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#wf-title", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
         st.forEach((_, i) => {
