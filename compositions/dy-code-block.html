@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "file", "type": "string", "label": "文件名", "default": "demo.py"},
+  {"id": "code", "type": "string", "label": "代码(| 分行,# 开头为注释,$ 开头为命令)", "default": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat('你好'))"},
+  {"id": "speed", "type": "number", "label": "每秒字符数", "default": "28"},
+  {"id": "accent", "type": "color", "label": "高亮色", "default": "#25f4ee"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        @font-face { font-family: "Menlo"; src: local("Menlo"), local("Menlo-Regular"); }
+        @font-face { font-family: "Consolas"; src: local("Consolas"); }
+        @font-face { font-family: "DejaVu Sans Mono"; src: local("DejaVu Sans Mono"), local("DejaVuSansMono"); }
+        #cb { position: absolute; left: 50px; right: 160px; top: 440px; background: #0d1117; border-radius: 28px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.6); border: 2px solid #30363d; }
+        #cb-bar { display: flex; align-items: center; gap: 14px; padding: 22px 28px; background: #161b22; }
+        #cb-bar i { width: 26px; height: 26px; border-radius: 50%; display: block; }
+        #cb-file { margin-left: 16px; font-size: 32px; color: #8b949e; font-family: "Menlo","Consolas","DejaVu Sans Mono","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",monospace; }
+        #cb-body { padding: 32px 36px 40px; font-family: "Menlo","Consolas","DejaVu Sans Mono","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",monospace; font-size: 38px; line-height: 1.7; color: #e6edf3; }
+        .cb-l { white-space: pre-wrap; min-height: 1.7em; }
+        .cb-c { color: #7ee787; } .cb-s { color: var(--accent); }
+        #cb-cur { display: inline-block; width: 18px; height: 40px; background: var(--accent); vertical-align: middle; margin-left: 4px; }
+      </style>
+      <div id="root" data-composition-id="dy-code-block" data-width="1080" data-height="1920">
+        <div id="cb"><div id="cb-bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><span id="cb-file"></span></div><div id="cb-body"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"file": "demo.py", "code": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat('你好'))", "speed": "28", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        const mkType = (el, text) => { el.innerHTML = '<span></span><span style="opacity:0"></span>'; const on = el.firstChild, off = el.lastChild; off.textContent = text; return n => { const k = Math.max(0, Math.min(text.length, Math.round(n))); on.textContent = text.slice(0, k); off.textContent = text.slice(k); }; };
+        document.getElementById("cb-file").textContent = v.file;
+        const lines = String(v.code).split("|"), body = document.getElementById("cb-body"), setters = [];
+        lines.forEach(t => { const el = document.createElement("div"); el.className = "cb-l" + (t[0] === "#" ? " cb-c" : t[0] === "$" ? " cb-s" : ""); body.appendChild(el); setters.push(mkType(el, t)); });
+        const total = lines.reduce((a, l) => a + l.length + 1, 0), o = { n: 0 };
+        const render = () => { let left = o.n; setters.forEach((s, i) => { s(Math.min(left, lines[i].length)); left = Math.max(0, left - lines[i].length - 1); }); };
+        render();
+        const dur = total / Math.max(1, Number(v.speed));
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#cb", { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        tl.to(o, { n: total, duration: dur, ease: "none", onUpdate: render }, 0.6);
+        tl.to("#cb", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, 0.6 + dur + 1.8);
+        window.__timelines["dy-code-block"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

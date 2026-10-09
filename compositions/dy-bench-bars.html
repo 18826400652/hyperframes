@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "标题", "default": "数学推理能力评测"},
+  {"id": "rows", "type": "string", "label": "名称|分数;分行", "default": "模型 A|92;模型 B|88;模型 C|76;模型 D|61"},
+  {"id": "max", "type": "number", "label": "满分", "default": "100"},
+  {"id": "unit", "type": "string", "label": "单位", "default": "分"},
+  {"id": "note", "type": "string", "label": "数据来源/备注", "default": "数据仅供参考,以官方公布为准"},
+  {"id": "accent", "type": "color", "label": "领先色", "default": "#25f4ee"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #bb { position: absolute; left: 60px; right: 170px; top: 400px; padding: 44px; background: rgba(14,14,26,.93); border-radius: 40px; }
+        #bb-title { font-size: 60px; font-weight: 900; color: #fff; margin-bottom: 30px; }
+        .bb-r { display: flex; align-items: center; gap: 20px; margin-bottom: 26px; }
+        .bb-n { width: 190px; font-size: 40px; font-weight: 800; color: #fff; }
+        .bb-t { flex: 1; height: 54px; border-radius: 14px; background: #262640; overflow: hidden; }
+        .bb-f { height: 100%; width: 0; border-radius: 14px; background: #5b6cff; }
+        .bb-v { width: 130px; text-align: right; font-size: 44px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; }
+        #bb-note { font-size: 30px; color: #9a9ab8; margin-top: 6px; }
+      </style>
+      <div id="root" data-composition-id="dy-bench-bars" data-width="1080" data-height="1920">
+        <div id="bb"><div id="bb-title"></div><div id="bb-list"></div><div id="bb-note"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"title": "数学推理能力评测", "rows": "模型 A|92;模型 B|88;模型 C|76;模型 D|61", "max": "100", "unit": "分", "note": "数据仅供参考,以官方公布为准", "accent": "#25f4ee"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("bb-title").textContent = v.title;
+        document.getElementById("bb-note").textContent = v.note;
+        const rs = String(v.rows).split(";").filter(Boolean).map(r => r.split("|")), mx = Math.max(1, Number(v.max));
+        const best = Math.max(...rs.map(r => Number(r[1])));
+        const list = document.getElementById("bb-list"), objs = [];
+        rs.forEach((r, i) => {
+          const el = document.createElement("div"); el.className = "bb-r"; el.id = "bb-r-" + i;
+          el.innerHTML = '<div class="bb-n"></div><div class="bb-t"><div class="bb-f" id="bb-f-' + i + '"></div></div><div class="bb-v"></div>';
+          el.children[0].textContent = r[0]; list.appendChild(el);
+          if (Number(r[1]) === best) { el.querySelector(".bb-f").style.background = v.accent; el.children[2].style.color = v.accent; }
+          const o = { n: 0 }, vEl = el.children[2];
+          const render = () => { vEl.textContent = Math.round(o.n) + v.unit; };
+          render(); objs.push([o, render, Number(r[1])]);
+        });
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#bb", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        objs.forEach(([o, render, val], i) => {
+          const t = 0.6 + i * 0.35;
+          tl.fromTo("#bb-r-" + i, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3 }, t);
+          tl.to("#bb-f-" + i, { width: Math.min(100, val / mx * 100) + "%", duration: 1.1, ease: "power3.out" }, t + 0.1);
+          tl.to(o, { n: val, duration: 1.1, ease: "power3.out", onUpdate: render }, t + 0.1);
+        });
+        const te = 0.6 + objs.length * 0.35 + 1.6;
+        tl.to("#bb", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, te + 1.5);
+        window.__timelines["dy-bench-bars"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

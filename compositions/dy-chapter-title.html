@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "index", "type": "string", "label": "序号", "default": "01"},
+  {"id": "title", "type": "string", "label": "章节标题", "default": "先说结论"},
+  {"id": "sub", "type": "string", "label": "副标题", "default": "90% 的人都做错了"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #ch { position: absolute; left: 80px; top: 640px; display: flex; align-items: center; gap: 32px; }
+        #ch-no { font-size: 220px; font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 6px var(--accent); }
+        #ch-text { display: flex; flex-direction: column; gap: 12px; }
+        #ch-title { font-size: 96px; font-weight: 900; color: #fff; text-shadow: 0 6px 24px rgba(0,0,0,.6); }
+        #ch-sub { font-size: 44px; font-weight: 700; color: #111; background: var(--accent); padding: 6px 22px; border-radius: 12px; align-self: flex-start; }
+        #ch-bar { position: absolute; left: 80px; top: 610px; height: 10px; width: 0; background: var(--accent); border-radius: 5px; }
+      </style>
+      <div id="root" data-composition-id="dy-chapter-title" data-width="1080" data-height="1920">
+        <div id="ch-bar"></div>
+        <div id="ch"><div id="ch-no"></div><div id="ch-text"><div id="ch-title"></div><div id="ch-sub"></div></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"index": "01", "title": "先说结论", "sub": "90% 的人都做错了", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("ch-no").textContent = v.index;
+        document.getElementById("ch-title").textContent = v.title;
+        document.getElementById("ch-sub").textContent = v.sub;
+        const tl = gsap.timeline({ paused: true });
+        tl.to("#ch-bar", { width: 520, duration: 0.5, ease: "power3.out" }, 0);
+        tl.fromTo("#ch-no", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.1);
+        tl.fromTo("#ch-title", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.25);
+        tl.fromTo("#ch-sub", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.5);
+        tl.to("#ch, #ch-bar", { x: 160, opacity: 0, duration: 0.4, ease: "power2.in" }, 3.1);
+        window.__timelines["dy-chapter-title"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
