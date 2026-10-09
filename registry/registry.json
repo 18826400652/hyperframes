@@ -108,6 +108,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-scene-ending",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-scene-image-text",
       "type": "hyperframes:block"
     },
