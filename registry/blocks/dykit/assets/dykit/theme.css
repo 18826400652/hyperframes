@@ -36,7 +36,7 @@
   --hf-surface: linear-gradient(160deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03));
   --hf-surface-border: rgba(255, 255, 255, 0.16); --hf-surface-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --hf-text: #ffffff; --hf-muted: #a5a5b8;
-  --hf-accent: #9d8bff; --hf-accent-2: #25f4ee; --hf-on-accent: #ffffff;
+  --hf-accent: #9d8bff; --hf-accent-2: #25f4ee; --hf-on-accent: #0a0a12;
   --hf-font-title: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
   --hf-title-weight: 800; --hf-radius: 36px;
   --hf-ease: power3.out; --hf-ease-out: power2.in; --hf-dur: 0.5; --hf-stagger: 0.15;

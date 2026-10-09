@@ -104,6 +104,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-scene-steps",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-scene-title",
       "type": "hyperframes:block"
     },

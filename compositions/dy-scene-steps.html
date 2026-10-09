@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "标题", "default": "3 步生成会议纪要"},
+  {"id": "steps", "type": "string", "label": "步骤(| 分隔;每步可写 标题::说明)", "default": "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历"},
+  {"id": "active", "type": "number", "label": "高亮第几步(0 为按时间依次高亮)", "default": 0},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #ss-wrap { position: absolute; left: 80px; right: 160px; top: 400px; display: flex; flex-direction: column; gap: 56px; }
+        #ss-title { font-size: 88px; }
+        #ss-list { display: flex; flex-direction: column; gap: 40px; }
+        .ss-step { position: relative; display: flex; align-items: flex-start; gap: 32px; }
+        .ss-dot { position: relative; flex: none; width: 80px; height: 80px; }
+        .ss-dot i { position: absolute; inset: 0; border-radius: 50%; }
+        .ss-dot .ss-off { background: var(--hf-bg-2); border: 3px solid var(--hf-surface-border); }
+        .ss-dot .ss-on { background: var(--hf-accent); opacity: 0; }
+        .ss-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--hf-font-title); font-size: 44px; font-weight: var(--hf-title-weight); color: var(--hf-muted); }
+        .ss-link { position: absolute; left: 38px; top: 88px; bottom: -32px; width: 4px; border-radius: 2px; background: var(--hf-surface-border); }
+        .ss-step:last-child .ss-link { display: none; }
+        .ss-body { flex: 1; min-width: 0; padding-top: 8px; }
+        .ss-head { font-size: 60px; font-weight: 800; line-height: 1.2; }
+        .ss-desc { margin-top: 8px; font-size: 32px; font-weight: 500; line-height: 1.5; color: var(--hf-muted); }
+      </style>
+      <div id="root" data-composition-id="dy-scene-steps" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="ss-wrap">
+          <div class="hf-title" id="ss-title"></div>
+          <div id="ss-list"></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ title: "3 步生成会议纪要", steps: "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历", active: 0, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const title = document.getElementById("ss-title"), list = document.getElementById("ss-list");
+        if (v.title) title.textContent = v.title; else title.remove();
+
+        const steps = HF.split(v.steps).map((raw, i) => {
+          const [head, desc] = HF.pair(raw);
+          const row = document.createElement("div"); row.className = "ss-step";
+          const dot = document.createElement("div"); dot.className = "ss-dot";
+          const off = document.createElement("i"); off.className = "ss-off";
+          const on = document.createElement("i"); on.className = "ss-on";
+          const num = document.createElement("span"); num.className = "ss-num"; num.textContent = i + 1;
+          dot.append(off, on, num);
+          const link = document.createElement("div"); link.className = "ss-link";
+          const body = document.createElement("div"); body.className = "ss-body hf-text";
+          const h = document.createElement("div"); h.className = "ss-head"; h.textContent = head; body.append(h);
+          if (desc) { const d = document.createElement("div"); d.className = "ss-desc"; d.textContent = desc; body.append(d); }
+          row.append(dot, link, body); list.append(row);
+          return { row, on, num, body };
+        });
+
+        HF.refit(() => {
+          if (title.isConnected) HF.fitLines(title, 2, 60);
+          steps.forEach(s => HF.fitLines(s.body.firstChild, 2, 44));
+          HF.centerBox(document.getElementById("ss-wrap"));
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 6), n = steps.length;
+        const tl = gsap.timeline({ paused: true });
+        if (title.isConnected) tl.fromTo(title, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        steps.forEach((s, i) => tl.fromTo(s.row, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.3 + i * m.stagger));
+        const ready = 0.3 + n * m.stagger + m.dur;
+        const fixed = Math.round(Number(v.active)) || 0;
+        const dim = 0.6;
+        const onText = getComputedStyle(root).getPropertyValue("--hf-on-accent").trim() || "#ffffff";
+        const light = (s, t) => { tl.to(s.on, { opacity: 1, duration: 0.3 }, t); tl.to(s.num, { color: onText, duration: 0.3 }, t); };
+        if (fixed >= 1 && fixed <= n) {
+          // 固定高亮第 N 步
+          steps.forEach((s, i) => {
+            if (i === fixed - 1) light(s, ready);
+            else tl.to(s.body, { opacity: dim, duration: 0.3 }, ready);
+          });
+        } else {
+          // 按时间依次高亮:可用时长平均分配给每一步;已完成的步骤保持点亮,未到的步骤变暗
+          const span = Math.max(0.6, (D - 0.35 - ready) / Math.max(1, n));
+          steps.forEach((s, i) => { if (i > 0) tl.to(s.body, { opacity: dim, duration: 0.2 }, ready); });
+          steps.forEach((s, i) => {
+            const t = ready + i * span;
+            light(s, t);
+            if (i > 0) tl.to(s.body, { opacity: 1, duration: 0.3 }, t);
+            tl.fromTo(s.on, { scale: 1 }, { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1 }, t);
+          });
+        }
+        tl.to("#ss-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(ready + 0.6, D - 0.35));
+        window.__timelines["dy-scene-steps"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
