@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"kicker","type":"string","label":"角标","default":"99%的人都不知道"},
+  {"id":"line1","type":"string","label":"标题第一行","default":"一招让你的视频"},
+  {"id":"before","type":"string","label":"第二行(关键词前)","default":"播放量涨"},
+  {"id":"keyword","type":"string","label":"高亮关键词","default":"10倍"},
+  {"id":"accent","type":"color","label":"高亮色","default":"#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #dy-hook-title-wrap { position: absolute; left: 60px; right: 60px; top: 300px; display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+        #dy-hook-title-kicker { background: #fff; color: #111; font-size: 44px; font-weight: 800; padding: 10px 28px; border-radius: 12px; }
+        .dy-hook-line { font-size: 120px; font-weight: 900; color: #fff; line-height: 1.15; letter-spacing: 2px; text-shadow: 0 6px 0 rgba(0,0,0,.55), 0 0 30px rgba(0,0,0,.35); -webkit-text-stroke: 12px #000; paint-order: stroke fill; }
+        .dy-hook-row { display: flex; align-items: center; }
+        #dy-hook-title-kw { position: relative; display: inline-block; padding: 0 22px; margin-left: 10px; color: #fff; }
+        #dy-hook-title-kwbg { position: absolute; inset: 6px 0 4px 0; background: var(--accent); border-radius: 14px; transform-origin: left center; }
+        #dy-hook-title-kwtext { position: relative; display: inline-block; }
+      </style>
+      <div id="root" data-composition-id="dy-hook-title" data-width="1080" data-height="1920">
+        <div id="dy-hook-title-wrap">
+          <div id="dy-hook-title-kicker"></div>
+          <div class="dy-hook-line" id="dy-hook-title-l1"></div>
+          <div class="dy-hook-line dy-hook-row" id="dy-hook-title-l2">
+            <span id="dy-hook-title-before"></span>
+            <span id="dy-hook-title-kw"><span id="dy-hook-title-kwbg"></span><span id="dy-hook-title-kwtext"></span></span>
+          </div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ kicker:"99%的人都不知道", line1:"一招让你的视频", before:"播放量涨", keyword:"10倍", accent:"#fe2c55" }, window.__hyperframes.getVariables());
+        const $ = (id) => document.getElementById(id);
+        $("dy-hook-title-kicker").textContent = v.kicker;
+        $("dy-hook-title-l1").textContent = v.line1;
+        $("dy-hook-title-before").textContent = v.before;
+        $("dy-hook-title-kwtext").textContent = v.keyword;
+        $("root").style.setProperty("--accent", v.accent);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#dy-hook-title-kicker", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 0.1);
+        tl.fromTo("#dy-hook-title-l1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.3);
+        tl.fromTo("#dy-hook-title-before", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.5);
+        tl.fromTo("#dy-hook-title-kwbg", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power4.out" }, 0.8);
+        tl.fromTo("#dy-hook-title-kwtext", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, 0.85);
+        tl.to("#dy-hook-title-wrap", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, 3.6);
+        window.__timelines["dy-hook-title"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"headline","type":"string","label":"主文案","default":"点赞 关注 不迷路"},
+  {"id":"sub","type":"string","label":"副文案","default":"评论区告诉我,下期想看什么?"},
+  {"id":"next","type":"string","label":"下期预告","default":"下期:3个爆款选题公式"},
+  {"id":"accent","type":"color","label":"主色","default":"#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #dy-end-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.75) 100%); }
+        #dy-end-wrap { position: absolute; left: 60px; right: 200px; bottom: 480px; display: flex; flex-direction: column; gap: 22px; }
+        #dy-end-head { font-size: 104px; font-weight: 900; color: #fff; -webkit-text-stroke: 8px #000; paint-order: stroke fill; line-height: 1.15; }
+        #dy-end-head b { color: var(--accent); }
+        #dy-end-sub { font-size: 44px; font-weight: 700; color: #fff; text-shadow: 0 3px 8px rgba(0,0,0,.7); }
+        #dy-end-next { align-self: flex-start; font-size: 36px; font-weight: 800; color: #fff; background: var(--accent); padding: 10px 28px; border-radius: 40px; }
+        #dy-end-arrow { position: absolute; right: 50px; bottom: 380px; font-size: 100px; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,.6); }
+      </style>
+      <div id="root" data-composition-id="dy-end-cta" data-width="1080" data-height="1920">
+        <div id="dy-end-shade"></div>
+        <div id="dy-end-wrap"><div id="dy-end-head"></div><div id="dy-end-sub"></div><div id="dy-end-next"></div></div>
+        <div id="dy-end-arrow">➜</div>
+      </div>
+      <script>
+        const v = Object.assign({ headline:"点赞 关注 不迷路", sub:"评论区告诉我,下期想看什么?", next:"下期:3个爆款选题公式", accent:"#fe2c55" }, window.__hyperframes.getVariables());
+        const $ = (id) => document.getElementById(id);
+        $("root").style.setProperty("--accent", v.accent);
+        const parts = String(v.headline).split(" ");
+        $("dy-end-head").innerHTML = parts.map((p, i) => i === 0 ? "<b>" + p + "</b>" : p).join(" ");
+        $("dy-end-sub").textContent = v.sub;
+        $("dy-end-next").textContent = v.next;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#dy-end-shade", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0);
+        tl.fromTo("#dy-end-head", { y: 80, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.6)" }, 0.2);
+        tl.fromTo("#dy-end-sub", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.55);
+        tl.fromTo("#dy-end-next", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.8);
+        tl.fromTo("#dy-end-arrow", { x: -30, opacity: 0.2 }, { x: 20, opacity: 1, duration: 0.4, yoyo: true, repeat: 7, ease: "sine.inOut" }, 0.6);
+        window.__timelines["dy-end-cta"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; pointer-events: none; }
+        .dy-sz { position: absolute; border: 3px dashed rgba(255,70,70,.9); background: rgba(255,70,70,.12); color: #ff8a8a; font-size: 30px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        #dy-sz-top { left: 0; right: 0; top: 0; height: 220px; }
+        #dy-sz-bottom { left: 0; right: 0; bottom: 0; height: 440px; }
+        #dy-sz-right { right: 0; top: 820px; width: 170px; bottom: 440px; }
+        #dy-sz-safe { left: 60px; right: 170px; top: 220px; bottom: 440px; border-color: rgba(60,220,120,.9); background: none; color: #6df0a3; }
+      </style>
+      <div id="root" data-composition-id="dy-safe-zone" data-width="1080" data-height="1920">
+        <div class="dy-sz" id="dy-sz-top">顶部:搜索栏/状态栏</div>
+        <div class="dy-sz" id="dy-sz-bottom">底部:标题/话题/音乐/导航</div>
+        <div class="dy-sz" id="dy-sz-right">右侧互动栏</div>
+        <div class="dy-sz" id="dy-sz-safe">安全区(字幕/核心内容放这里)</div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#root", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+        window.__timelines["dy-safe-zone"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

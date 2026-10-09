@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"name","type":"string","label":"昵称","default":"小明说干货"},
+  {"id":"handle","type":"string","label":"抖音号","default":"抖音号:xiaoming666"},
+  {"id":"fans","type":"string","label":"粉丝数","default":"128.6万粉丝"},
+  {"id":"avatarText","type":"string","label":"头像文字","default":"明"},
+  {"id":"accent","type":"color","label":"按钮色","default":"#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #dy-follow-card-card { position: absolute; left: 60px; right: 60px; bottom: 420px; display: flex; align-items: center; gap: 28px; padding: 28px 32px; background: rgba(20,20,26,.88); border-radius: 36px; box-shadow: 0 12px 50px rgba(0,0,0,.45); }
+        #dy-follow-card-avatar { width: 128px; height: 128px; border-radius: 50%; background: linear-gradient(135deg,#25f4ee,#fe2c55); color: #fff; font-size: 64px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 4px solid #fff; }
+        #dy-follow-card-info { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        #dy-follow-card-name { font-size: 44px; font-weight: 800; color: #fff; }
+        #dy-follow-card-handle { font-size: 28px; color: #a0a0aa; }
+        #dy-follow-card-fans { font-size: 28px; color: #25f4ee; font-weight: 700; }
+        #dy-follow-card-btn { position: relative; width: 200px; height: 84px; border-radius: 14px; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .dy-follow-card-t { position: absolute; font-size: 38px; font-weight: 800; color: #fff; white-space: nowrap; }
+        #dy-follow-card-t2 { opacity: 0; }
+        #dy-follow-card-ring { position: absolute; inset: 0; border-radius: 14px; border: 4px solid var(--accent); opacity: 0; }
+        #dy-follow-card-finger { position: absolute; right: 70px; bottom: -60px; font-size: 90px; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="dy-follow-card" data-width="1080" data-height="1920">
+        <div id="dy-follow-card-card">
+          <div id="dy-follow-card-avatar"></div>
+          <div id="dy-follow-card-info">
+            <div id="dy-follow-card-name"></div>
+            <div id="dy-follow-card-handle"></div>
+            <div id="dy-follow-card-fans"></div>
+          </div>
+          <div id="dy-follow-card-btn"><span class="dy-follow-card-t" id="dy-follow-card-t1">+ 关注</span><span class="dy-follow-card-t" id="dy-follow-card-t2">已关注 ✓</span></div>
+          <div id="dy-follow-card-ring"></div>
+          <div id="dy-follow-card-finger">👆</div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ name:"小明说干货", handle:"抖音号:xiaoming666", fans:"128.6万粉丝", avatarText:"明", accent:"#fe2c55" }, window.__hyperframes.getVariables());
+        const $ = (id) => document.getElementById(id);
+        $("dy-follow-card-name").textContent = v.name;
+        $("dy-follow-card-handle").textContent = v.handle;
+        $("dy-follow-card-fans").textContent = v.fans;
+        $("dy-follow-card-avatar").textContent = v.avatarText;
+        $("root").style.setProperty("--accent", v.accent);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#dy-follow-card-card", { y: 400, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.4)" }, 0);
+        tl.fromTo("#dy-follow-card-btn", { scale: 1 }, { scale: 1.08, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.7);
+        tl.fromTo("#dy-follow-card-finger", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 1.5);
+        tl.to("#dy-follow-card-btn", { scale: 0.9, duration: 0.1, ease: "power2.in" }, 1.95);
+        tl.to("#dy-follow-card-btn", { scale: 1, backgroundColor: "#3a3a44", duration: 0.35, ease: "elastic.out(1,0.4)" }, 2.05);
+        tl.to("#dy-follow-card-t1", { opacity: 0, duration: 0.1 }, 2.05);
+        tl.to("#dy-follow-card-t2", { opacity: 1, duration: 0.1 }, 2.1);
+        tl.fromTo("#dy-follow-card-ring", { scale: 1, opacity: 0.9 }, { scale: 1.6, opacity: 0, duration: 0.5, ease: "power2.out" }, 2.05);
+        tl.to("#dy-follow-card-finger", { opacity: 0, duration: 0.2 }, 2.4);
+        tl.to("#dy-follow-card-card", { y: 400, opacity: 0, duration: 0.4, ease: "power3.in" }, 4.1);
+        window.__timelines["dy-follow-card"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
