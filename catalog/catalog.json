@@ -1,0 +1,1657 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "dy-action-bar",
+      "kind": "ui",
+      "purpose": "右侧点赞评论收藏转发栏",
+      "suitableFor": "口播引导点赞收藏转发,模拟抖音界面",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "likes",
+          "type": "number",
+          "label": "点赞数",
+          "default": 128000
+        },
+        {
+          "id": "comments",
+          "type": "number",
+          "label": "评论数",
+          "default": 3568
+        },
+        {
+          "id": "favs",
+          "type": "number",
+          "label": "收藏数",
+          "default": 45200
+        },
+        {
+          "id": "shares",
+          "type": "number",
+          "label": "转发数",
+          "default": 9876
+        }
+      ]
+    },
+    {
+      "id": "dy-ai-badge",
+      "kind": "global",
+      "purpose": "『内容由 AI 辅助生成』角标,覆盖全片",
+      "suitableFor": "全片使用,由组装流程挂载,不出现在单个画面",
+      "minDuration": 1,
+      "variables": [
+        {
+          "id": "text",
+          "type": "string",
+          "label": "标识文案",
+          "default": "内容由 AI 辅助生成"
+        },
+        {
+          "id": "accent",
+          "type": "color",
+          "label": "主色",
+          "default": "#7c5cff"
+        }
+      ]
+    },
+    {
+      "id": "dy-before-after",
+      "kind": "overlay",
+      "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签",
+      "suitableFor": "口播讲用 AI 前后时间或成本的变化",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "beforeLabel",
+          "type": "string",
+          "label": "以前",
+          "default": "手动做一份 PPT"
+        },
+        {
+          "id": "beforeValue",
+          "type": "string",
+          "label": "以前耗时",
+          "default": "2 小时"
+        },
+        {
+          "id": "afterLabel",
+          "type": "string",
+          "label": "用 AI",
+          "default": "AI 一键生成"
+        },
+        {
+          "id": "afterValue",
+          "type": "string",
+          "label": "AI 耗时",
+          "default": "3 分钟"
+        },
+        {
+          "id": "gain",
+          "type": "string",
+          "label": "提效文案",
+          "default": "效率提升 40 倍"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-bench-bars",
+      "kind": "overlay",
+      "purpose": "评测条形图:多个名称和分数,领先者高亮",
+      "suitableFor": "口播比较多个模型或工具的分数、排名、测评结果",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "数学推理能力评测"
+        },
+        {
+          "id": "rows",
+          "type": "string",
+          "label": "名称|分数;分行",
+          "default": "模型 A|92;模型 B|88;模型 C|76;模型 D|61"
+        },
+        {
+          "id": "max",
+          "type": "number",
+          "label": "满分",
+          "default": 100
+        },
+        {
+          "id": "unit",
+          "type": "string",
+          "label": "单位",
+          "default": "分"
+        },
+        {
+          "id": "note",
+          "type": "string",
+          "label": "数据来源/备注",
+          "default": "数据仅供参考,以官方公布为准"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "领先色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-chapter-title",
+      "kind": "overlay",
+      "purpose": "章节标题:大序号 + 标题 + 副标题",
+      "suitableFor": "口播进入新的一部分(第一、第二部分;先说结论)",
+      "minDuration": 3,
+      "variables": [
+        {
+          "id": "index",
+          "type": "string",
+          "label": "序号",
+          "default": "01"
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "章节标题",
+          "default": "先说结论"
+        },
+        {
+          "id": "sub",
+          "type": "string",
+          "label": "副标题",
+          "default": "90% 的人都做错了"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-chat-demo",
+      "kind": "overlay",
+      "purpose": "AI 对话演示:提问打字 → 思考 → 回答打字",
+      "suitableFor": "口播演示向 AI 提问并得到回答",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "prompt",
+          "type": "string",
+          "label": "用户提问",
+          "default": "帮我用三句话讲清楚什么是大模型"
+        },
+        {
+          "id": "reply",
+          "type": "string",
+          "label": "AI 回答",
+          "default": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。"
+        },
+        {
+          "id": "aiName",
+          "type": "string",
+          "label": "AI 名称",
+          "default": "AI 助手"
+        },
+        {
+          "id": "hold",
+          "type": "number",
+          "label": "回答后停留(秒)",
+          "default": 1.5
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-checklist",
+      "kind": "overlay",
+      "purpose": "清单逐条打勾",
+      "suitableFor": "口播给出需要记住或检查的几条注意事项",
+      "minDuration": 4.3,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "记住这 3 点"
+        },
+        {
+          "id": "items",
+          "type": "string",
+          "label": "要点(| 分隔)",
+          "default": "别盲目跟风|先测试再放量|数据比感觉靠谱"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-code-block",
+      "kind": "overlay",
+      "purpose": "代码块打字机",
+      "suitableFor": "口播展示代码、命令行或配置",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "file",
+          "type": "string",
+          "label": "文件名",
+          "default": "demo.py"
+        },
+        {
+          "id": "code",
+          "type": "string",
+          "label": "代码(| 分行,# 开头为注释,$ 开头为命令)",
+          "default": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat(\"你好\"))"
+        },
+        {
+          "id": "speed",
+          "type": "number",
+          "label": "每秒字符数",
+          "default": 28
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "高亮色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-comment-bubble",
+      "kind": "ui",
+      "purpose": "抖音评论气泡",
+      "suitableFor": "口播引用观众评论或提问",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "nick",
+          "type": "string",
+          "label": "网友昵称",
+          "default": "爱吃瓜的小王"
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "label": "评论内容",
+          "default": "这个方法我试了,第二天就涨了500粉!"
+        },
+        {
+          "id": "likes",
+          "type": "string",
+          "label": "点赞数",
+          "default": "2.3w"
+        },
+        {
+          "id": "pinned",
+          "type": "boolean",
+          "label": "置顶",
+          "default": true
+        }
+      ]
+    },
+    {
+      "id": "dy-concept-card",
+      "kind": "overlay",
+      "purpose": "名词解释卡:术语 + 人话版 + 打个比方",
+      "suitableFor": "口播解释一个专业名词或概念",
+      "minDuration": 6,
+      "variables": [
+        {
+          "id": "term",
+          "type": "string",
+          "label": "术语",
+          "default": "Token"
+        },
+        {
+          "id": "en",
+          "type": "string",
+          "label": "英文/读音",
+          "default": "/ˈtoʊkən/ · 词元"
+        },
+        {
+          "id": "plain",
+          "type": "string",
+          "label": "人话版",
+          "default": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。"
+        },
+        {
+          "id": "analogy",
+          "type": "string",
+          "label": "打个比方",
+          "default": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-countdown",
+      "kind": "overlay",
+      "purpose": "3-2-1 倒计时 + 结束文案",
+      "suitableFor": "口播说『准备好了吗』『马上开始』等倒数时刻",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "from",
+          "type": "number",
+          "label": "起始数字",
+          "default": 3
+        },
+        {
+          "id": "label",
+          "type": "string",
+          "label": "结束文案",
+          "default": "开始!"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "数字颜色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-end-cta",
+      "kind": "overlay",
+      "purpose": "结尾引导:第一个词高亮的口号 + 副文案 + 下期预告",
+      "suitableFor": "视频结尾引导互动,需要叠在画面上而不是整屏时",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "headline",
+          "type": "string",
+          "label": "主文案(空格分隔,第一个词高亮)",
+          "default": "点赞 关注 不迷路"
+        },
+        {
+          "id": "sub",
+          "type": "string",
+          "label": "副文案",
+          "default": "评论区告诉我,下期想看什么?"
+        },
+        {
+          "id": "next",
+          "type": "string",
+          "label": "下期预告",
+          "default": "下期:3个爆款选题公式"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-follow-card",
+      "kind": "ui",
+      "purpose": "关注引导卡(点击→已关注)",
+      "suitableFor": "口播引导关注账号",
+      "minDuration": 4.5,
+      "variables": [
+        {
+          "id": "name",
+          "type": "string",
+          "label": "昵称",
+          "default": "小明说干货"
+        },
+        {
+          "id": "handle",
+          "type": "string",
+          "label": "抖音号",
+          "default": "抖音号:xiaoming666"
+        },
+        {
+          "id": "fans",
+          "type": "string",
+          "label": "粉丝数",
+          "default": "128.6万粉丝"
+        },
+        {
+          "id": "avatarText",
+          "type": "string",
+          "label": "头像文字",
+          "default": "明"
+        },
+        {
+          "id": "accent",
+          "type": "color",
+          "label": "按钮色",
+          "default": "#fe2c55"
+        }
+      ]
+    },
+    {
+      "id": "dy-hook-title",
+      "kind": "overlay",
+      "purpose": "钩子大标题:角标 + 两行大字 + 关键词色块",
+      "suitableFor": "开头 3 秒的强钩子,口播是一句反常识或强利益的话",
+      "minDuration": 3,
+      "variables": [
+        {
+          "id": "kicker",
+          "type": "string",
+          "label": "角标",
+          "default": "99%的人都不知道"
+        },
+        {
+          "id": "line1",
+          "type": "string",
+          "label": "标题第一行",
+          "default": "一招让你的视频"
+        },
+        {
+          "id": "before",
+          "type": "string",
+          "label": "第二行(关键词前)",
+          "default": "播放量涨"
+        },
+        {
+          "id": "keyword",
+          "type": "string",
+          "label": "高亮关键词",
+          "default": "10倍"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "高亮色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-lower-third",
+      "kind": "overlay",
+      "purpose": "人设条:姓名 + 头衔 + 标签",
+      "suitableFor": "口播介绍某个人、作者或身份",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "name",
+          "type": "string",
+          "label": "姓名",
+          "default": "李老师"
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "头衔",
+          "default": "10年短视频运营操盘手"
+        },
+        {
+          "id": "tags",
+          "type": "string",
+          "label": "标签(用|分隔)",
+          "default": "千万播放|实战派|带货达人"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-news-flash",
+      "kind": "overlay",
+      "purpose": "AI 快讯卡:栏目 + 主体 + 标题 + 要点 + 来源",
+      "suitableFor": "口播播报某家公司或产品的最新发布、新闻",
+      "minDuration": 4.5,
+      "variables": [
+        {
+          "id": "tag",
+          "type": "string",
+          "label": "栏目",
+          "default": "AI 快讯"
+        },
+        {
+          "id": "date",
+          "type": "string",
+          "label": "日期",
+          "default": "10 月 9 日"
+        },
+        {
+          "id": "company",
+          "type": "string",
+          "label": "主体",
+          "default": "某某公司"
+        },
+        {
+          "id": "headline",
+          "type": "string",
+          "label": "标题",
+          "default": "发布新一代多模态大模型"
+        },
+        {
+          "id": "points",
+          "type": "string",
+          "label": "要点(| 分隔)",
+          "default": "支持图文音视频输入|推理成本下降 50%|即日起开放 API"
+        },
+        {
+          "id": "source",
+          "type": "string",
+          "label": "来源",
+          "default": "来源:官方发布会"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-poll",
+      "kind": "overlay",
+      "purpose": "A/B 投票:问题 + 两个选项 + 占比",
+      "suitableFor": "口播向观众抛出二选一的问题,引导评论",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "question",
+          "type": "string",
+          "label": "问题",
+          "default": "你会选哪个?"
+        },
+        {
+          "id": "optionA",
+          "type": "string",
+          "label": "选项A",
+          "default": "先买再说"
+        },
+        {
+          "id": "optionB",
+          "type": "string",
+          "label": "选项B",
+          "default": "再等等看"
+        },
+        {
+          "id": "pctA",
+          "type": "number",
+          "label": "A 占比%",
+          "default": 64
+        },
+        {
+          "id": "cta",
+          "type": "string",
+          "label": "引导语",
+          "default": "评论区扣 A 或 B 👇"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "A 色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "colorB",
+          "type": "string",
+          "label": "B 色(留空用主题辅色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-product-card",
+      "kind": "ui",
+      "purpose": "带货商品卡",
+      "suitableFor": "口播介绍可购买的商品、价格和优惠",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "tag",
+          "type": "string",
+          "label": "角标",
+          "default": "限时秒杀"
+        },
+        {
+          "id": "name",
+          "type": "string",
+          "label": "商品名",
+          "default": "超轻便携颈挂风扇"
+        },
+        {
+          "id": "price",
+          "type": "number",
+          "label": "现价",
+          "default": 59
+        },
+        {
+          "id": "origin",
+          "type": "string",
+          "label": "原价",
+          "default": "¥169"
+        },
+        {
+          "id": "coupon",
+          "type": "string",
+          "label": "优惠",
+          "default": "拍下立减 20 元"
+        },
+        {
+          "id": "stock",
+          "type": "string",
+          "label": "库存文案",
+          "default": "仅剩 128 件"
+        },
+        {
+          "id": "stockPct",
+          "type": "number",
+          "label": "库存条(0-100)",
+          "default": 18
+        },
+        {
+          "id": "hint",
+          "type": "string",
+          "label": "引导语",
+          "default": "👇 点左下角小黄车"
+        },
+        {
+          "id": "accent",
+          "type": "color",
+          "label": "主色",
+          "default": "#fe2c55"
+        }
+      ]
+    },
+    {
+      "id": "dy-progress-bar",
+      "kind": "global",
+      "purpose": "顶部章节进度条,覆盖全片",
+      "suitableFor": "全片使用,由组装流程挂载,不出现在单个画面",
+      "minDuration": 1,
+      "variables": [
+        {
+          "id": "labels",
+          "type": "string",
+          "label": "章节(| 分隔)",
+          "default": "开头|方法|案例|总结"
+        },
+        {
+          "id": "duration",
+          "type": "number",
+          "label": "覆盖总时长(秒)",
+          "default": 20
+        },
+        {
+          "id": "accent",
+          "type": "color",
+          "label": "主色",
+          "default": "#fe2c55"
+        }
+      ]
+    },
+    {
+      "id": "dy-prompt-card",
+      "kind": "overlay",
+      "purpose": "提示词模板卡:角色 / 任务 / 要求逐条出现",
+      "suitableFor": "口播给出一段可以复制的提示词或模板",
+      "minDuration": 3.8,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "万能提示词模板"
+        },
+        {
+          "id": "fields",
+          "type": "string",
+          "label": "字段(名称|内容;分行)",
+          "default": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注"
+        },
+        {
+          "id": "cta",
+          "type": "string",
+          "label": "引导语",
+          "default": "⭐ 收藏起来,下次直接复制"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-rank-item",
+      "kind": "overlay",
+      "purpose": "榜单条目:名次 + 名称 + 说明",
+      "suitableFor": "口播在讲排名、Top N 中的某一名",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "rank",
+          "type": "number",
+          "label": "名次",
+          "default": 1
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "苹果 iPhone 17"
+        },
+        {
+          "id": "subtitle",
+          "type": "string",
+          "label": "说明",
+          "default": "销量冠军 · 好评率 98%"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-rec-phone",
+      "kind": "scene",
+      "purpose": "手机框录屏:点击波纹、框选高亮、局部放大标注",
+      "suitableFor": "口播在演示手机或软件上的实际操作(需要用户录屏)",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "src",
+          "type": "string",
+          "label": "录屏视频路径(相对项目根目录,静音播放)",
+          "default": "assets/dykit/media/rec-placeholder.mp4"
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "上方标题(可选)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "标注 JSON:[{t,dur,type:tap|box|zoom,x,y,w,h,label}],坐标为录屏画面百分比",
+          "default": "[]"
+        },
+        {
+          "id": "ratio",
+          "type": "string",
+          "label": "录屏宽高比(如 9:19.5;留空自动读取)",
+          "default": ""
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-safe-zone",
+      "kind": "tool",
+      "purpose": "安全区参考线",
+      "suitableFor": "仅设计时使用,不出现在清单",
+      "minDuration": 1,
+      "variables": []
+    },
+    {
+      "id": "dy-scene-bg",
+      "kind": "scene",
+      "purpose": "纯主题背景",
+      "suitableFor": "只在需要空背景垫底时使用,一般不单独作为画面",
+      "minDuration": 1,
+      "variables": [
+        {
+          "id": "variant",
+          "type": "string",
+          "label": "背景样式(1 或 2)",
+          "default": "1"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-big-number",
+      "kind": "scene",
+      "purpose": "数据大字页:一个大数字滚动 + 说明",
+      "suitableFor": "口播强调一个具体数字、百分比或倍数",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "label",
+          "type": "string",
+          "label": "说明",
+          "default": "用 AI 之后,每周节省"
+        },
+        {
+          "id": "value",
+          "type": "number",
+          "label": "数值",
+          "default": 12
+        },
+        {
+          "id": "prefix",
+          "type": "string",
+          "label": "前缀",
+          "default": ""
+        },
+        {
+          "id": "suffix",
+          "type": "string",
+          "label": "单位",
+          "default": " 小时"
+        },
+        {
+          "id": "note",
+          "type": "string",
+          "label": "备注",
+          "default": "按每天 2 小时文案工作估算"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-compare",
+      "kind": "scene",
+      "purpose": "对比页:两侧标题 + 各自条目(上下或左右)",
+      "suitableFor": "口播对比以前和现在、用与不用、A 方案和 B 方案",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "leftTitle",
+          "type": "string",
+          "label": "左/上 标题",
+          "default": "以前"
+        },
+        {
+          "id": "rightTitle",
+          "type": "string",
+          "label": "右/下 标题(重点一侧)",
+          "default": "用 AI 之后"
+        },
+        {
+          "id": "left",
+          "type": "string",
+          "label": "左/上 条目(| 分隔)",
+          "default": "手动整理会议记录|逐页做 PPT|反复改邮件措辞"
+        },
+        {
+          "id": "right",
+          "type": "string",
+          "label": "右/下 条目(| 分隔)",
+          "default": "录音自动出纪要|一句话生成初稿|一键改写语气"
+        },
+        {
+          "id": "layout",
+          "type": "string",
+          "label": "排列(vertical 上下 / horizontal 左右)",
+          "default": "vertical"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-ending",
+      "kind": "scene",
+      "purpose": "结尾页:三连引导按钮 + 下期预告",
+      "suitableFor": "视频结尾引导点赞关注收藏、预告下期",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "headline",
+          "type": "string",
+          "label": "结尾标题",
+          "default": "觉得有用,记得三连"
+        },
+        {
+          "id": "cta",
+          "type": "string",
+          "label": "行动引导(· 分隔,显示为按钮)",
+          "default": "点赞 · 关注 · 收藏"
+        },
+        {
+          "id": "next",
+          "type": "string",
+          "label": "下期预告(可选)",
+          "default": ""
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-image-text",
+      "kind": "scene",
+      "purpose": "图文页:一张截图 + 说明文字,可放大局部",
+      "suitableFor": "口播在讲一张截图、界面或图片里的某处(需要用户提供图片)",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "src",
+          "type": "string",
+          "label": "图片路径(相对项目根目录)",
+          "default": ""
+        },
+        {
+          "id": "caption",
+          "type": "string",
+          "label": "说明文字",
+          "default": "右上角这个按钮,就是一键生成入口"
+        },
+        {
+          "id": "focus",
+          "type": "string",
+          "label": "放大区域 x,y,w,h(图片百分比,可选)",
+          "default": ""
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-points",
+      "kind": "scene",
+      "purpose": "要点页:标题 + 3~5 条『标题::说明』要点",
+      "suitableFor": "口播列举并列的几点(三个工具、四个技巧、几个原因)",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "这 3 个,直接用"
+        },
+        {
+          "id": "items",
+          "type": "string",
+          "label": "要点(| 分隔;每条可写 标题::说明)",
+          "default": "会议纪要::录音上传,自动整理待办|PPT 初稿::一句话主题,生成整套页面|邮件润色::语气、长度,一键改写"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-quote",
+      "kind": "scene",
+      "purpose": "金句页:一句话 + 强调词 + 出处",
+      "suitableFor": "口播里的一句总结、观点或名言,适合单独停留",
+      "minDuration": 3.5,
+      "variables": [
+        {
+          "id": "text",
+          "type": "string",
+          "label": "金句",
+          "default": "AI 不会取代你,会用 AI 的人才会"
+        },
+        {
+          "id": "em",
+          "type": "string",
+          "label": "强调词(金句中的一段)",
+          "default": "会用 AI 的人"
+        },
+        {
+          "id": "source",
+          "type": "string",
+          "label": "出处",
+          "default": ""
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-steps",
+      "kind": "scene",
+      "purpose": "步骤页:编号步骤,可高亮当前步",
+      "suitableFor": "口播讲有先后顺序的操作流程或方法步骤",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "3 步生成会议纪要"
+        },
+        {
+          "id": "steps",
+          "type": "string",
+          "label": "步骤(| 分隔;每步可写 标题::说明)",
+          "default": "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历"
+        },
+        {
+          "id": "active",
+          "type": "number",
+          "label": "高亮第几步(0 为按时间依次高亮)",
+          "default": 0
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-scene-title",
+      "kind": "scene",
+      "purpose": "开场标题页:角标 + 大标题(强调词高亮)+ 副标题",
+      "suitableFor": "视频开头的钩子;口播点出主题、承诺收益或制造悬念",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "kicker",
+          "type": "string",
+          "label": "小标签",
+          "default": "AI 效率指南 · 07"
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "3 个 AI 工具让你下班提前 2 小时"
+        },
+        {
+          "id": "em",
+          "type": "string",
+          "label": "强调词(标题中的一段)",
+          "default": "提前 2 小时"
+        },
+        {
+          "id": "sub",
+          "type": "string",
+          "label": "副标题",
+          "default": "会议、PPT、邮件,一次讲清"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-stat-counter",
+      "kind": "overlay",
+      "purpose": "数字滚动卡:说明 + 数字 + 对比标签",
+      "suitableFor": "口播强调一个数字,但需要叠在录屏或其他画面上",
+      "minDuration": 4.5,
+      "variables": [
+        {
+          "id": "label",
+          "type": "string",
+          "label": "说明",
+          "default": "单条视频最高播放量"
+        },
+        {
+          "id": "value",
+          "type": "number",
+          "label": "目标数值",
+          "default": 1286
+        },
+        {
+          "id": "prefix",
+          "type": "string",
+          "label": "前缀",
+          "default": ""
+        },
+        {
+          "id": "suffix",
+          "type": "string",
+          "label": "单位",
+          "default": "万"
+        },
+        {
+          "id": "delta",
+          "type": "string",
+          "label": "对比文案",
+          "default": "较上月 ↑ 320%"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-sticker-pop",
+      "kind": "overlay",
+      "purpose": "花字贴纸弹出",
+      "suitableFor": "给画面加情绪强调(太绝了、划重点、注意),只适合作为叠加",
+      "minDuration": 2.5,
+      "variables": [
+        {
+          "id": "text",
+          "type": "string",
+          "label": "花字",
+          "default": "太绝了"
+        },
+        {
+          "id": "emoji",
+          "type": "string",
+          "label": "表情",
+          "default": "🔥"
+        },
+        {
+          "id": "color",
+          "type": "color",
+          "label": "字色",
+          "default": "#ffe14d"
+        },
+        {
+          "id": "rotate",
+          "type": "number",
+          "label": "倾斜角",
+          "default": -8
+        },
+        {
+          "id": "x",
+          "type": "number",
+          "label": "水平位置%",
+          "default": 50
+        },
+        {
+          "id": "y",
+          "type": "number",
+          "label": "垂直位置%",
+          "default": 38
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "阴影色(留空用主题强调色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-subtitle",
+      "kind": "subtitle",
+      "purpose": "逐字高亮字幕",
+      "suitableFor": "字幕由用户流程负责,清单不使用",
+      "minDuration": 1,
+      "variables": [
+        {
+          "id": "lines",
+          "type": "string",
+          "label": "字幕(用|分隔多句)",
+          "default": "今天教你三个涨粉技巧|第一招:前三秒必须有钩子|第二招:评论区自己先留言"
+        },
+        {
+          "id": "secondsPerLine",
+          "type": "number",
+          "label": "每句秒数",
+          "default": 2
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "keyColor",
+          "type": "string",
+          "label": "高亮色(留空用主题强调色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-tool-card",
+      "kind": "overlay",
+      "purpose": "AI 工具推荐卡:Logo、名称、介绍、标签、评分、价格、获取方式",
+      "suitableFor": "口播推荐或介绍一个具体工具",
+      "minDuration": 5,
+      "variables": [
+        {
+          "id": "name",
+          "type": "string",
+          "label": "工具名",
+          "default": "某某 AI"
+        },
+        {
+          "id": "logo",
+          "type": "string",
+          "label": "Logo 文字(1-2字)",
+          "default": "AI"
+        },
+        {
+          "id": "tagline",
+          "type": "string",
+          "label": "一句话介绍",
+          "default": "30 秒把文字变成 PPT"
+        },
+        {
+          "id": "tags",
+          "type": "string",
+          "label": "标签(| 分隔)",
+          "default": "免费|中文|免注册"
+        },
+        {
+          "id": "rating",
+          "type": "string",
+          "label": "评分",
+          "default": "4.8"
+        },
+        {
+          "id": "price",
+          "type": "string",
+          "label": "价格",
+          "default": "基础功能免费"
+        },
+        {
+          "id": "url",
+          "type": "string",
+          "label": "获取方式",
+          "default": "评论区置顶 👆"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-tr-glitch",
+      "kind": "transition",
+      "purpose": "故障切片转场",
+      "suitableFor": "换话题时的切换,偏科技感、强调反转",
+      "minDuration": 0.5,
+      "variables": [
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "accent2",
+          "type": "string",
+          "label": "辅色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-tr-wipe",
+      "kind": "transition",
+      "purpose": "色带擦除转场",
+      "suitableFor": "换话题时的切换",
+      "minDuration": 0.5,
+      "variables": [
+        {
+          "id": "direction",
+          "type": "enum",
+          "label": "方向",
+          "default": "left"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "accent2",
+          "type": "string",
+          "label": "辅色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-tr-zoom",
+      "kind": "transition",
+      "purpose": "圆形放大转场",
+      "suitableFor": "换话题时的切换,偏柔和",
+      "minDuration": 0.5,
+      "variables": [
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "主色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "accent2",
+          "type": "string",
+          "label": "辅色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-vs-compare",
+      "kind": "overlay",
+      "purpose": "PK 对比表:两个名称 + 多行项目,胜方高亮",
+      "suitableFor": "口播逐项对比两个产品、模型或方案的参数",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "leftName",
+          "type": "string",
+          "label": "左侧名称",
+          "default": "方案 A"
+        },
+        {
+          "id": "rightName",
+          "type": "string",
+          "label": "右侧名称",
+          "default": "方案 B"
+        },
+        {
+          "id": "rows",
+          "type": "string",
+          "label": "对比行(项目|左|右|胜方L或R;用分号分行)",
+          "default": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "leftColor",
+          "type": "string",
+          "label": "左侧色(留空用主题辅色)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "右侧色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "dy-workflow-flow",
+      "kind": "overlay",
+      "purpose": "纵向流程图,AI 步骤高亮",
+      "suitableFor": "口播讲一个包含 AI 环节的工作流程",
+      "minDuration": 4,
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "标题",
+          "default": "AI 工作流"
+        },
+        {
+          "id": "steps",
+          "type": "string",
+          "label": "步骤(| 分隔)",
+          "default": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布"
+        },
+        {
+          "id": "aiSteps",
+          "type": "string",
+          "label": "AI 步骤序号(逗号分隔,从1起)",
+          "default": "2,3"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "AI 步骤色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    }
+  ]
+}

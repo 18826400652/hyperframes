@@ -1,0 +1,248 @@
+{
+  "dy-action-bar": {
+    "kind": "ui",
+    "purpose": "右侧点赞评论收藏转发栏",
+    "suitableFor": "口播引导点赞收藏转发,模拟抖音界面",
+    "minDuration": 5
+  },
+  "dy-ai-badge": {
+    "kind": "global",
+    "purpose": "『内容由 AI 辅助生成』角标,覆盖全片",
+    "suitableFor": "全片使用,由组装流程挂载,不出现在单个画面",
+    "minDuration": 1
+  },
+  "dy-before-after": {
+    "kind": "overlay",
+    "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签",
+    "suitableFor": "口播讲用 AI 前后时间或成本的变化",
+    "minDuration": 5
+  },
+  "dy-bench-bars": {
+    "kind": "overlay",
+    "purpose": "评测条形图:多个名称和分数,领先者高亮",
+    "suitableFor": "口播比较多个模型或工具的分数、排名、测评结果",
+    "minDuration": 4
+  },
+  "dy-chapter-title": {
+    "kind": "overlay",
+    "purpose": "章节标题:大序号 + 标题 + 副标题",
+    "suitableFor": "口播进入新的一部分(第一、第二部分;先说结论)",
+    "minDuration": 3
+  },
+  "dy-chat-demo": {
+    "kind": "overlay",
+    "purpose": "AI 对话演示:提问打字 → 思考 → 回答打字",
+    "suitableFor": "口播演示向 AI 提问并得到回答",
+    "minDuration": 5
+  },
+  "dy-checklist": {
+    "kind": "overlay",
+    "purpose": "清单逐条打勾",
+    "suitableFor": "口播给出需要记住或检查的几条注意事项",
+    "minDuration": 4.3
+  },
+  "dy-code-block": {
+    "kind": "overlay",
+    "purpose": "代码块打字机",
+    "suitableFor": "口播展示代码、命令行或配置",
+    "minDuration": 4
+  },
+  "dy-comment-bubble": {
+    "kind": "ui",
+    "purpose": "抖音评论气泡",
+    "suitableFor": "口播引用观众评论或提问",
+    "minDuration": 4
+  },
+  "dy-concept-card": {
+    "kind": "overlay",
+    "purpose": "名词解释卡:术语 + 人话版 + 打个比方",
+    "suitableFor": "口播解释一个专业名词或概念",
+    "minDuration": 6
+  },
+  "dy-countdown": {
+    "kind": "overlay",
+    "purpose": "3-2-1 倒计时 + 结束文案",
+    "suitableFor": "口播说『准备好了吗』『马上开始』等倒数时刻",
+    "minDuration": 4
+  },
+  "dy-end-cta": {
+    "kind": "overlay",
+    "purpose": "结尾引导:第一个词高亮的口号 + 副文案 + 下期预告",
+    "suitableFor": "视频结尾引导互动,需要叠在画面上而不是整屏时",
+    "minDuration": 4
+  },
+  "dy-follow-card": {
+    "kind": "ui",
+    "purpose": "关注引导卡(点击→已关注)",
+    "suitableFor": "口播引导关注账号",
+    "minDuration": 4.5
+  },
+  "dy-hook-title": {
+    "kind": "overlay",
+    "purpose": "钩子大标题:角标 + 两行大字 + 关键词色块",
+    "suitableFor": "开头 3 秒的强钩子,口播是一句反常识或强利益的话",
+    "minDuration": 3
+  },
+  "dy-lower-third": {
+    "kind": "overlay",
+    "purpose": "人设条:姓名 + 头衔 + 标签",
+    "suitableFor": "口播介绍某个人、作者或身份",
+    "minDuration": 4
+  },
+  "dy-news-flash": {
+    "kind": "overlay",
+    "purpose": "AI 快讯卡:栏目 + 主体 + 标题 + 要点 + 来源",
+    "suitableFor": "口播播报某家公司或产品的最新发布、新闻",
+    "minDuration": 4.5
+  },
+  "dy-poll": {
+    "kind": "overlay",
+    "purpose": "A/B 投票:问题 + 两个选项 + 占比",
+    "suitableFor": "口播向观众抛出二选一的问题,引导评论",
+    "minDuration": 5
+  },
+  "dy-product-card": {
+    "kind": "ui",
+    "purpose": "带货商品卡",
+    "suitableFor": "口播介绍可购买的商品、价格和优惠",
+    "minDuration": 5
+  },
+  "dy-progress-bar": {
+    "kind": "global",
+    "purpose": "顶部章节进度条,覆盖全片",
+    "suitableFor": "全片使用,由组装流程挂载,不出现在单个画面",
+    "minDuration": 1
+  },
+  "dy-prompt-card": {
+    "kind": "overlay",
+    "purpose": "提示词模板卡:角色 / 任务 / 要求逐条出现",
+    "suitableFor": "口播给出一段可以复制的提示词或模板",
+    "minDuration": 3.8
+  },
+  "dy-rank-item": {
+    "kind": "overlay",
+    "purpose": "榜单条目:名次 + 名称 + 说明",
+    "suitableFor": "口播在讲排名、Top N 中的某一名",
+    "minDuration": 4
+  },
+  "dy-rec-phone": {
+    "kind": "scene",
+    "purpose": "手机框录屏:点击波纹、框选高亮、局部放大标注",
+    "suitableFor": "口播在演示手机或软件上的实际操作(需要用户录屏)",
+    "minDuration": 5
+  },
+  "dy-safe-zone": {
+    "kind": "tool",
+    "purpose": "安全区参考线",
+    "suitableFor": "仅设计时使用,不出现在清单",
+    "minDuration": 1
+  },
+  "dy-scene-bg": {
+    "kind": "scene",
+    "purpose": "纯主题背景",
+    "suitableFor": "只在需要空背景垫底时使用,一般不单独作为画面",
+    "minDuration": 1
+  },
+  "dy-scene-big-number": {
+    "kind": "scene",
+    "purpose": "数据大字页:一个大数字滚动 + 说明",
+    "suitableFor": "口播强调一个具体数字、百分比或倍数",
+    "minDuration": 4
+  },
+  "dy-scene-compare": {
+    "kind": "scene",
+    "purpose": "对比页:两侧标题 + 各自条目(上下或左右)",
+    "suitableFor": "口播对比以前和现在、用与不用、A 方案和 B 方案",
+    "minDuration": 5
+  },
+  "dy-scene-ending": {
+    "kind": "scene",
+    "purpose": "结尾页:三连引导按钮 + 下期预告",
+    "suitableFor": "视频结尾引导点赞关注收藏、预告下期",
+    "minDuration": 4
+  },
+  "dy-scene-image-text": {
+    "kind": "scene",
+    "purpose": "图文页:一张截图 + 说明文字,可放大局部",
+    "suitableFor": "口播在讲一张截图、界面或图片里的某处(需要用户提供图片)",
+    "minDuration": 5
+  },
+  "dy-scene-points": {
+    "kind": "scene",
+    "purpose": "要点页:标题 + 3~5 条『标题::说明』要点",
+    "suitableFor": "口播列举并列的几点(三个工具、四个技巧、几个原因)",
+    "minDuration": 5
+  },
+  "dy-scene-quote": {
+    "kind": "scene",
+    "purpose": "金句页:一句话 + 强调词 + 出处",
+    "suitableFor": "口播里的一句总结、观点或名言,适合单独停留",
+    "minDuration": 3.5
+  },
+  "dy-scene-steps": {
+    "kind": "scene",
+    "purpose": "步骤页:编号步骤,可高亮当前步",
+    "suitableFor": "口播讲有先后顺序的操作流程或方法步骤",
+    "minDuration": 5
+  },
+  "dy-scene-title": {
+    "kind": "scene",
+    "purpose": "开场标题页:角标 + 大标题(强调词高亮)+ 副标题",
+    "suitableFor": "视频开头的钩子;口播点出主题、承诺收益或制造悬念",
+    "minDuration": 4
+  },
+  "dy-stat-counter": {
+    "kind": "overlay",
+    "purpose": "数字滚动卡:说明 + 数字 + 对比标签",
+    "suitableFor": "口播强调一个数字,但需要叠在录屏或其他画面上",
+    "minDuration": 4.5
+  },
+  "dy-sticker-pop": {
+    "kind": "overlay",
+    "purpose": "花字贴纸弹出",
+    "suitableFor": "给画面加情绪强调(太绝了、划重点、注意),只适合作为叠加",
+    "minDuration": 2.5
+  },
+  "dy-subtitle": {
+    "kind": "subtitle",
+    "purpose": "逐字高亮字幕",
+    "suitableFor": "字幕由用户流程负责,清单不使用",
+    "minDuration": 1
+  },
+  "dy-tool-card": {
+    "kind": "overlay",
+    "purpose": "AI 工具推荐卡:Logo、名称、介绍、标签、评分、价格、获取方式",
+    "suitableFor": "口播推荐或介绍一个具体工具",
+    "minDuration": 5
+  },
+  "dy-tr-glitch": {
+    "kind": "transition",
+    "purpose": "故障切片转场",
+    "suitableFor": "换话题时的切换,偏科技感、强调反转",
+    "minDuration": 0.5
+  },
+  "dy-tr-wipe": {
+    "kind": "transition",
+    "purpose": "色带擦除转场",
+    "suitableFor": "换话题时的切换",
+    "minDuration": 0.5
+  },
+  "dy-tr-zoom": {
+    "kind": "transition",
+    "purpose": "圆形放大转场",
+    "suitableFor": "换话题时的切换,偏柔和",
+    "minDuration": 0.5
+  },
+  "dy-vs-compare": {
+    "kind": "overlay",
+    "purpose": "PK 对比表:两个名称 + 多行项目,胜方高亮",
+    "suitableFor": "口播逐项对比两个产品、模型或方案的参数",
+    "minDuration": 4
+  },
+  "dy-workflow-flow": {
+    "kind": "overlay",
+    "purpose": "纵向流程图,AI 步骤高亮",
+    "suitableFor": "口播讲一个包含 AI 环节的工作流程",
+    "minDuration": 4
+  }
+}

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN" data-composition-variables='[
   {"id": "file", "type": "string", "label": "文件名", "default": "demo.py"},
-  {"id": "code", "type": "string", "label": "代码(| 分行,# 开头为注释,$ 开头为命令)", "default": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat('你好'))"},
+  {"id": "code", "type": "string", "label": "代码(| 分行,# 开头为注释,$ 开头为命令)", "default": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat(\"你好\"))"},
   {"id": "speed", "type": "number", "label": "每秒字符数", "default": 28},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
   {"id": "accent", "type": "string", "label": "高亮色(留空用主题色)", "default": ""}
@@ -23,7 +23,7 @@
         <div class="hf-panel" id="cb"><div id="cb-bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><span id="cb-file"></span></div><div id="cb-body"></div></div>
       </div>
       <script>
-        const v = Object.assign({"file": "demo.py", "code": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat('你好'))", "speed": 28, "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"file": "demo.py", "code": "# 一行代码调用大模型|from openai import OpenAI|client = OpenAI()|print(client.chat(\"你好\"))", "speed": 28, "theme": "", "accent": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const mkType = (el, text) => { el.innerHTML = '<span></span><span style="opacity:0"></span>'; const on = el.firstChild, off = el.lastChild; off.textContent = text; return n => { const k = Math.max(0, Math.min(text.length, Math.round(n))); on.textContent = text.slice(0, k); off.textContent = text.slice(k); }; };
