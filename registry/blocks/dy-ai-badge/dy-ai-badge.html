@@ -13,8 +13,9 @@
         @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
         @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
         #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
-        #ab { position: absolute; left: 60px; top: 225px; display: flex; align-items: center; gap: 12px; padding: 10px 24px 10px 14px; border-radius: 40px; background: rgba(0,0,0,.55); border: 2px solid rgba(255,255,255,.35); font-size: 30px; font-weight: 800; color: #fff; }
-        #ab-i { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; }
+        /* 紧凑胶囊:位于顶部进度条(约 150-211px)与内容安全区(260px 起)之间 */
+        #ab { position: absolute; left: 60px; top: 213px; height: 44px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 18px 0 6px; border-radius: 22px; background: rgba(0,0,0,.55); border: 2px solid rgba(255,255,255,.35); font-size: 24px; font-weight: 800; line-height: 1; color: #fff; white-space: nowrap; }
+        #ab-i { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 900; }
       </style>
       <div id="root" data-composition-id="dy-ai-badge" data-width="1080" data-height="1920">
         <div id="ab"><div id="ab-i">AI</div><span id="ab-t"></span></div>
