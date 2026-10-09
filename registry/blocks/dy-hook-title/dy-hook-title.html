@@ -4,24 +4,20 @@
   {"id":"line1","type":"string","label":"标题第一行","default":"一招让你的视频"},
   {"id":"before","type":"string","label":"第二行(关键词前)","default":"播放量涨"},
   {"id":"keyword","type":"string","label":"高亮关键词","default":"10倍"},
-  {"id":"accent","type":"color","label":"高亮色","default":"#fe2c55"}
+  {"id":"theme","type":"string","label":"主题(留空跟随全局)","default":""},
+  {"id":"accent","type":"string","label":"高亮色(留空用主题色)","default":""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
     <template>
       <style>
-        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
-        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
-        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
-        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
-        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
-        #dy-hook-title-wrap { position: absolute; left: 60px; right: 60px; top: 300px; display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
-        #dy-hook-title-kicker { background: #fff; color: #111; font-size: 44px; font-weight: 800; padding: 10px 28px; border-radius: 12px; }
-        .dy-hook-line { font-size: 120px; font-weight: 900; color: #fff; line-height: 1.15; letter-spacing: 2px; text-shadow: 0 6px 0 rgba(0,0,0,.55), 0 0 30px rgba(0,0,0,.35); -webkit-text-stroke: 12px #000; paint-order: stroke fill; }
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #dy-hook-title-wrap { position: absolute; left: 60px; right: 80px; top: 300px; display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+        #dy-hook-title-kicker { max-width: 100%; background: var(--hf-text); color: var(--hf-bg); font-family: var(--hf-kicker-font); font-size: 44px; font-weight: 800; line-height: 1.3; padding: 10px 28px; border-radius: var(--hf-radius); }
+        .dy-hook-line { max-width: 100%; font-family: var(--hf-font-title); font-size: 120px; font-weight: var(--hf-title-weight); color: var(--hf-text); line-height: 1.15; letter-spacing: 2px; text-shadow: var(--hf-title-shadow); -webkit-text-stroke: 12px var(--hf-bg); paint-order: stroke fill; }
         .dy-hook-row { display: flex; align-items: center; }
-        #dy-hook-title-kw { position: relative; display: inline-block; padding: 0 22px; margin-left: 10px; color: #fff; }
-        #dy-hook-title-kwbg { position: absolute; inset: 6px 0 4px 0; background: var(--accent); border-radius: 14px; transform-origin: left center; }
+        #dy-hook-title-kw { position: relative; display: inline-block; padding: 0 22px; margin-left: 10px; color: var(--hf-on-accent); -webkit-text-stroke: 0; text-shadow: none; }
+        #dy-hook-title-kwbg { position: absolute; inset: 6px 0 4px 0; background: var(--hf-accent); border-radius: var(--hf-radius); transform-origin: left center; }
         #dy-hook-title-kwtext { position: relative; display: inline-block; }
       </style>
       <div id="root" data-composition-id="dy-hook-title" data-width="1080" data-height="1920">
@@ -35,24 +31,30 @@
         </div>
       </div>
       <script>
-        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
-        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
-        const v = Object.assign({ kicker:"99%的人都不知道", line1:"一招让你的视频", before:"播放量涨", keyword:"10倍", accent:"#fe2c55" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ kicker:"99%的人都不知道", line1:"一招让你的视频", before:"播放量涨", keyword:"10倍", theme:"", accent:"" }, window.__hyperframes.getVariables());
         const $ = (id) => document.getElementById(id);
+        const root = $("root");
+        HF.applyTheme(root, v);
         $("dy-hook-title-kicker").textContent = v.kicker;
         $("dy-hook-title-l1").textContent = v.line1;
         $("dy-hook-title-before").textContent = v.before;
         $("dy-hook-title-kwtext").textContent = v.keyword;
-        $("root").style.setProperty("--accent", v.accent);
-        const hfRefit = () => { hfFit($("dy-hook-title-kicker"), 940, 28); hfFit($("dy-hook-title-l1"), 940, 84); const l2 = $("dy-hook-title-l2"); l2.style.flexWrap = "nowrap"; hfFit(l2, 940, 84); if (l2.style.whiteSpace === "normal") { l2.style.whiteSpace = "nowrap"; l2.style.flexWrap = "wrap"; } };
-        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        HF.refit(() => {
+          HF.fit($("dy-hook-title-kicker"), 940, 28);
+          HF.fit($("dy-hook-title-l1"), 940, 84);
+          const l2 = $("dy-hook-title-l2"); l2.style.flexWrap = "nowrap";
+          HF.fit(l2, 940, 84);
+          if (l2.style.whiteSpace === "normal") { l2.style.whiteSpace = "nowrap"; l2.style.flexWrap = "wrap"; }
+          HF.fitBox($("dy-hook-title-wrap"));
+        });
+        const D = HF.duration(root, 4);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#dy-hook-title-kicker", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 0.1);
         tl.fromTo("#dy-hook-title-l1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.3);
         tl.fromTo("#dy-hook-title-before", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.5);
         tl.fromTo("#dy-hook-title-kwbg", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power4.out" }, 0.8);
         tl.fromTo("#dy-hook-title-kwtext", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)" }, 0.85);
-        tl.to("#dy-hook-title-wrap", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, 3.6);
+        tl.to("#dy-hook-title-wrap", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, Math.max(1.4, D - 0.4));
         window.__timelines["dy-hook-title"] = tl;
       </script>
     </template>

@@ -1,0 +1,9 @@
+{
+  "component": "dy-countdown",
+  "duration": 4,
+  "peaks": [0.5, 3.5],
+  "variants": {
+    "normal": {},
+    "long": { "from": 3, "label": "<b>&\" 准备好了吗马上开始今天的实操演示" }
+  }
+}
