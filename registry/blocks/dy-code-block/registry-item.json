@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-code-block",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-code-block",
+  "description": "dykit 抖音竖屏组件 dy-code-block(1080×1920,支持 4 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-code-block.html",
+      "target": "compositions/dy-code-block.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

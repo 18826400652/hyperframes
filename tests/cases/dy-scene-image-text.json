@@ -1,0 +1,11 @@
+{
+  "component": "dy-scene-image-text",
+  "duration": 5,
+  "peak": 3,
+  "variants": {
+    "normal": { "src": "tests/media/sample-shot.png", "caption": "右上角这个按钮,就是一键生成入口", "focus": "60,10,30,15" },
+    "long": { "src": "tests/media/sample-shot.png", "caption": "<b>&\" 很多人找不到这个入口,其实它藏在设置页面的第三个标签里,点进去之后往下拉,找到实验功能,把这个开关打开就能看到了" },
+    "sparse": { "src": "tests/media/sample-shot.png" },
+    "wide": { "src": "tests/media/sample-wide.png", "caption": "横版截图也能完整显示", "focus": "0,0,40,40" }
+  }
+}

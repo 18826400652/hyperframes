@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"name","type":"string","label":"姓名","default":"李老师"},
+  {"id":"title","type":"string","label":"头衔","default":"10年短视频运营操盘手"},
+  {"id":"tags","type":"string","label":"标签(用|分隔)","default":"千万播放|实战派|带货达人"},
+  {"id":"theme","type":"string","label":"主题(留空跟随全局)","default":""},
+  {"id":"accent","type":"string","label":"主色(留空用主题色)","default":""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #dy-lt-wrap { position: absolute; left: 60px; right: 140px; bottom: 480px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+        #dy-lt-tags { display: flex; flex-wrap: wrap; gap: 12px; }
+        .dy-lt-tag { font-size: 28px; font-weight: 700; line-height: 1.4; color: var(--hf-on-accent); background: var(--hf-accent); padding: 4px 16px; border-radius: var(--hf-radius); }
+        #dy-lt-bar { max-width: 100%; }
+        #dy-lt-panel { position: relative; display: flex; align-items: stretch; overflow: hidden; }
+        #dy-lt-stripe { flex: none; width: 14px; background: var(--hf-accent); }
+        #dy-lt-text { min-width: 0; padding: 18px 36px 18px 28px; display: flex; flex-direction: column; gap: 4px; }
+        #dy-lt-name { font-family: var(--hf-font-title); font-size: 62px; font-weight: var(--hf-title-weight); line-height: 1.25; color: var(--hf-text); }
+        #dy-lt-title { font-size: 32px; line-height: 1.4; color: var(--hf-muted); }
+      </style>
+      <div id="root" data-composition-id="dy-lower-third" data-width="1080" data-height="1920">
+        <div id="dy-lt-wrap">
+          <div id="dy-lt-tags"></div>
+          <div id="dy-lt-bar"><div class="hf-panel" id="dy-lt-panel"><div id="dy-lt-stripe"></div><div id="dy-lt-text"><div id="dy-lt-name"></div><div id="dy-lt-title"></div></div></div></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ name:"李老师", title:"10年短视频运营操盘手", tags:"千万播放|实战派|带货达人", theme:"", accent:"" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        document.getElementById("dy-lt-name").textContent = v.name;
+        document.getElementById("dy-lt-title").textContent = v.title;
+        const tagBox = document.getElementById("dy-lt-tags");
+        HF.split(v.tags).forEach((t, i) => { const s = document.createElement("span"); s.className = "dy-lt-tag"; s.id = "dy-lt-tag-" + i; s.textContent = t; tagBox.appendChild(s); });
+        HF.refit(() => {
+          HF.fitLines(document.getElementById("dy-lt-name"), 2, 40);
+          HF.fitLines(document.getElementById("dy-lt-title"), 2, 26);
+        });
+        const D = HF.duration(root, 4);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#dy-lt-bar", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power4.out" }, 0);
+        tl.fromTo("#dy-lt-name", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.25);
+        tl.fromTo("#dy-lt-title", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.4);
+        if (tagBox.children.length) tl.fromTo(".dy-lt-tag", { y: 30, opacity: 0, scale: 0.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, stagger: 0.1, ease: "back.out(2)" }, 0.6);
+        tl.to("#dy-lt-wrap", { x: -700, opacity: 0, duration: 0.4, ease: "power3.in" }, Math.max(1.4, D - 0.5));
+        window.__timelines["dy-lower-third"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "text", "type": "string", "label": "金句", "default": "AI 不会取代你,会用 AI 的人才会"},
+  {"id": "em", "type": "string", "label": "强调词(金句中的一段)", "default": "会用 AI 的人"},
+  {"id": "source", "type": "string", "label": "出处", "default": ""},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #sq-wrap { position: absolute; left: 80px; right: 160px; top: 600px; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+        #sq-mark { font-family: var(--hf-font-title); font-size: 160px; font-weight: 900; line-height: 0.8; height: 96px; color: var(--hf-accent); }
+        #sq-text { width: 100%; font-size: 88px; line-height: 1.3; }
+        #sq-text .hf-em { white-space: normal; }
+        #sq-src { width: 100%; margin-top: 16px; font-size: 44px; font-weight: 500; line-height: 1.4; color: var(--hf-muted); }
+      </style>
+      <div id="root" data-composition-id="dy-scene-quote" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="sq-wrap">
+          <div id="sq-mark">“</div>
+          <div class="hf-title" id="sq-text"></div>
+          <div class="hf-text" id="sq-src"></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ text: "AI 不会取代你,会用 AI 的人才会", em: "会用 AI 的人", source: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const text = document.getElementById("sq-text"), src = document.getElementById("sq-src");
+
+        // 强调词是金句子串时就地包裹,否则追加到末尾
+        const t = String(v.text), em = String(v.em || "");
+        const at = em ? t.indexOf(em) : -1;
+        const span = document.createElement("span"); span.className = "hf-em"; span.textContent = em;
+        if (at >= 0) text.append(t.slice(0, at), span, t.slice(at + em.length));
+        else { text.append(t); if (em) text.append(" ", span); }
+        if (v.source) src.textContent = "—— " + v.source; else src.remove();
+
+        HF.refit(() => {
+          HF.fitLines(text, 5, 60);
+          if (src.isConnected) HF.fitLines(src, 2, 32);
+          HF.centerBox(document.getElementById("sq-wrap"));
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 4);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#sq-mark", { scale: 0.4, opacity: 0, transformOrigin: "0% 50%" }, { scale: 1, opacity: 1, duration: m.dur, ease: "back.out(2)" }, 0.1);
+        tl.fromTo(text, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur + 0.1, ease: m.ease }, 0.3);
+        if (src.isConnected) tl.fromTo(src, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.9);
+        tl.to("#sq-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.6, D - 0.35));
+        window.__timelines["dy-scene-quote"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

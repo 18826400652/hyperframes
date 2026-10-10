@@ -1,0 +1,9 @@
+{
+  "component": "dy-end-cta",
+  "duration": 4,
+  "peak": 2.5,
+  "variants": {
+    "normal": {},
+    "long": { "headline": "<b>&\" 点赞 关注 收藏 转发给需要的朋友一起学习进步", "sub": "<b>&\" 评论区告诉我你最想看的 AI 工具,点赞最多的下期第一个安排", "next": "<b>&\" 下期:用 AI 一键生成整月的短视频选题和脚本" }
+  }
+}

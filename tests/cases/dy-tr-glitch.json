@@ -1,0 +1,7 @@
+{
+  "component": "dy-tr-glitch",
+  "duration": 0.5,
+  "peaks": [0.12, 0.25, 0.38],
+  "variants": { "normal": {} },
+  "pixels": [ { "variant": "normal", "at": 0.25, "points": [[20,20],[1060,20],[540,960],[20,1900],[1060,1900]], "minChroma": 60, "all": true } ]
+}

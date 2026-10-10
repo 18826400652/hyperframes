@@ -1,0 +1,18 @@
+{
+  "component": "dy-subtitle",
+  "duration": 6,
+  "peaks": [
+    1.5,
+    3.5
+  ],
+  "variants": {
+    "normal": {},
+    "long": {
+      "lines": "<b>&\" 今天这条视频我会用最直白的话把整个流程从头到尾讲清楚|第二句同样很长:先打开设置面板再找到实验性功能入口然后往下滑|第三句",
+      "secondsPerLine": 2
+    },
+    "override": {
+      "keyColor": "#e8590c"
+    }
+  }
+}

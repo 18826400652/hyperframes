@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "headline", "type": "string", "label": "结尾标题", "default": "觉得有用,记得三连"},
+  {"id": "cta", "type": "string", "label": "行动引导(· 分隔,显示为按钮)", "default": "点赞 · 关注 · 收藏"},
+  {"id": "next", "type": "string", "label": "下期预告(可选)", "default": ""},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #se-wrap { position: absolute; left: 80px; right: 160px; top: 600px; display: flex; flex-direction: column; align-items: flex-start; gap: 56px; }
+        #se-head { width: 100%; font-size: 88px; }
+        #se-cta { display: flex; flex-wrap: wrap; gap: 24px; }
+        .se-btn { padding: 16px 40px; border-radius: 999px; background: var(--hf-accent); color: var(--hf-on-accent); font-size: 44px; font-weight: 800; line-height: 1.3; white-space: nowrap; }
+        #se-next { align-self: stretch; padding: 32px 40px; }
+        #se-next-k { margin-bottom: 12px; }
+        #se-next-t { font-size: 44px; font-weight: 700; line-height: 1.45; }
+      </style>
+      <div id="root" data-composition-id="dy-scene-ending" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="se-wrap">
+          <div class="hf-title" id="se-head"></div>
+          <div id="se-cta"></div>
+          <div class="hf-card hf-text" id="se-next"><div class="hf-kicker" id="se-next-k">下期预告</div><div id="se-next-t"></div></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ headline: "觉得有用,记得三连", cta: "点赞 · 关注 · 收藏", next: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const head = document.getElementById("se-head"), cta = document.getElementById("se-cta"), next = document.getElementById("se-next");
+        if (v.headline) head.textContent = v.headline; else head.remove();
+        const btns = HF.split(v.cta, "·").map(t => { const b = document.createElement("div"); b.className = "se-btn"; b.textContent = t; cta.append(b); return b; });
+        if (!btns.length) cta.remove();
+        if (v.next) document.getElementById("se-next-t").textContent = v.next; else next.remove();
+
+        HF.refit(() => {
+          if (head.isConnected) HF.fitLines(head, 3, 60);
+          btns.forEach(b => HF.fit(b, 840, 32));
+          if (next.isConnected) HF.fitLines(document.getElementById("se-next-t"), 3, 32);
+          HF.centerBox(document.getElementById("se-wrap"));
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 4);
+        const tl = gsap.timeline({ paused: true });
+        if (head.isConnected) tl.fromTo(head, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        btns.forEach((b, i) => tl.fromTo(b, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.2)" }, 0.5 + i * m.stagger));
+        if (btns.length) tl.to(btns, { scale: 1.06, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut", stagger: 0.08 }, 1.2 + btns.length * m.stagger);
+        if (next.isConnected) tl.fromTo(next, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.9 + btns.length * m.stagger);
+        tl.to("#se-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(2.6, D - 0.35));
+        window.__timelines["dy-scene-ending"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

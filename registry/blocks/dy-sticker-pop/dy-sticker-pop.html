@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "text", "type": "string", "label": "花字", "default": "太绝了"},
+  {"id": "emoji", "type": "string", "label": "表情", "default": "🔥"},
+  {"id": "color", "type": "color", "label": "字色", "default": "#ffe14d"},
+  {"id": "rotate", "type": "number", "label": "倾斜角", "default": -8},
+  {"id": "x", "type": "number", "label": "水平位置%", "default": 50},
+  {"id": "y", "type": "number", "label": "垂直位置%", "default": 38},
+  {"id": "accent", "type": "string", "label": "阴影色(留空用主题强调色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #st { position: absolute; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 60%; }
+        #st-emoji { color: var(--hf-text); font-size: 200px; line-height: 1.1; }
+        #st-text { font-size: 170px; font-weight: 900; white-space: nowrap; -webkit-text-stroke: 16px #111; paint-order: stroke fill; text-shadow: 0 10px 0 var(--accent, var(--hf-accent)); }
+      </style>
+      <div id="root" data-composition-id="dy-sticker-pop" data-width="1080" data-height="1920">
+        <div id="st"><div id="st-emoji"></div><div id="st-text"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"text": "太绝了", "emoji": "🔥", "color": "#ffe14d", "rotate": -8, "x": 50, "y": 38, "accent": ""}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        if (v.accent) root.style.setProperty("--accent", v.accent);
+        const st = document.getElementById("st");
+        st.style.left = v.x + "%"; st.style.top = v.y + "%";
+        document.getElementById("st-emoji").textContent = v.emoji;
+        document.getElementById("st-text").textContent = v.text;
+        document.getElementById("st-text").style.color = v.color;
+        HF.refit(() => HF.fit(document.getElementById("st-text"), 1000, 60));
+        const tl = gsap.timeline({ paused: true });
+        const r = Number(v.rotate);
+        tl.fromTo("#st", { scale: 0, rotation: r - 25, xPercent: -50, yPercent: -50 }, { scale: 1, rotation: r, xPercent: -50, yPercent: -50, duration: 0.6, ease: "elastic.out(1,0.45)" }, 0);
+        tl.to("#st", { rotation: r + 3, duration: 0.25, yoyo: true, repeat: 5, ease: "sine.inOut" }, 0.6);
+        tl.to("#st", { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" }, 2.2);
+        window.__timelines["dy-sticker-pop"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-rec-phone",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-rec-phone",
+  "description": "dykit 抖音竖屏组件 dy-rec-phone(1080×1920,支持 4 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-rec-phone.html",
+      "target": "compositions/dy-rec-phone.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "component": "theme-probe",
+  "src": "tests/probe/theme-probe.html",
+  "duration": 2,
+  "peak": 1,
+  "variants": {
+    "normal": {},
+    "dual": [{}, { "theme": "editorial" }]
+  }
+}

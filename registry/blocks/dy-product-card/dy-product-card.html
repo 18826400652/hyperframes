@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "tag", "type": "string", "label": "角标", "default": "限时秒杀"},
+  {"id": "name", "type": "string", "label": "商品名", "default": "超轻便携颈挂风扇"},
+  {"id": "price", "type": "number", "label": "现价", "default": 59},
+  {"id": "origin", "type": "string", "label": "原价", "default": "¥169"},
+  {"id": "coupon", "type": "string", "label": "优惠", "default": "拍下立减 20 元"},
+  {"id": "stock", "type": "string", "label": "库存文案", "default": "仅剩 128 件"},
+  {"id": "stockPct", "type": "number", "label": "库存条(0-100)", "default": 18},
+  {"id": "hint", "type": "string", "label": "引导语", "default": "👇 点左下角小黄车"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        #pc { position: absolute; left: 60px; right: 170px; bottom: 460px; padding: 40px; background: rgba(255,255,255,.97); border-radius: 36px; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+        #pc-tag { position: absolute; top: -26px; left: 36px; background: var(--accent); color: #fff; font-size: 38px; font-weight: 900; padding: 8px 28px; border-radius: 14px; }
+        #pc-name { font-size: 54px; font-weight: 900; color: #111; margin-top: 8px; }
+        #pc-price { display: flex; align-items: baseline; gap: 18px; margin-top: 14px; color: var(--accent); }
+        #pc-yen { font-size: 56px; font-weight: 900; }
+        #pc-num { font-size: 140px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+        #pc-origin { font-size: 44px; color: #999; text-decoration: line-through; }
+        #pc-coupon { display: inline-block; margin-top: 14px; font-size: 38px; font-weight: 800; color: var(--accent); border: 3px dashed var(--accent); padding: 6px 22px; border-radius: 12px; }
+        #pc-stock { margin-top: 24px; font-size: 36px; font-weight: 700; color: #555; }
+        #pc-track { height: 22px; border-radius: 11px; background: #eee; margin-top: 10px; overflow: hidden; }
+        #pc-fill { height: 100%; width: 0; border-radius: 11px; background: var(--accent); }
+        #pc-hint { position: absolute; left: 60px; bottom: 380px; font-size: 44px; font-weight: 900; color: #fff; background: rgba(0,0,0,.7); padding: 10px 28px; border-radius: 40px; }
+      </style>
+      <div id="root" data-composition-id="dy-product-card" data-width="1080" data-height="1920">
+        <div id="pc"><div id="pc-tag"></div><div id="pc-name"></div>
+          <div id="pc-price"><span id="pc-yen">¥</span><span id="pc-num"></span><span id="pc-origin"></span></div>
+          <div id="pc-coupon"></div><div id="pc-stock"></div><div id="pc-track"><div id="pc-fill"></div></div></div>
+        <div id="pc-hint"></div>
+      </div>
+      <script>
+        const v = Object.assign({"tag": "限时秒杀", "name": "超轻便携颈挂风扇", "price": 59, "origin": "¥169", "coupon": "拍下立减 20 元", "stock": "仅剩 128 件", "stockPct": 18, "hint": "👇 点左下角小黄车", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("pc-tag").textContent = v.tag;
+        document.getElementById("pc-name").textContent = v.name;
+        document.getElementById("pc-origin").textContent = v.origin;
+        document.getElementById("pc-coupon").textContent = v.coupon;
+        document.getElementById("pc-stock").textContent = v.stock;
+        document.getElementById("pc-hint").textContent = v.hint;
+        const numEl = document.getElementById("pc-num"), o = { n: 0 };
+        const render = () => { numEl.textContent = Math.round(o.n); };
+        render();
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#pc", { y: 300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "back.out(1.4)" }, 0);
+        tl.to(o, { n: Number(v.price), duration: 0.9, ease: "power3.out", onUpdate: render }, 0.3);
+        tl.to("#pc-fill", { width: Math.max(0, Math.min(100, Number(v.stockPct))) + "%", duration: 0.9, ease: "power2.out" }, 0.7);
+        tl.fromTo("#pc-coupon", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" }, 0.9);
+        tl.fromTo("#pc-hint", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.2);
+        tl.to("#pc-hint", { scale: 1.08, duration: 0.35, yoyo: true, repeat: 5, ease: "sine.inOut" }, 1.7);
+        tl.to("#pc, #pc-hint", { opacity: 0, y: 60, duration: 0.4, ease: "power2.in" }, 4.5);
+        window.__timelines["dy-product-card"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

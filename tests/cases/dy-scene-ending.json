@@ -1,0 +1,22 @@
+{
+  "component": "dy-scene-ending",
+  "duration": 4,
+  "peak": 3,
+  "variants": {
+    "normal": {
+      "headline": "觉得有用,记得三连",
+      "next": "用 AI 一键做出整月短视频选题"
+    },
+    "long": {
+      "headline": "<b>&\" 如果这条视频对你有帮助的话,别忘了点赞关注收藏,你的支持是我持续更新的最大动力",
+      "cta": "点赞 · 关注 · 收藏 · 转发给需要的朋友",
+      "next": "<b>&\" 下一期我会手把手教你如何从零开始搭建一套属于自己的 AI 短视频自动化工作流,千万别错过"
+    },
+    "sparse": {
+      "headline": "我们下期见"
+    },
+    "override": {
+      "accent": "#e8590c"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "index", "type": "string", "label": "序号", "default": "01"},
+  {"id": "title", "type": "string", "label": "章节标题", "default": "先说结论"},
+  {"id": "sub", "type": "string", "label": "副标题", "default": "90% 的人都做错了"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #ch { position: absolute; left: 80px; right: 120px; top: 640px; display: flex; align-items: center; gap: 32px; }
+        #ch-no { flex: none; font-family: var(--hf-font-title); font-size: 220px; font-weight: 900; line-height: 1; color: var(--hf-bg); -webkit-text-stroke: 6px var(--hf-accent); }
+        #ch-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+        #ch-title { font-family: var(--hf-font-title); font-size: 96px; font-weight: var(--hf-title-weight); line-height: 1.2; color: var(--hf-text); -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; text-shadow: var(--hf-title-shadow); }
+        #ch-sub { font-size: 44px; font-weight: 700; line-height: 1.35; color: var(--hf-on-accent); background: var(--hf-accent); padding: 6px 22px; border-radius: var(--hf-radius); align-self: flex-start; max-width: 100%; }
+        #ch-bar { position: absolute; left: 80px; top: 610px; height: 10px; width: 0; background: var(--hf-accent); border-radius: 5px; }
+      </style>
+      <div id="root" data-composition-id="dy-chapter-title" data-width="1080" data-height="1920">
+        <div id="ch-bar"></div>
+        <div id="ch"><div id="ch-no"></div><div id="ch-text"><div id="ch-title"></div><div id="ch-sub"></div></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"index": "01", "title": "先说结论", "sub": "90% 的人都做错了", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        // 序号或副标题为空时去掉对应元素,不留空位
+        const no = document.getElementById("ch-no"), sub = document.getElementById("ch-sub");
+        if (v.index !== "" && v.index != null) no.textContent = v.index; else no.remove();
+        document.getElementById("ch-title").textContent = v.title;
+        if (v.sub) sub.textContent = v.sub; else sub.remove();
+        HF.refit(() => {
+          HF.fitLines(document.getElementById("ch-title"), 3, 56);
+          if (sub.isConnected) HF.fitLines(sub, 3, 30);
+        });
+        const D = HF.duration(root, 4);
+        const tl = gsap.timeline({ paused: true });
+        tl.to("#ch-bar", { width: 520, duration: 0.5, ease: "power3.out" }, 0);
+        if (no.isConnected) tl.fromTo("#ch-no", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.1);
+        tl.fromTo("#ch-title", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.25);
+        if (sub.isConnected) tl.fromTo("#ch-sub", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.5);
+        tl.to("#ch, #ch-bar", { x: 160, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(1.2, D - 0.9));
+        window.__timelines["dy-chapter-title"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

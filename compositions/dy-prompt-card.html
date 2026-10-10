@@ -3,47 +3,51 @@
   {"id": "title", "type": "string", "label": "标题", "default": "万能提示词模板"},
   {"id": "fields", "type": "string", "label": "字段(名称|内容;分行)", "default": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注"},
   {"id": "cta", "type": "string", "label": "引导语", "default": "⭐ 收藏起来,下次直接复制"},
-  {"id": "accent", "type": "color", "label": "主色", "default": "#7c5cff"}
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
     <template>
       <style>
-        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
-        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
-        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
-        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
-        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
-        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
-        #pr { position: absolute; left: 60px; right: 170px; top: 360px; padding: 44px; background: rgba(14,14,26,.93); border-radius: 40px; border: 3px solid var(--accent); box-shadow: 0 0 80px rgba(124,92,255,.3); }
-        #pr-title { font-size: 62px; font-weight: 900; color: #fff; margin-bottom: 26px; } #pr-title b { color: var(--accent); }
-        .pr-f { margin-bottom: 22px; padding: 22px 28px; border-radius: 24px; background: #20203a; border-left: 10px solid var(--accent); }
-        .pr-k { font-size: 36px; font-weight: 900; color: var(--accent); margin-bottom: 8px; }
-        .pr-v { font-size: 44px; font-weight: 700; color: #fff; line-height: 1.45; }
-        #pr-cta { margin-top: 8px; text-align: center; font-size: 46px; font-weight: 900; color: #111; background: #ffe14d; border-radius: 40px; padding: 14px 0; }
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #pr { position: absolute; left: 60px; right: 170px; top: 360px; padding: 44px; border: 3px solid var(--hf-accent); }
+        #pr-title { font-family: var(--hf-font-title); font-size: 62px; font-weight: var(--hf-title-weight); line-height: 1.25; color: var(--hf-text); margin-bottom: 26px; }
+        #pr-title b { color: var(--hf-accent); }
+        .pr-f { margin-bottom: 22px; padding: 22px 28px; border-radius: calc(var(--hf-radius) * 0.6); background: color-mix(in srgb, var(--hf-accent) 12%, transparent); border-left: 10px solid var(--hf-accent); }
+        .pr-k { font-size: 36px; font-weight: 900; color: var(--hf-accent); margin-bottom: 8px; }
+        .pr-v { font-size: 44px; font-weight: 700; color: var(--hf-text); line-height: 1.45; }
+        #pr-cta { margin-top: 8px; text-align: center; font-size: 46px; font-weight: 900; line-height: 1.35; color: var(--hf-on-accent); background: var(--hf-accent); border-radius: 40px; padding: 14px 24px; }
       </style>
       <div id="root" data-composition-id="dy-prompt-card" data-width="1080" data-height="1920">
-        <div id="pr"><div id="pr-title"></div><div id="pr-list"></div><div id="pr-cta"></div></div>
+        <div class="hf-panel" id="pr"><div id="pr-title"></div><div id="pr-list"></div><div id="pr-cta"></div></div>
       </div>
       <script>
-        const hfFit = (el, maxW, minPx) => { el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; const over = () => maxW ? el.scrollWidth > maxW : el.scrollWidth > el.clientWidth + 1; let fs = parseFloat(getComputedStyle(el).fontSize); while (over() && fs > minPx) { fs -= 2; el.style.fontSize = fs + "px"; } if (over()) el.style.whiteSpace = "normal"; };
-        const hfFitBox = (el, bottom, minTop = 260) => { el.style.scale = ""; el.style.top = ""; const h = el.offsetHeight; if (el.offsetTop + h <= bottom) return; const top = Math.max(minTop, bottom - h); el.style.top = top + "px"; if (top + h > bottom) { el.style.transformOrigin = "50% 0"; el.style.scale = String(Math.max(0.5, (bottom - top) / h)); } };
-        const v = Object.assign({"title": "万能提示词模板", "fields": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注", "cta": "⭐ 收藏起来,下次直接复制", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const v = Object.assign({"title": "万能提示词模板", "fields": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注", "cta": "⭐ 收藏起来,下次直接复制", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
-        root.style.setProperty("--accent", v.accent);
-        document.getElementById("pr-title").innerHTML = "<b>/</b> " + String(v.title).replace(/</g, "&lt;");
-        document.getElementById("pr-cta").textContent = v.cta;
-        const fs = String(v.fields).split(";").filter(Boolean).map(r => r.split("|"));
+        HF.applyTheme(root, v);
+        const title = document.getElementById("pr-title");
+        const slash = document.createElement("b"); slash.textContent = "/";
+        title.append(slash, " " + v.title);
+        const cta = document.getElementById("pr-cta");
+        if (v.cta) cta.textContent = v.cta; else cta.remove();
+        const fs = HF.split(v.fields, ";").map(r => r.split("|"));
         const list = document.getElementById("pr-list");
-        fs.forEach((f, i) => { const el = document.createElement("div"); el.className = "pr-f"; el.id = "pr-f-" + i; el.innerHTML = '<div class="pr-k"></div><div class="pr-v"></div>'; el.children[0].textContent = "【" + f[0] + "】"; el.children[1].textContent = f[1] || ""; list.appendChild(el); });
-        const hfRefit = () => { hfFitBox(document.getElementById("pr"), 1520); };
-        hfRefit(); if (document.fonts) document.fonts.ready.then(hfRefit);
+        fs.forEach((f, i) => { const el = document.createElement("div"); el.className = "pr-f"; el.id = "pr-f-" + i; el.innerHTML = '<div class="pr-k"></div><div class="pr-v"></div>'; el.children[0].textContent = "【" + f[0] + "】"; el.children[1].textContent = f.slice(1).join("|"); list.appendChild(el); });
+        HF.refit(() => {
+          HF.fitLines(title, 2, 40);
+          list.querySelectorAll(".pr-v").forEach(e => HF.fitLines(e, 4, 30));
+          if (cta.isConnected) HF.fitLines(cta, 2, 30);
+          HF.fitBox(document.getElementById("pr"));
+        });
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#pr", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         fs.forEach((_, i) => tl.fromTo("#pr-f-" + i, { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.6 + i * 0.8));
         const te = 0.6 + fs.length * 0.8;
-        tl.fromTo("#pr-cta", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, te);
-        tl.to("#pr-cta", { scale: 1.05, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, te + 0.5);
+        if (cta.isConnected) {
+          tl.fromTo("#pr-cta", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, te);
+          tl.to("#pr-cta", { scale: 1.05, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, te + 0.5);
+        }
         tl.to("#pr", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, te + 2.4);
         window.__timelines["dy-prompt-card"] = tl;
       </script>

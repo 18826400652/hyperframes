@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-stat-counter",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-stat-counter",
+  "description": "dykit 抖音竖屏组件 dy-stat-counter(1080×1920,支持 4 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-stat-counter.html",
+      "target": "compositions/dy-stat-counter.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

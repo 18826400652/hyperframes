@@ -1,0 +1,3 @@
+{ "component": "dy-rank-item", "duration": 4, "peak": 2,
+  "variants": { "normal": {},
+    "long": { "rank": 10, "title": "<b>&\" 某某品牌新一代旗舰手机 Pro Max 超大杯", "subtitle": "<b>&\" 销量冠军 · 好评率 98% · 续航和影像都是同价位第一" } } }

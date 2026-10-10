@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "beforeLabel", "type": "string", "label": "以前", "default": "手动做一份 PPT"},
+  {"id": "beforeValue", "type": "string", "label": "以前耗时", "default": "2 小时"},
+  {"id": "afterLabel", "type": "string", "label": "用 AI", "default": "AI 一键生成"},
+  {"id": "afterValue", "type": "string", "label": "AI 耗时", "default": "3 分钟"},
+  {"id": "gain", "type": "string", "label": "提效文案", "default": "效率提升 40 倍"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #ba { position: absolute; left: 60px; right: 170px; top: 420px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+        .ba-c { width: 100%; padding: 34px 40px; text-align: center; }
+        #ba-b { border: 3px solid var(--hf-muted); }
+        #ba-a { border: 4px solid var(--hf-accent); box-shadow: 0 0 70px color-mix(in srgb, var(--hf-accent) 35%, transparent); }
+        .ba-k { font-size: 38px; font-weight: 900; padding: 4px 22px; border-radius: calc(var(--hf-radius) * 0.6); display: inline-block; }
+        #ba-b .ba-k { background: var(--hf-muted); color: var(--hf-bg); }
+        #ba-a .ba-k { background: var(--hf-accent); color: var(--hf-on-accent); }
+        .ba-l { font-size: 50px; font-weight: 800; line-height: 1.35; color: var(--hf-text); margin-top: 12px; }
+        .ba-v { font-family: var(--hf-font-title); font-size: 130px; font-weight: 900; line-height: 1.15; }
+        #ba-b .ba-v { color: var(--hf-muted); text-decoration: line-through; text-decoration-thickness: 8px; }
+        #ba-a .ba-v { color: var(--hf-accent); }
+        #ba-arrow { font-size: 80px; color: var(--hf-accent); line-height: 1; }
+        #ba-gain { max-width: 100%; text-align: center; font-size: 54px; font-weight: 900; line-height: 1.3; color: var(--hf-on-accent-2); background: var(--hf-accent-2); padding: 12px 44px; border-radius: 50px; }
+      </style>
+      <div id="root" data-composition-id="dy-before-after" data-width="1080" data-height="1920">
+        <div id="ba"><div class="ba-c hf-panel" id="ba-b"><span class="ba-k">以前</span><div class="ba-l" id="ba-bl"></div><div class="ba-v" id="ba-bv"></div></div>
+          <div id="ba-arrow">⬇</div>
+          <div class="ba-c hf-panel" id="ba-a"><span class="ba-k">用 AI</span><div class="ba-l" id="ba-al"></div><div class="ba-v" id="ba-av"></div></div>
+          <div id="ba-gain"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"beforeLabel": "手动做一份 PPT", "beforeValue": "2 小时", "afterLabel": "AI 一键生成", "afterValue": "3 分钟", "gain": "效率提升 40 倍", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const $ = id => document.getElementById(id);
+        $("ba-bl").textContent = v.beforeLabel;
+        $("ba-bv").textContent = v.beforeValue;
+        $("ba-al").textContent = v.afterLabel;
+        $("ba-av").textContent = v.afterValue;
+        const gain = $("ba-gain");
+        if (v.gain) gain.textContent = "🚀 " + v.gain; else gain.remove();
+        HF.refit(() => {
+          HF.fitLines($("ba-bl"), 2, 30); HF.fitLines($("ba-al"), 2, 30);
+          HF.fit($("ba-bv"), 0, 56); HF.fit($("ba-av"), 0, 56);
+          if (gain.isConnected) { HF.fit(gain, 0, 30); if (gain.style.whiteSpace === "normal") HF.fitLines(gain, 2, 30); }
+          HF.fitBox($("ba"));
+        });
+        const D = HF.duration(root, 6);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#ba-b", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
+        tl.fromTo("#ba-arrow", { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.3 }, 1.2);
+        tl.fromTo("#ba-a", { x: 400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 1.5);
+        tl.fromTo("#ba-av", { scale: 0.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1,0.5)" }, 1.9);
+        if (gain.isConnected) {
+          tl.fromTo("#ba-gain", { scale: 0, rotate: -8 }, { scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2.5)" }, 2.6);
+          tl.to("#ba-gain", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut" }, 3.2);
+        }
+        tl.to("#ba", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(4.6, D - 0.9));
+        window.__timelines["dy-before-after"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

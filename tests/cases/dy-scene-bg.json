@@ -1,0 +1,14 @@
+{
+  "component": "dy-scene-bg",
+  "duration": 4,
+  "peak": 2,
+  "variants": {
+    "normal": {},
+    "v2": {
+      "variant": "2"
+    },
+    "override": {
+      "theme": "neon"
+    }
+  }
+}

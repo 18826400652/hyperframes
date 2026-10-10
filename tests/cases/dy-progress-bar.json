@@ -1,0 +1,18 @@
+{
+  "component": "dy-progress-bar",
+  "duration": 8,
+  "peaks": [
+    1,
+    6
+  ],
+  "themed": false,
+  "variants": {
+    "normal": {
+      "duration": 8
+    },
+    "many": {
+      "duration": 8,
+      "labels": "钩子|数据|互动|带货|投票|AI 演示|AI 干货|整屏场景"
+    }
+  }
+}

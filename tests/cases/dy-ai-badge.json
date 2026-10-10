@@ -1,0 +1,12 @@
+{
+  "component": "dy-ai-badge",
+  "duration": 3,
+  "peak": 2,
+  "themed": false,
+  "variants": {
+    "normal": {},
+    "long": {
+      "text": "<b>&\" 本视频部分画面和配音由 AI 辅助生成"
+    }
+  }
+}

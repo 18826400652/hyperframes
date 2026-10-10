@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"rank","type":"number","label":"名次","default":1},
+  {"id":"title","type":"string","label":"标题","default":"苹果 iPhone 17"},
+  {"id":"subtitle","type":"string","label":"说明","default":"销量冠军 · 好评率 98%"},
+  {"id":"theme","type":"string","label":"主题(留空跟随全局)","default":""},
+  {"id":"accent","type":"string","label":"主色(留空用主题色)","default":""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #dy-rank-wrap { position: absolute; left: 60px; right: 120px; top: 260px; display: flex; align-items: center; gap: 28px; }
+        #dy-rank-badge { flex: none; font-family: var(--hf-font-title); font-size: 170px; font-weight: 900; font-style: italic; color: var(--hf-accent); line-height: 1; -webkit-text-stroke: 6px var(--hf-bg); paint-order: stroke fill; text-shadow: var(--hf-title-shadow); }
+        #dy-rank-no { flex: none; font-size: 44px; font-weight: 900; color: var(--hf-on-accent); background: var(--hf-accent); padding: 4px 14px; border-radius: var(--hf-radius); align-self: flex-start; margin-top: 10px; }
+        #dy-rank-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 22px 32px; border-left: 10px solid var(--hf-accent); }
+        #dy-rank-title { font-family: var(--hf-font-title); font-size: 58px; font-weight: var(--hf-title-weight); line-height: 1.25; color: var(--hf-text); }
+        #dy-rank-sub { font-size: 34px; line-height: 1.4; color: var(--hf-muted); }
+      </style>
+      <div id="root" data-composition-id="dy-rank-item" data-width="1080" data-height="1920">
+        <div id="dy-rank-wrap">
+          <div id="dy-rank-no">NO.</div>
+          <div id="dy-rank-badge"></div>
+          <div class="hf-panel" id="dy-rank-text"><div id="dy-rank-title"></div><div id="dy-rank-sub"></div></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ rank:1, title:"苹果 iPhone 17", subtitle:"销量冠军 · 好评率 98%", theme:"", accent:"" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        document.getElementById("dy-rank-badge").textContent = v.rank;
+        document.getElementById("dy-rank-title").textContent = v.title;
+        document.getElementById("dy-rank-sub").textContent = v.subtitle;
+        HF.refit(() => {
+          HF.fitLines(document.getElementById("dy-rank-title"), 2, 36);
+          HF.fitLines(document.getElementById("dy-rank-sub"), 2, 26);
+        });
+        const D = HF.duration(root, 4);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#dy-rank-no", { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0);
+        tl.fromTo("#dy-rank-badge", { scale: 3, opacity: 0, rotation: -15 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)" }, 0.1);
+        tl.fromTo("#dy-rank-text", { x: 500, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power4.out" }, 0.3);
+        tl.to("#dy-rank-wrap", { y: -120, opacity: 0, duration: 0.35, ease: "power2.in" }, Math.max(1.2, D - 0.5));
+        window.__timelines["dy-rank-item"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

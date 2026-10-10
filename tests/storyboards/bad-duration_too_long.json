@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "title": "3 分钟用 AI 搞定会议纪要",
+  "theme": "neon",
+  "charsPerSecond": 4,
+  "scenes": [
+    {
+      "id": "s01",
+      "script": "你还在手动整理会议纪要吗?今天教你用 AI 三分钟搞定。",
+      "component": "dy-scene-title",
+      "variables": {
+        "kicker": "AI 效率指南",
+        "title": "3 分钟搞定会议纪要",
+        "em": "3 分钟",
+        "sub": "手动整理,真的该停了"
+      },
+      "duration": 6.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s02",
+      "script": "第一步,把会议录音上传到 AI 工具。第二步,让它按议题整理要点和待办。",
+      "component": "dy-rec-phone",
+      "variables": {
+        "src": "",
+        "title": "上传录音,按议题整理",
+        "cues": ""
+      },
+      "duration": 45,
+      "overlays": [
+        {
+          "component": "dy-sticker-pop",
+          "variables": {
+            "text": "就这两步",
+            "emoji": "👌"
+          },
+          "at": 5,
+          "duration": 2.5
+        }
+      ],
+      "transitionIn": "dy-tr-wipe",
+      "needs": [
+        {
+          "type": "recording",
+          "variable": "src",
+          "hint": "录制:打开 AI 工具→上传会议录音→输入『按议题整理要点和待办』"
+        }
+      ]
+    },
+    {
+      "id": "s03",
+      "script": "用了这个方法,我每周能省下 5 个小时。",
+      "component": "dy-scene-big-number",
+      "variables": {
+        "label": "用了这个方法,每周省下",
+        "value": 5,
+        "suffix": " 小时",
+        "note": ""
+      },
+      "duration": 4.5,
+      "overlays": [],
+      "transitionIn": "dy-tr-zoom",
+      "needs": []
+    },
+    {
+      "id": "s04",
+      "script": "以前要花两个小时整理,现在三分钟就够了。",
+      "component": "dy-before-after",
+      "variables": {
+        "beforeLabel": "手动整理会议纪要",
+        "beforeValue": "2 小时",
+        "afterLabel": "AI 按议题整理",
+        "afterValue": "3 分钟",
+        "gain": ""
+      },
+      "duration": 5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s05",
+      "script": "觉得有用就点赞收藏,下期教你用 AI 写周报。",
+      "component": "dy-scene-ending",
+      "variables": {
+        "headline": "觉得有用,记得三连",
+        "next": "用 AI 写周报",
+        "cta": "点赞 · 收藏"
+      },
+      "duration": 5.3,
+      "overlays": [],
+      "transitionIn": "dy-tr-glitch",
+      "needs": []
+    }
+  ],
+  "newComponents": []
+}

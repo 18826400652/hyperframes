@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "question", "type": "string", "label": "问题", "default": "你会选哪个?"},
+  {"id": "optionA", "type": "string", "label": "选项A", "default": "先买再说"},
+  {"id": "optionB", "type": "string", "label": "选项B", "default": "再等等看"},
+  {"id": "pctA", "type": "number", "label": "A 占比%", "default": 64},
+  {"id": "cta", "type": "string", "label": "引导语", "default": "评论区扣 A 或 B 👇"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "A 色(留空用主题色)", "default": ""},
+  {"id": "colorB", "type": "string", "label": "B 色(留空用主题辅色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #pl { position: absolute; left: 60px; right: 60px; top: 480px; display: flex; flex-direction: column; gap: 28px; }
+        #pl-q { font-family: var(--hf-font-title); font-size: 76px; font-weight: var(--hf-title-weight); line-height: 1.25; color: var(--hf-text); text-align: center; -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; text-shadow: var(--hf-title-shadow); margin-bottom: 12px; }
+        .pl-opt { position: relative; min-height: 150px; overflow: hidden; display: flex; align-items: center; padding: 16px 40px; gap: 24px; }
+        .pl-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; opacity: .85; }
+        #pl-ba { background: var(--hf-accent); }
+        #pl-bb { background: var(--hf-accent-2); }
+        .pl-key { position: relative; width: 84px; height: 84px; border-radius: 50%; background: var(--hf-text); color: var(--hf-bg); font-size: 54px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex: none; }
+        .pl-name { position: relative; flex: 1; min-width: 0; font-size: 54px; font-weight: 900; line-height: 1.3; color: var(--hf-text); -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; }
+        .pl-pct { position: relative; flex: none; font-size: 76px; font-weight: 900; color: var(--hf-text); font-variant-numeric: tabular-nums; -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; }
+        #pl-cta { text-align: center; font-size: 50px; font-weight: 900; line-height: 1.35; color: var(--hf-on-accent); background: var(--hf-accent); border-radius: 40px; padding: 14px 24px; margin-top: 8px; }
+      </style>
+      <div id="root" data-composition-id="dy-poll" data-width="1080" data-height="1920">
+        <div id="pl"><div id="pl-q"></div>
+          <div class="pl-opt hf-panel" id="pl-a"><div class="pl-bar" id="pl-ba"></div><div class="pl-key">A</div><div class="pl-name" id="pl-na"></div><div class="pl-pct" id="pl-pa"></div></div>
+          <div class="pl-opt hf-panel" id="pl-b"><div class="pl-bar" id="pl-bb"></div><div class="pl-key">B</div><div class="pl-name" id="pl-nb"></div><div class="pl-pct" id="pl-pb"></div></div>
+          <div id="pl-cta"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({"question": "你会选哪个?", "optionA": "先买再说", "optionB": "再等等看", "pctA": 64, "cta": "评论区扣 A 或 B 👇", "theme": "", "accent": "", "colorB": ""}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, { theme: v.theme, accent: v.accent, accent2: v.colorB });
+        document.getElementById("pl-q").textContent = v.question;
+        document.getElementById("pl-na").textContent = v.optionA;
+        document.getElementById("pl-nb").textContent = v.optionB;
+        const cta = document.getElementById("pl-cta");
+        if (v.cta) cta.textContent = v.cta; else cta.remove();
+        const pa = Math.max(0, Math.min(100, Number(v.pctA))), o = { n: 0 };
+        const pA = document.getElementById("pl-pa"), pB = document.getElementById("pl-pb");
+        const render = () => { pA.textContent = Math.round(o.n * pa) + "%"; pB.textContent = Math.round(o.n * (100 - pa)) + "%"; };
+        render();
+        HF.refit(() => {
+          HF.fitLines(document.getElementById("pl-q"), 3, 44);
+          HF.fitLines(document.getElementById("pl-na"), 2, 32);
+          HF.fitLines(document.getElementById("pl-nb"), 2, 32);
+          if (cta.isConnected) HF.fitLines(cta, 2, 30);
+          HF.fitBox(document.getElementById("pl"));
+        });
+        const D = HF.duration(root, 6);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#pl-q", { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        tl.fromTo("#pl-a", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.3);
+        tl.fromTo("#pl-b", { x: 400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.45);
+        if (cta.isConnected) tl.fromTo("#pl-cta", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 0.9);
+        tl.to("#pl-ba", { width: pa + "%", duration: 1.4, ease: "power3.out" }, 1.4);
+        tl.to("#pl-bb", { width: (100 - pa) + "%", duration: 1.4, ease: "power3.out" }, 1.4);
+        tl.to(o, { n: 1, duration: 1.4, ease: "power3.out", onUpdate: render }, 1.4);
+        if (cta.isConnected) tl.to("#pl-cta", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, 3);
+        tl.to("#pl", { opacity: 0, y: 40, duration: 0.4, ease: "power2.in" }, Math.max(3, D - 0.5));
+        window.__timelines["dy-poll"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "from", "type": "number", "label": "起始数字", "default": 3},
+  {"id": "label", "type": "string", "label": "结束文案", "default": "开始!"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "数字颜色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-title); }
+        .cd { position: absolute; left: 80px; right: 80px; top: 560px; text-align: center; font-size: 560px; font-weight: 900; line-height: 1; color: var(--hf-accent); -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; text-shadow: var(--hf-title-shadow); opacity: 0; }
+        #cd-go { font-size: 280px; line-height: 1.2; color: var(--hf-text); }
+      </style>
+      <div id="root" data-composition-id="dy-countdown" data-width="1080" data-height="1920">
+        <div id="cd-wrap"></div><div id="cd-go" class="cd"></div>
+      </div>
+      <script>
+        const v = Object.assign({"from": 3, "label": "开始!", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const n = Math.max(1, Math.round(Number(v.from)));
+        const go = document.getElementById("cd-go");
+        go.textContent = v.label;
+        const wrap = document.getElementById("cd-wrap");
+        for (let i = n; i >= 1; i--) { const d = document.createElement("div"); d.className = "cd"; d.id = "cd-" + i; d.textContent = i; wrap.appendChild(d); }
+        // 结束文案:先单行缩字号,仍放不下就换行并限制在 3 行内
+        HF.refit(() => { HF.fit(go, 0, 96); if (go.style.whiteSpace === "normal") HF.fitLines(go, 3, 72); });
+        const tl = gsap.timeline({ paused: true });
+        for (let i = n; i >= 1; i--) {
+          const t = n - i;
+          tl.fromTo("#cd-" + i, { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }, t);
+          tl.to("#cd-" + i, { scale: 0.6, opacity: 0, duration: 0.2, ease: "power2.in" }, t + 0.75);
+        }
+        tl.fromTo("#cd-go", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "elastic.out(1,0.5)" }, n);
+        tl.to("#cd-go", { opacity: 0, duration: 0.2 }, n + 0.8);
+        window.__timelines["dy-countdown"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

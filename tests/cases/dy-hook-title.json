@@ -1,0 +1,17 @@
+{
+  "component": "dy-hook-title",
+  "duration": 4,
+  "peak": 2,
+  "variants": {
+    "normal": {},
+    "long": {
+      "kicker": "<b>&\" 做了三年自媒体才明白的一个道理",
+      "line1": "<b>&\" 一个不起眼的小技巧让你的视频",
+      "before": "完播率和播放量直接涨了",
+      "keyword": "整整十倍以上"
+    },
+    "override": {
+      "accent": "notacolor"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "text", "type": "string", "label": "标识文案", "default": "内容由 AI 辅助生成"},
+  {"id": "accent", "type": "color", "label": "主色", "default": "#7c5cff"}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Noto Sans SC Variable"; src: local("Noto Sans SC Variable"); }
+        @font-face { font-family: "PingFang SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); }
+        @font-face { font-family: "Microsoft YaHei"; src: local("Microsoft YaHei"), local("微软雅黑"); }
+        @font-face { font-family: "Noto Sans SC"; src: local("Noto Sans SC"), local("NotoSansSC-Regular"), local("Noto Sans CJK SC"); }
+        @font-face { font-family: "WenQuanYi Zen Hei"; src: local("WenQuanYi Zen Hei"); }
+        #root { position: absolute; inset: 0; font-family: "Noto Sans SC Variable","PingFang SC","Microsoft YaHei","Noto Sans SC","WenQuanYi Zen Hei",sans-serif; }
+        /* 紧凑胶囊:位于顶部进度条(约 150-211px)与内容安全区(260px 起)之间 */
+        #ab { position: absolute; left: 60px; top: 213px; height: 44px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 18px 0 6px; border-radius: 22px; background: rgba(0,0,0,.55); border: 2px solid rgba(255,255,255,.35); font-size: 24px; font-weight: 800; line-height: 1; color: #fff; white-space: nowrap; }
+        #ab-i { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 900; }
+      </style>
+      <div id="root" data-composition-id="dy-ai-badge" data-width="1080" data-height="1920">
+        <div id="ab"><div id="ab-i">AI</div><span id="ab-t"></span></div>
+      </div>
+      <script>
+        const v = Object.assign({"text": "内容由 AI 辅助生成", "accent": "#7c5cff"}, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        root.style.setProperty("--accent", v.accent);
+        document.getElementById("ab-t").textContent = v.text;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#ab", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.2);
+        window.__timelines["dy-ai-badge"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

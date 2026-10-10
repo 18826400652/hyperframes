@@ -1,0 +1,28 @@
+{
+  "component": "dy-scene-big-number",
+  "duration": 4.5,
+  "peak": 3.5,
+  "variants": {
+    "normal": {
+      "label": "用 AI 之后,每周节省",
+      "value": 12,
+      "suffix": " 小时",
+      "note": "按每天 2 小时文案工作估算"
+    },
+    "long": {
+      "label": "<b>&\" 这个账号在过去整整三个月里所有视频的累计播放量总和",
+      "value": 123456789,
+      "prefix": "¥",
+      "suffix": " 次",
+      "note": "数据来源:创作者后台,统计截至本月底,仅包含公开作品,不含已删除与私密视频 <b>&\""
+    },
+    "sparse": {
+      "value": 1286
+    },
+    "override": {
+      "value": 92.7,
+      "suffix": "%",
+      "accent": "#fe2c55"
+    }
+  }
+}

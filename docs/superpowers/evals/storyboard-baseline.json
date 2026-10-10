@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "title": "3 分钟用 AI 写周报",
+  "theme": "neon",
+  "charsPerSecond": 4,
+  "scenes": [
+    {
+      "id": "s01",
+      "script": "你知道吗?现在用 AI 写一份周报,只需要 3 分钟。",
+      "component": "dy-scene-title",
+      "variables": { "kicker": "AI 效率指南", "title": "用 AI 写周报,只要 3 分钟", "em": "3 分钟", "sub": "你知道吗?" },
+      "duration": 5.8,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s02",
+      "script": "很多人觉得 AI 很难上手,其实它这几年变化特别快。",
+      "component": "dy-chapter-title",
+      "variables": { "index": "01", "title": "AI 这几年变化特别快", "sub": "很多人觉得它很难上手" },
+      "duration": 6,
+      "overlays": [],
+      "transitionIn": "dy-tr-wipe",
+      "needs": []
+    },
+    {
+      "id": "s03",
+      "script": "2022 年底,ChatGPT 发布,大家第一次能和 AI 正常聊天。",
+      "component": "dy-news-flash",
+      "variables": { "tag": "AI 大事记", "date": "2022 年底", "company": "ChatGPT", "headline": "ChatGPT 发布", "points": "第一次能和 AI 正常聊天", "source": "AI 发展时间线 · 1/4" },
+      "duration": 7.8,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s04",
+      "script": "2023 年,AI 开始能看懂图片和文件。2024 年,AI 能直接帮你操作电脑和手机。",
+      "component": "dy-scene-steps",
+      "variables": { "title": "AI 能做的越来越多", "steps": "2023::开始能看懂图片和文件|2024::直接操作电脑和手机", "active": 0 },
+      "duration": 10,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s05",
+      "script": "到了今年,AI 已经能独立完成一整套工作流程。",
+      "component": "dy-hook-title",
+      "variables": { "kicker": "到了今年", "line1": "AI 已经能独立完成", "before": "一整套", "keyword": "工作流程" },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s06",
+      "script": "那具体怎么用 AI 写周报呢?只要三步。",
+      "component": "dy-chapter-title",
+      "variables": { "index": "02", "title": "三步用 AI 写周报", "sub": "具体怎么做?" },
+      "duration": 4.5,
+      "overlays": [],
+      "transitionIn": "dy-tr-glitch",
+      "needs": []
+    },
+    {
+      "id": "s07",
+      "script": "第一步,打开 AI 助手,把这周的聊天记录和文档拖进去。",
+      "component": "dy-rec-phone",
+      "variables": { "src": "", "title": "第一步:把聊天记录和文档拖进去", "cues": "" },
+      "duration": 6.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": [
+        { "type": "recording", "variable": "src", "hint": "录制(静音):打开 AI 助手→把本周的聊天记录导出文件和工作文档拖入/上传到对话框;录好后再补 cues 点击/框选坐标" }
+      ]
+    },
+    {
+      "id": "s08",
+      "script": "第二步,输入提示词:请按项目整理本周进展、问题和下周计划。",
+      "component": "dy-prompt-card",
+      "variables": { "title": "第二步:输入提示词", "fields": "整理方式|按项目分类;本周进展|做了什么、到哪一步;问题|遇到的问题;下周计划|下周要做什么", "cta": "收藏起来,下次直接复制" },
+      "duration": 7.3,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s09",
+      "script": "第三步,检查一遍数字和人名,直接复制发出去。",
+      "component": "dy-checklist",
+      "variables": { "title": "第三步:检查一遍", "items": "核对数字|核对人名|直接复制发出去" },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s10",
+      "script": "以前我写周报要花一个半小时,现在三分钟就能搞定。",
+      "component": "dy-before-after",
+      "variables": { "beforeLabel": "以前手写周报", "beforeValue": "1.5 小时", "afterLabel": "现在用 AI", "afterValue": "3 分钟", "gain": "快了 30 倍" },
+      "duration": 6,
+      "overlays": [],
+      "transitionIn": "dy-tr-zoom",
+      "needs": []
+    },
+    {
+      "id": "s11",
+      "script": "算下来,一年能省出整整 70 个小时。",
+      "component": "dy-scene-big-number",
+      "variables": { "label": "算下来,一年能省出", "value": 70, "prefix": "", "suffix": " 小时", "note": "以前 1.5 小时 → 现在 3 分钟" },
+      "duration": 4.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s12",
+      "script": "记住一句话:AI 不会取代你,但会用 AI 的人会。",
+      "component": "dy-scene-quote",
+      "variables": { "text": "AI 不会取代你,但会用 AI 的人会", "em": "会用 AI 的人", "source": "" },
+      "duration": 5.8,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    },
+    {
+      "id": "s13",
+      "script": "觉得有用就点赞收藏,下期教你用 AI 做 PPT。",
+      "component": "dy-scene-ending",
+      "variables": { "headline": "觉得有用,点赞收藏", "cta": "点赞 · 收藏", "next": "下期:用 AI 做 PPT" },
+      "duration": 5.5,
+      "overlays": [],
+      "transitionIn": null,
+      "needs": []
+    }
+  ],
+  "newComponents": [
+    {
+      "id": "dy-timeline",
+      "status": "pending",
+      "purpose": "纵向时间线:年份节点 + 一句话事件,按时间依次点亮当前节点(变量建议 title、items『年份::事件』用 | 分隔、active、theme、accent)。适合口播讲『某年…某年…到了今年…』的发展历程。本清单 s03–s05(2022 底→2023→2024→今年)暂用 dy-news-flash / dy-scene-steps / dy-hook-title 代替,组件确认入库后可改为同一时间线贯穿 s03–s05(每个画面高亮对应年份)。组件文件尚未创建。"
+    }
+  ]
+}

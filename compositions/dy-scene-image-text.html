@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "src", "type": "string", "label": "图片路径(相对项目根目录)", "default": ""},
+  {"id": "caption", "type": "string", "label": "说明文字", "default": "右上角这个按钮,就是一键生成入口"},
+  {"id": "focus", "type": "string", "label": "放大区域 x,y,w,h(图片百分比,可选)", "default": ""},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #si-wrap { position: absolute; left: 80px; right: 160px; top: 400px; display: flex; flex-direction: column; align-items: center; gap: 48px; }
+        #si-frame { padding: 16px; overflow: hidden; }
+        #si-clip { position: relative; overflow: hidden; border-radius: calc(var(--hf-radius) * 0.6); }
+        #si-zoom { position: relative; }
+        #si-img { display: block; max-width: 808px; max-height: 960px; width: auto; height: auto; }
+        #si-box { position: absolute; border: 6px solid var(--hf-accent); border-radius: 12px; box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.35); opacity: 0; }
+        #si-cap { align-self: stretch; font-size: 44px; font-weight: 700; line-height: 1.45; }
+      </style>
+      <div id="root" data-composition-id="dy-scene-image-text" data-width="1080" data-height="1920">
+        <div class="hf-bg"><i class="hf-bg-a"></i><i class="hf-bg-b"></i><i class="hf-bg-c"></i></div>
+        <div id="si-wrap">
+          <div class="hf-card" id="si-frame"><div id="si-clip"><div id="si-zoom"><img id="si-img" alt="" /><div id="si-box"></div></div></div></div>
+          <div class="hf-text" id="si-cap"></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ src: "", caption: "右上角这个按钮,就是一键生成入口", focus: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const img = document.getElementById("si-img"), cap = document.getElementById("si-cap"), box = document.getElementById("si-box");
+        if (v.src) img.src = v.src; else document.getElementById("si-frame").remove();
+        if (v.caption) cap.textContent = v.caption; else cap.remove();
+
+        // focus: 图片百分比坐标 x,y,w,h
+        const f = String(v.focus).split(",").map(Number);
+        const hasFocus = img.isConnected && f.length === 4 && f.every(n => isFinite(n)) && f[2] > 0 && f[3] > 0;
+        if (hasFocus) Object.assign(box.style, { left: f[0] + "%", top: f[1] + "%", width: f[2] + "%", height: f[3] + "%" });
+
+        const layout = () => {
+          if (cap.isConnected) HF.fitLines(cap, 3, 32);
+          HF.centerBox(document.getElementById("si-wrap"));
+        };
+        HF.refit(layout);
+        if (img.isConnected && !img.complete) img.addEventListener("load", layout, { once: true });
+
+        const m = HF.motion(root), D = HF.duration(root, 5);
+        const tl = gsap.timeline({ paused: true });
+        const parts = ["#si-frame", "#si-cap"].map(s => document.querySelector(s)).filter(Boolean);
+        tl.fromTo(parts, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.1);
+        if (hasFocus) {
+          // 先框出区域,再放大(最多 2.5 倍)并把区域中心移到画面正中;平移量限制在不露出图片外空白的范围内
+          const scale = Math.min(2.5, 100 / Math.max(f[2], f[3]));
+          const shift = c => Math.min(0, Math.max(100 - 100 * scale, 50 - scale * c));
+          gsap.set("#si-zoom", { transformOrigin: "0% 0%" });
+          tl.to(box, { opacity: 1, duration: 0.3 }, 0.8);
+          tl.to("#si-zoom", { scale, xPercent: shift(f[0] + f[2] / 2), yPercent: shift(f[1] + f[3] / 2), duration: 1.2, ease: m.ease }, 1.0);
+        } else if (img.isConnected) {
+          tl.fromTo("#si-zoom", { scale: 1 }, { scale: 1.04, duration: Math.max(1, D), ease: "none" }, 0);
+        }
+        tl.to("#si-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.2, D - 0.35));
+        window.__timelines["dy-scene-image-text"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
