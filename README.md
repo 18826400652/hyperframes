@@ -164,6 +164,7 @@
 - 测试用例在 `tests/cases/<组件>.json`:每个组件至少有正常文案和超长文案(含 `<b>&"`)两组。
 - `node tests/run.mjs <组件> [--theme neon]` 只测部分组件;`node tests/sheet.mjs <组件> [--variant long]` 生成 4 主题对比图到 `tests/.out/`。
 - 修改 `compositions/dy-*.html` 或 `assets/dykit/` 后运行 `npm run build:registry` 重新生成 `registry/`(测试会检查是否已同步)。
+- `registry/` 里只有组件和清单;资源包(`assets/dykit/` 下的字体、样式、脚本)不复制进去,清单用 `url` 直接指向本仓库 `main` 分支的源文件。所以移动或删除 `assets/dykit/` 里的文件会让已发布的 registry 安装失败。
 
 ## 字体
 

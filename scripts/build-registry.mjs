@@ -1,6 +1,9 @@
 // 从 compositions/dy-*.html 与 assets/dykit/ 生成 HyperFrames registry(registry/)
 // 用法: node scripts/build-registry.mjs          生成
 //       node scripts/build-registry.mjs --check  仅检查 registry/ 是否与源文件一致(不一致退出码 1)
+//       --asset-base <url>  资源包文件的下载地址前缀(默认本仓库 main 分支,测试时指向本地服务)
+//       --out <dir>         输出目录(默认 registry/)
+// 资源包(assets/dykit/)不复制进 registry,registry-item.json 里用 file.url 指向仓库中的源文件,避免重复存放字体
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -11,6 +14,8 @@ const KIT = "assets/dykit";
 const SCHEMA = "https://hyperframes.heygen.com/schema";
 // block 类型必须声明画面尺寸与参考时长
 const FRAME = { dimensions: { width: 1080, height: 1920 }, duration: 4 };
+const arg = name => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
+const ASSET_BASE = arg("--asset-base") ?? "https://raw.githubusercontent.com/18826400652/hyperframes/main/";
 
 function walk(dir) {
   return fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true }).flatMap(e =>
@@ -27,13 +32,12 @@ function build(outDir) {
 
   // 资源包:所有组件的共同依赖
   const kitFiles = walk(KIT);
-  kitFiles.forEach(f => copy(f, `blocks/dykit/${f}`));
   write("blocks/dykit/registry-item.json", json({
     $schema: `${SCHEMA}/registry-item.json`, name: "dykit", type: "hyperframes:block", ...FRAME,
     title: "dykit 主题与资源包",
     description: "dykit 组件共用的主题样式(minimal / neon / editorial / bento)、HF 工具集与中文字体。安装后在 index.html 的 <head> 引入 assets/dykit/dykit.css 与 assets/dykit/hf-kit.js。",
     tags: ["dykit"],
-    files: kitFiles.map(f => ({ path: f, target: f, type: f.endsWith(".css") ? "hyperframes:style" : "hyperframes:asset" })),
+    files: kitFiles.map(f => ({ path: f, url: new URL(f, ASSET_BASE).href, target: f, type: f.endsWith(".css") ? "hyperframes:style" : "hyperframes:asset" })),
   }));
   items.push({ name: "dykit", type: "hyperframes:block" });
 
@@ -66,7 +70,7 @@ function same(a, b) {
   return diff;
 }
 
-const out = path.join(ROOT, "registry");
+const out = path.resolve(ROOT, arg("--out") ?? "registry");
 if (process.argv.includes("--check")) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "dykit-registry-"));
   build(tmp);

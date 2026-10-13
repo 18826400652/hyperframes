@@ -165,6 +165,6 @@
 - **命名空间**:组件库称为 `dykit`。资源统一放在 `assets/dykit/`(`dykit.css` 入口、`theme.css`、`hf-kit.js`、`fonts/`);所有组件文件名和 `data-composition-id` 以 `dy-` 开头(新组件如 `dy-scene-title`、`dy-rec-phone`、`dy-tr-wipe`)。
 - **接入方式**:消费项目在 `hyperframes.json` 中设置 `"registry": "https://raw.githubusercontent.com/18826400652/hyperframes/main/registry"`,运行 `npx hyperframes add dy-scene-title` 即可安装组件,依赖的 `dykit` 资源包会自动一并安装;然后在 `index.html` 的 `<head>` 加两行:
   `<link rel="stylesheet" href="assets/dykit/dykit.css" />`、`<script src="assets/dykit/hf-kit.js"></script>`。
-- **registry 目录**:`registry/` 由 `scripts/build-registry.mjs` 从 `compositions/` 和 `assets/dykit/` 生成并提交(官方下载器要求文件位于 `blocks/<名称>/` 下,不能引用目录外文件)。`--check` 模式用于确认 registry 与源文件一致。
+- **registry 目录**:`registry/` 由 `scripts/build-registry.mjs` 从 `compositions/` 和 `assets/dykit/` 生成并提交。组件 html 复制进 `blocks/<名称>/`;资源包文件不复制,`registry-item.json` 用 `file.url`(官方字段,允许从绝对 https 地址下载)指向本仓库 `main` 分支的 `assets/dykit/`,避免字体在仓库里存两份。`--check` 模式用于确认 registry 与源文件一致。
 - **验收**:端到端测试在本地 HTTPS 服务上模拟远程 registry,把组件安装进一个空项目,并在该项目上 `check` 通过。
 - registry 要等仓库公开、并合并到 `main` 分支后,其他项目才能真正使用。

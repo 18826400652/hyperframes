@@ -20,13 +20,20 @@ fs.mkdirSync(tmp, { recursive: true });
 const key = path.join(tmp, "key.pem"), cert = path.join(tmp, "cert.pem");
 const ssl = run("openssl", ["req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1", "-subj", "/CN=localhost", "-addext", "subjectAltName=DNS:localhost,IP:127.0.0.1", "-keyout", key, "-out", cert]);
 if (ssl.status !== 0) fail("openssl: " + ssl.stderr);
+// 模拟 GitHub raw:/registry/ 来自临时生成的 registry(资源地址指向本服务),/assets/dykit/ 来自仓库源文件
+const reg = path.join(tmp, "registry");
 const server = https.createServer({ key: fs.readFileSync(key), cert: fs.readFileSync(cert) }, (req, res) => {
-  const p = path.join(ROOT, decodeURIComponent(new URL(req.url, "https://x").pathname));
-  if (!p.startsWith(path.join(ROOT, "registry")) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
+  const rel = decodeURIComponent(new URL(req.url, "https://x").pathname);
+  const p = rel.startsWith("/registry/") ? path.join(reg, rel.slice("/registry/".length)) : path.join(ROOT, rel);
+  const allowed = p.startsWith(reg + path.sep) || p.startsWith(path.join(ROOT, "assets/dykit") + path.sep);
+  if (!allowed || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200); fs.createReadStream(p).pipe(res);
 });
 await new Promise(r => server.listen(0, "127.0.0.1", r));
-const base = `https://localhost:${server.address().port}/registry`;
+const origin = `https://localhost:${server.address().port}`;
+const base = `${origin}/registry`;
+const gen = run("node", [path.join(ROOT, "scripts/build-registry.mjs"), "--out", reg, "--asset-base", origin + "/"]);
+if (gen.status !== 0) { server.close(); fail("build-registry --out: " + (gen.stdout + gen.stderr).trim()); }
 
 // 空的消费项目
 const proj = path.join(tmp, "consumer");
@@ -49,6 +56,12 @@ server.close();
 if (add.code !== 0) fail("hyperframes add: " + add.out.trim().split("\n").slice(-8).join(" | "));
 for (const f of ["compositions/dy-scene-title.html", "assets/dykit/dykit.css", "assets/dykit/hf-kit.js", "assets/dykit/theme.css", "assets/dykit/fonts/fonts.css", "assets/dykit/media/rec-placeholder.mp4"]) {
   if (!fs.existsSync(path.join(proj, f))) fail("not installed: " + f);
+}
+// 装进来的资源包与源文件逐字节一致
+const kit = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? kit(path.join(d, e.name)) : [path.join(d, e.name)]);
+for (const src of kit(path.join(ROOT, "assets/dykit"))) {
+  const dst = path.join(proj, path.relative(ROOT, src));
+  if (!fs.existsSync(dst) || !fs.readFileSync(dst).equals(fs.readFileSync(src))) fail("installed file differs from source: " + path.relative(ROOT, src));
 }
 
 // 3) 接入两行 + 挂载组件,check 通过
