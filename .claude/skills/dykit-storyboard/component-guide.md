@@ -96,5 +96,6 @@
    - 在 `catalog/notes.json` 写入 `kind`(`scene` 或 `overlay`)、`purpose`、`suitableFor`(口播里的什么信号适合用它)、`minDuration`;
    - `npm run build:catalog`、`npm run build:registry`;
    - 在 README 对应的组件表里加一行;
+   - 把组件加进仓库根目录 `index.html` 的组件演示时间线(叠加组件放在叠加段末尾、整屏场景放在场景段,顺延后面各段的 `data-start`、根元素和全程元素的 `data-duration`),再跑 `npx hyperframes check .`;交付时告诉用户新组件在演示的第几秒;
    - 提交并推送,把清单里该组件的 `status` 改为 `accepted`。
 3. 用户要求修改:改完重新跑测试、重新出对比图。用户拒绝:删除组件文件与测试用例,清单里对应画面改用现有组件。

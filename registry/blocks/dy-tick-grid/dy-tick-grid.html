@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "标题(可选)", "default": "1 到 20,挨个查一遍"},
+  {"id": "count", "type": "number", "label": "格子数(1–60)", "default": 20},
+  {"id": "cols", "type": "number", "label": "每行几个(2–8)", "default": 5},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #tg { position: absolute; left: 80px; right: 160px; top: 420px; display: flex; flex-direction: column; gap: 40px; }
+        #tg-title { font-size: 72px; color: var(--hf-text); -webkit-text-stroke: 8px var(--hf-bg); paint-order: stroke fill; }
+        #tg-grid { display: grid; gap: 16px; }
+        .tg-c { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: var(--hf-font-mono); font-weight: 700; color: var(--hf-text); border-radius: calc(var(--hf-radius) * 0.5); }
+        .tg-c svg { position: absolute; right: -12%; top: -14%; width: 50%; height: 50%; overflow: visible; }
+        .tg-c path.tg-under { stroke: var(--hf-bg); stroke-width: 18; }
+        .tg-c path { fill: none; stroke: var(--hf-accent); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; stroke-dashoffset: 40; }
+      </style>
+      <div id="root" data-composition-id="dy-tick-grid" data-width="1080" data-height="1920">
+        <div id="tg"><div class="hf-title" id="tg-title"></div><div id="tg-grid"></div></div>
+      </div>
+      <script>
+        const v = Object.assign({ title: "1 到 20,挨个查一遍", count: 20, cols: 5, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const clamp = (x, a, b, d) => { const n = Math.round(Number(x)); return Number.isFinite(n) ? Math.min(b, Math.max(a, n)) : d; };
+        const count = clamp(v.count, 1, 60, 20), cols = clamp(v.cols, 2, 8, 5);
+        const title = document.getElementById("tg-title"), grid = document.getElementById("tg-grid");
+        if (v.title) title.textContent = v.title; else title.remove();
+        grid.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+        const cellW = (840 - 16 * (cols - 1)) / cols;
+        for (let i = 1; i <= count; i++) {
+          const c = document.createElement("div"); c.className = "tg-c hf-panel";
+          c.style.fontSize = Math.round(cellW * 0.36) + "px";
+          c.innerHTML = '<svg viewBox="0 0 48 48"><path class="tg-under" d="M8 25 L19 36 L40 12"/><path d="M8 25 L19 36 L40 12"/></svg>';
+          c.prepend(String(i)); grid.append(c);
+        }
+        HF.refit(() => {
+          if (title.isConnected) HF.fitLines(title, 2, 48);
+          HF.centerBox(document.getElementById("tg"));
+        });
+        const m = HF.motion(root), D = HF.duration(root, 5);
+        const cells = grid.querySelectorAll(".tg-c"), paths = grid.querySelectorAll("path");
+        const tl = gsap.timeline({ paused: true });
+        if (title.isConnected) tl.fromTo(title, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        tl.fromTo(cells, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: m.ease, stagger: Math.min(0.03, 0.6 / count) }, 0.3);
+        // 打勾:在 1.0 秒到 55% 时长之间逐个完成
+        const tickStart = 1.0, step = Math.max(0.03, (D * 0.55 - tickStart) / count);
+        // 每格两层路径(底色描边 + 对勾)同时画
+        tl.to(paths, { strokeDashoffset: 0, duration: 0.18, ease: "power2.out", stagger: (i) => Math.floor(i / 2) * step }, tickStart);
+        tl.to("#tg", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(tickStart + step * count + 0.4, D - 0.35));
+        window.__timelines["dy-tick-grid"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

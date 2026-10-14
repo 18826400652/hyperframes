@@ -96,6 +96,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-receipt",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-safe-zone",
       "type": "hyperframes:block"
     },
@@ -140,6 +144,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-stamp",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-stat-counter",
       "type": "hyperframes:block"
     },
@@ -149,6 +157,10 @@
     },
     {
       "name": "dy-subtitle",
+      "type": "hyperframes:block"
+    },
+    {
+      "name": "dy-tick-grid",
       "type": "hyperframes:block"
     },
     {

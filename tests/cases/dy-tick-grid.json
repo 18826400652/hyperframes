@@ -1,0 +1,4 @@
+{ "component": "dy-tick-grid", "duration": 5, "peak": 3.6,
+  "variants": { "normal": {},
+    "long": { "title": "<b>&\" 让它把编号从 1 到 20 挨个检查一遍,看有没有重复和遗漏", "count": 40, "cols": 8 },
+    "real": { "title": "", "count": 20, "cols": 4 } } }

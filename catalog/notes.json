@@ -250,5 +250,23 @@
     "purpose": "纵向流程图,AI 步骤高亮",
     "suitableFor": "口播讲一个包含 AI 环节的工作流程",
     "minDuration": 4
+  },
+  "dy-receipt": {
+    "kind": "overlay",
+    "purpose": "AI 结果打成小票:编号明细逐行打出,圈出重复编号,合计标错或标对",
+    "suitableFor": "口播说 AI 给出的分类、统计、清单,或「它数错了 / 这回对了」",
+    "minDuration": 4
+  },
+  "dy-tick-grid": {
+    "kind": "overlay",
+    "purpose": "1 到 N 的编号格子逐个打勾",
+    "suitableFor": "口播说「挨个查一遍」「逐条核对」「一个都没漏」",
+    "minDuration": 3.5
+  },
+  "dy-stamp": {
+    "kind": "overlay",
+    "purpose": "印章盖下来:下结论、拍板、判定",
+    "suitableFor": "口播下结论或强调由人拍板,如「你定」「数错了」「通过」",
+    "minDuration": 1.5
   }
 }

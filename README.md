@@ -133,6 +133,9 @@
 | dy-tool-card | AI 工具推荐卡 | name, logo, tagline, tags, rating, price, url | 5s |
 | dy-code-block | 代码块打字机(等宽字体) | file, code(`\|` 分行), speed | 约 3+字符数/speed s |
 | dy-workflow-flow | AI 工作流纵向流程(AI 步骤高亮) | title, steps, aiSteps | 约 3+步数×0.7s |
+| dy-receipt | AI 结果小票:编号明细逐行打出,圈出重复编号,合计标错 / 标对 | title, sub, rows(`名称::编号::数量`,`\|` 分隔), total, verdict(wrong / right), dup, check | 5s |
+| dy-tick-grid | 1 到 N 编号格子逐个打勾 | title, count, cols | 5s |
+| dy-stamp | 印章盖下来(下结论、拍板) | text, note, color, rotate | 2.5s |
 | dy-concept-card | 名词解释卡(术语 / 人话 / 比方) | term, en, plain, analogy | 6s |
 | dy-sticker-pop | 花字贴纸弹出(只有阴影色跟随主题) | text, emoji, color, rotate, x, y | 2.5s |
 
