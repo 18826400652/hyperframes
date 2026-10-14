@@ -8,7 +8,7 @@
   },
   "duration": 4,
   "title": "dykit 主题与资源包",
-  "description": "dykit 组件共用的主题样式(minimal / neon / editorial / bento)、HF 工具集与中文字体。安装后在 index.html 的 <head> 引入 assets/dykit/dykit.css 与 assets/dykit/hf-kit.js。",
+  "description": "dykit 组件共用的主题样式(minimal / neon / editorial / bento / custom)、HF 工具集与中文字体。安装后在 index.html 的 <head> 引入 assets/dykit/dykit.css 与 assets/dykit/hf-kit.js。",
   "tags": [
     "dykit"
   ],

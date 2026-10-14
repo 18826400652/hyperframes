@@ -5,7 +5,15 @@ import { fileURLToPath } from "node:url";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const OUT = path.join(ROOT, "tests/.out");
-export const THEMES = ["minimal", "neon", "editorial", "bento"];
+export const THEMES = ["minimal", "neon", "editorial", "bento", "custom"];
+// custom 主题的测试配色:一套浅色、一套深色(深色用来查对比度),按组件名交替使用。
+// 深色配色的荧光笔用深蓝:hyperframes check 对折行的高亮词按整块外框取底色,深底 + 浅色荧光笔会误报
+export const CUSTOM_PALETTES = [
+  { bg: "#F1ECE2", text: "#1C1A17", muted: "#6E675C", accent: "#B3261E", alert: "#1F4FBF", highlight: "#FFD84D", onHighlight: "#1C1A17", onAccent: "#FFFFFF", title: '"Noto Serif SC Variable", serif', body: '"Noto Sans SC Variable", sans-serif' },
+  { bg: "#101114", text: "#F4F1EA", muted: "#8A8D96", accent: "#FFD84D", alert: "#FF5A5F", highlight: "#2B59C3", onHighlight: "#FFFFFF", onAccent: "#1C1A17", title: '"Noto Sans SC Variable", sans-serif', body: '"Noto Sans SC Variable", sans-serif' },
+];
+export const customStyle = p => `--hf-custom-bg:${p.bg};--hf-custom-text:${p.text};--hf-custom-muted:${p.muted};--hf-custom-accent:${p.accent};--hf-custom-alert:${p.alert};--hf-custom-highlight:${p.highlight};--hf-custom-on-highlight:${p.onHighlight};--hf-custom-on-accent:${p.onAccent};--hf-custom-on-alert:#FFFFFF;--hf-custom-font-title:${p.title};--hf-custom-font-body:${p.body}`;
+export const customPalette = id => CUSTOM_PALETTES[[...id].reduce((s, ch) => s + ch.charCodeAt(0), 0) % CUSTOM_PALETTES.length];
 export const CLI = ["--yes", "hyperframes@0.8.143"];
 
 export function loadCase(id) {
@@ -41,6 +49,7 @@ export function buildFixture(c, theme, sheetVariant = "normal") {
       n++;
     }
   });
+  const rootStyle = theme === "custom" ? ` style="${customStyle(customPalette(c.component)).replaceAll('"', "&quot;")}"` : "";
   const html = `<!doctype html>
 <html lang="zh-CN" data-resolution="portrait">
 <head>
@@ -52,7 +61,7 @@ export function buildFixture(c, theme, sheetVariant = "normal") {
   <style>* { margin: 0; padding: 0; box-sizing: border-box; } html, body { width: 1080px; height: 1920px; overflow: hidden; } #root { position: relative; width: 100%; height: 100%; overflow: hidden; } #base { position: absolute; inset: 0; background: var(--hf-bg); }</style>
 </head>
 <body>
-  <div id="root" data-composition-id="main" data-theme="${theme}" data-start="0" data-duration="${total}" data-width="1080" data-height="1920">
+  <div id="root" data-composition-id="main" data-theme="${theme}"${rootStyle} data-start="0" data-duration="${total}" data-width="1080" data-height="1920">
     <div id="base"></div>
 ${hosts}  </div>
   <script>

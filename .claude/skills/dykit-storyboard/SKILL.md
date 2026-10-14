@@ -70,9 +70,9 @@ description: 当用户提供口播稿并要求分镜、出画面清单、给每�
 
 只有当现有组件都表达不好(例如时间线、逐年变化、思维导图),而且第 4 条规则也装不下时,才生成新组件。生成前再查一遍目录。
 
-1. 严格按 `component-guide.md` 编写,写测试用例(normal / long / real),`node tests/run.mjs <id>` 4 个主题通过。
+1. 严格按 `component-guide.md` 编写,写测试用例(normal / long / real),`node tests/run.mjs <id>` 5 个主题通过。
 2. 清单里直接用它,并在 `newComponents` 写 `{ "id", "status": "pending", "purpose" }`。
-3. 生成 4 主题对比图(`node tests/sheet.mjs <id>` 和 `--variant long`),连同用途、变量说明、适合的口播内容发给用户。**用户确认前不提交、不推送。**
+3. 生成 5 主题对比图(`node tests/sheet.mjs <id>` 和 `--variant long`),连同用途、变量说明、适合的口播内容发给用户。**用户确认前不提交、不推送。**
 4. 用户确认后按 `component-guide.md` 第 8 节入库,把状态改为 `accepted`;用户要修改就改完重发对比图;用户拒绝就删除组件,清单里改用现有组件。
 
 ## 常见错误

@@ -35,7 +35,7 @@ function build(outDir) {
   write("blocks/dykit/registry-item.json", json({
     $schema: `${SCHEMA}/registry-item.json`, name: "dykit", type: "hyperframes:block", ...FRAME,
     title: "dykit 主题与资源包",
-    description: "dykit 组件共用的主题样式(minimal / neon / editorial / bento)、HF 工具集与中文字体。安装后在 index.html 的 <head> 引入 assets/dykit/dykit.css 与 assets/dykit/hf-kit.js。",
+    description: "dykit 组件共用的主题样式(minimal / neon / editorial / bento / custom)、HF 工具集与中文字体。安装后在 index.html 的 <head> 引入 assets/dykit/dykit.css 与 assets/dykit/hf-kit.js。",
     tags: ["dykit"],
     files: kitFiles.map(f => ({ path: f, url: new URL(f, ASSET_BASE).href, target: f, type: f.endsWith(".css") ? "hyperframes:style" : "hyperframes:asset" })),
   }));
@@ -47,7 +47,7 @@ function build(outDir) {
     copy(`compositions/${file}`, `blocks/${name}/${file}`);
     write(`blocks/${name}/registry-item.json`, json({
       $schema: `${SCHEMA}/registry-item.json`, name, type: "hyperframes:block", ...FRAME,
-      title: name, description: `dykit 抖音竖屏组件 ${name}(1080×1920${themed(file) ? ",支持 4 种主题" : ""})。`,
+      title: name, description: `dykit 抖音竖屏组件 ${name}(1080×1920${themed(file) ? ",支持 5 种主题" : ""})。`,
       tags: ["dykit", "douyin", "portrait"],
       registryDependencies: ["dykit"],
       files: [{ path: file, target: `compositions/${file}`, type: "hyperframes:composition" }],

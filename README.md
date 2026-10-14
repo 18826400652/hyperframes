@@ -1,6 +1,6 @@
 # 抖音自媒体组件库 dykit (HyperFrames)
 
-竖屏 1080×1920 的 HyperFrames 组件库，面向无真人出镜的 AI 知识类抖音视频：整屏场景模板、手机录屏演示、转场，以及可叠加在素材上的标题、字幕、卡片等组件。4 套主题一键切换。
+竖屏 1080×1920 的 HyperFrames 组件库，面向无真人出镜的 AI 知识类抖音视频：整屏场景模板、手机录屏演示、转场，以及可叠加在素材上的标题、字幕、卡片等组件。4 套预设主题一键切换,另有 custom 主题可套用自己的配色。
 
 ## 在其他 HyperFrames 项目中接入
 
@@ -37,6 +37,27 @@
 | `neon` | 霓虹赛博:网格地面、发光描边、切角卡片 | 深蓝黑 / 青 `#25f4ee`、红 `#fe2c55` |
 | `editorial` | 杂志编辑:米色纸张、衬线标题、荧光笔高亮 | 米白 / 红 `#c8201a`、黄 `#ffd43b` |
 | `bento` | 卡片科技:深色玻璃卡片、圆角、柔光 | 深紫黑 / 紫 `#9d8bff`、青 `#25f4ee` |
+| `custom` | 自定义配色:颜色、字体由你给,无装饰背景 | 默认米白 / 红 `#c8201a`、蓝 `#1f4fbf`,荧光笔黄 `#ffd84d` |
+
+### custom(自定义配色)
+
+给宿主元素(或它的外层)写 `data-theme="custom"` 和这些 CSS 变量,组件就按你的颜色和字体画,没写的用上表的默认值:
+
+| 变量 | 含义 |
+|---|---|
+| `--hf-custom-bg` / `--hf-custom-text` / `--hf-custom-muted` | 底色 / 正文色 / 次要文字色 |
+| `--hf-custom-accent` | 强调色。组件会把它当文字色、描边色用,和底色的对比度要 ≥ 3:1 |
+| `--hf-custom-alert` | 第二强调色(警示、对比的另一边) |
+| `--hf-custom-highlight` / `--hf-custom-on-highlight` | 荧光笔高亮的底色(可以是浅色)/ 高亮上的文字色 |
+| `--hf-custom-on-accent` / `--hf-custom-on-alert` | 压在强调色色块上的文字色 |
+| `--hf-custom-font-title` / `--hf-custom-font-body` | 标题 / 正文字体 |
+
+深色底配浅色荧光笔时,折成两行的高亮词会被 `hyperframes check` 误报对比度不足(它按整块外框取底色),截图确认即可。
+
+```html
+<div data-composition-id="dy-scene-steps" data-composition-src="compositions/dy-scene-steps.html" data-theme="custom"
+     style="--hf-custom-bg:#101114;--hf-custom-text:#f4f1ea;--hf-custom-accent:#ffd84d;--hf-custom-on-accent:#1c1a17" ...></div>
+```
 
 单个组件可以单独覆盖(写在挂载点的 `data-variable-values` 里):
 
@@ -133,7 +154,7 @@
 
 1. 把口播按意思切成 3~8 秒的画面,为每个画面从组件目录(`catalog/catalog.json`)里选组件、提炼文案;
 2. 输出 `storyboards/<视频名>.json`,并用校验脚本检查到通过;
-3. 现有组件表达不了的内容,按 `component-guide.md` 生成新组件,出 4 主题对比图给你确认,确认后才入库推送。
+3. 现有组件表达不了的内容,按 `component-guide.md` 生成新组件,出 5 主题对比图给你确认,确认后才入库推送。
 
 清单每个画面包含:口播原文 `script`、组件 `component` 与变量 `variables`、估算时长 `duration`(每秒 4 字,可由配音实际时长覆盖)、叠加组件 `overlays`、转场 `transitionIn`、需要你补的素材 `needs`(录屏 / 截图)。主组件为叠加类(透明背景)时,组装时在下面垫 `dy-scene-bg`;转场挂在画面开始前 0.25 秒、时长 0.5 秒。
 
@@ -160,9 +181,9 @@
 
 ## 开发与测试
 
-- `npm test`:registry 一致性 + 端到端安装测试，以及全部组件 × 4 主题的检查(静态检查、`hyperframes check --strict`、底部字幕安全区、录屏与转场的像素断言)。
+- `npm test`:registry 一致性 + 端到端安装测试，以及全部组件 × 5 主题的检查(custom 主题按组件交替用一套浅色、一套深色测试配色)(静态检查、`hyperframes check --strict`、底部字幕安全区、录屏与转场的像素断言)。
 - 测试用例在 `tests/cases/<组件>.json`:每个组件至少有正常文案和超长文案(含 `<b>&"`)两组。
-- `node tests/run.mjs <组件> [--theme neon]` 只测部分组件;`node tests/sheet.mjs <组件> [--variant long]` 生成 4 主题对比图到 `tests/.out/`。
+- `node tests/run.mjs <组件> [--theme neon]` 只测部分组件;`node tests/sheet.mjs <组件> [--variant long]` 生成 5 主题对比图到 `tests/.out/`。
 - 修改 `compositions/dy-*.html` 或 `assets/dykit/` 后运行 `npm run build:registry` 重新生成 `registry/`(测试会检查是否已同步)。
 - `registry/` 里只有组件和清单;资源包(`assets/dykit/` 下的字体、样式、脚本)不复制进去,清单用 `url` 直接指向本仓库 `main` 分支的源文件。所以移动或删除 `assets/dykit/` 里的文件会让已发布的 registry 安装失败。
 

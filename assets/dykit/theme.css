@@ -1,4 +1,4 @@
-/* 主题系统:根合成上设置 data-theme="minimal|neon|editorial|bento";组件也可用 theme 变量单独覆盖。
+/* 主题系统:根合成上设置 data-theme="minimal|neon|editorial|bento|custom";组件也可用 theme 变量单独覆盖。
    所有因主题而异的值都写成变量,且每个主题块都完整声明全部变量:
    嵌套覆盖时只取最近一层主题的值,外层主题的装饰不会漏进来。组件只引用这些变量和 .hf-* 类。 */
 
@@ -95,6 +95,31 @@
   --hf-bg-b-size: 100% 100%; --hf-bg-b-pos: 0 0; --hf-bg-b-mask: none;
   --hf-bg-c-img: radial-gradient(rgba(255, 255, 255, 0.12) 2px, transparent 2px); --hf-bg-c-size: 48px 48px;
   --hf-bg-c-mask: radial-gradient(circle at 50% 40%, #000, transparent 75%);
+}
+
+[data-theme="custom"] {
+  /* 自定义配色:颜色和字体由同一元素或外层的 --hf-custom-* 变量提供(如 video-director 每条视频的配色),
+     没提供的用浅色纸面默认值;装饰背景层全部关闭。
+     accent 会被组件当文字色、描边色用,和 bg 的对比度要 ≥ 3:1;荧光笔底色另用 highlight(可以是浅色)。
+     on-accent / on-alert / on-highlight 是压在对应色块上的文字色;荧光笔是整块底色(文字全部压在高亮上,深色配色也看得清)。 */
+  --hf-bg: var(--hf-custom-bg, #f1ece2); --hf-bg-2: color-mix(in srgb, var(--hf-bg) 92%, var(--hf-text)); --hf-bg-v2: var(--hf-bg-2);
+  --hf-surface: color-mix(in srgb, var(--hf-bg) 90%, var(--hf-text)); --hf-surface-border: color-mix(in srgb, var(--hf-text) 24%, var(--hf-bg)); --hf-surface-shadow: 0 24px 48px rgba(0, 0, 0, 0.14);
+  --hf-text: var(--hf-custom-text, #1c1a17); --hf-muted: var(--hf-custom-muted, #6e675c);
+  --hf-accent: var(--hf-custom-accent, #c8201a); --hf-accent-2: var(--hf-custom-alert, #1f4fbf);
+  --hf-on-accent: var(--hf-custom-on-accent, #ffffff); --hf-on-accent-2: var(--hf-custom-on-alert, #ffffff);
+  --hf-font-title: var(--hf-custom-font-title, "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif);
+  --hf-font-body: var(--hf-custom-font-body, "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif);
+  --hf-font-mono: "JetBrains Mono", "Noto Sans SC Variable", monospace;
+  --hf-title-weight: 900; --hf-radius: 14px;
+  --hf-ease: power3.out; --hf-ease-out: power2.in; --hf-dur: 0.5; --hf-stagger: 0.15;
+  --hf-title-shadow: none;
+  --hf-em-bg: var(--hf-custom-highlight, #ffd84d); --hf-em-clip: border-box; --hf-em-fill: var(--hf-custom-on-highlight, #1c1a17); --hf-em-shadow: none; --hf-em-pad: 0 0.12em;
+  --hf-kicker-font: var(--hf-font-mono); --hf-kicker-color: var(--hf-muted); --hf-kicker-bg: none; --hf-kicker-border: 0 solid transparent; --hf-kicker-rule: 0 solid transparent; --hf-kicker-pad: 0; --hf-kicker-radius: 0;
+  --hf-card-bg: var(--hf-surface); --hf-card-bw: 2px; --hf-card-radius: var(--hf-radius); --hf-card-clip: none;
+  --hf-panel: color-mix(in srgb, var(--hf-bg) 94%, transparent); --hf-panel-bw: 2px;
+  --hf-bg-a-img: none; --hf-bg-a2-img: none; --hf-bg-a-size: auto; --hf-bg-a-repeat: no-repeat; --hf-bg-a-opacity: 0;
+  --hf-bg-b-img: none; --hf-bg-b2-img: none; --hf-bg-b-size: 100% 100%; --hf-bg-b-pos: 0 0; --hf-bg-b-mask: none;
+  --hf-bg-c-img: none; --hf-bg-c-size: auto; --hf-bg-c-mask: none;
 }
 
 /* ---------- 排版基准 ---------- */
