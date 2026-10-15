@@ -1,3 +1,1 @@
-{ "component": "dy-checklist", "duration": 5.5, "peak": 4.5,
-  "variants": { "normal": {},
-    "long": { "title": "<b>&\" 做 AI 内容之前一定要记住这几点", "items": "<b>&\" 别盲目跟风追热点,先想清楚自己的定位和目标受众|先小范围测试再放量,数据好再加大投入|数据比感觉靠谱,每周复盘一次核心指标" } } }
+{"component": "dy-checklist", "duration": 5.5, "peak": 4.5, "variants": {"normal": {}, "long": {"title": "<b>&\" 做 AI 内容之前一定要记住这几点", "items": "<b>&\" 别盲目跟风追热点,先想清楚自己的定位和目标受众|先小范围测试再放量,数据好再加大投入|数据比感觉靠谱,每周复盘一次核心指标"}}, "cues": {"vars": "1|7|12", "before": 4, "after": 13}}

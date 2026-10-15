@@ -4,7 +4,8 @@
   {"id": "count", "type": "number", "label": "格子数(1–60)", "default": 20},
   {"id": "cols", "type": "number", "label": "每行几个(2–8)", "default": 5},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:开始逐个打勾的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -23,7 +24,7 @@
         <div id="tg"><div class="hf-title" id="tg-title"></div><div id="tg-grid"></div></div>
       </div>
       <script>
-        const v = Object.assign({ title: "1 到 20,挨个查一遍", count: 20, cols: 5, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ title: "1 到 20,挨个查一遍", count: 20, cols: 5, theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const clamp = (x, a, b, d) => { const n = Math.round(Number(x)); return Number.isFinite(n) ? Math.min(b, Math.max(a, n)) : d; };
@@ -48,7 +49,7 @@
         if (title.isConnected) tl.fromTo(title, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
         tl.fromTo(cells, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: m.ease, stagger: Math.min(0.03, 0.6 / count) }, 0.3);
         // 打勾:在 1.0 秒到 55% 时长之间逐个完成
-        const tickStart = 1.0, step = Math.max(0.03, (D * 0.55 - tickStart) / count);
+        const [tickStart] = HF.cues(v.cues, 1, [1.0]), step = Math.max(0.03, (D * 0.55 - tickStart) / count);
         // 每格两层路径(底色描边 + 对勾)同时画
         tl.to(paths, { strokeDashoffset: 0, duration: 0.18, ease: "power2.out", stagger: (i) => Math.floor(i / 2) * step }, tickStart);
         tl.to("#tg", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(tickStart + step * count + 0.4, D - 0.35));

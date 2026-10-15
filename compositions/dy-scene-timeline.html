@@ -4,7 +4,8 @@
   {"id": "items", "type": "string", "label": "节点(| 分隔;每个写 时间::事件)", "default": "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程"},
   {"id": "active", "type": "number", "label": "高亮第几个节点(0 为按时间依次高亮;连续画面讲同一条时间线时逐个填 1、2、3…,从第 2 个起直接接着上一画面,不重放入场)", "default": 0},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每个节点高亮的时间(active 为 0 时);留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -34,7 +35,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ title: "AI 这几年的变化", items: "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程", active: 0, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ title: "AI 这几年的变化", items: "2022::能和 AI 正常聊天|2023::能看懂图片和文件|2024::能操作电脑和手机|今年::独立完成整套流程", active: 0, theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const title = document.getElementById("tl-title"), list = document.getElementById("tl-list");
@@ -127,9 +128,10 @@
         } else if (n) {
           // 按时间依次高亮:可用时长平均分给每个节点
           const span = Math.max(0.6, (D - 0.35 - ready) / n);
+          const at = HF.cues(v.cues, n, nodes.map((_, i) => ready + i * span)).map(t => Math.max(ready, t));
           nodes.forEach((s, i) => { if (i > 0) tl.to(s.body, { opacity: dim, duration: 0.2 }, ready); });
           nodes.forEach((s, i) => {
-            const t = ready + i * span;
+            const t = at[i];
             if (i > 0) settle(i - 1, t);
             light(i, t);
           });

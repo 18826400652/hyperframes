@@ -7,6 +7,9 @@
       "purpose": "右侧点赞评论收藏转发栏",
       "suitableFor": "口播引导点赞收藏转发,模拟抖音界面",
       "minDuration": 5,
+      "beats": [
+        "四个数字开始往上涨"
+      ],
       "variables": [
         {
           "id": "likes",
@@ -31,6 +34,12 @@
           "type": "number",
           "label": "转发数",
           "default": 9876
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:数字开始涨的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -61,6 +70,10 @@
       "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签(两张卡片自带固定角标『以前』『用 AI』)",
       "suitableFor": "口播讲用 AI 前后时间或成本的变化",
       "minDuration": 5,
+      "beats": [
+        "「之后」那张卡出现",
+        "增长标签弹出"
+      ],
       "variables": [
         {
           "id": "beforeLabel",
@@ -103,6 +116,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:「之后」那张卡出现、增长标签弹出的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -112,6 +131,10 @@
       "purpose": "评测条形图:多个名称和分数,领先者高亮",
       "suitableFor": "口播比较多个模型或工具的分数、排名、测评结果",
       "minDuration": 4,
+      "beats": [
+        "第 1 根条出现并涨到数值",
+        "第 2 根条……(每根一拍,按 items 顺序)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -153,6 +176,12 @@
           "id": "accent",
           "type": "string",
           "label": "领先色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一根条出现的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -202,6 +231,10 @@
       "purpose": "AI 对话演示:提问打字 → 思考 → 回答打字",
       "suitableFor": "口播演示向 AI 提问并得到回答",
       "minDuration": 5,
+      "beats": [
+        "提问气泡出现并开始打字",
+        "AI 回答出现并开始打字(之前显示「正在输入」)"
+      ],
       "variables": [
         {
           "id": "prompt",
@@ -238,6 +271,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:提问气泡、AI 回答出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -247,6 +286,10 @@
       "purpose": "清单逐条打勾",
       "suitableFor": "口播给出需要记住或检查的几条注意事项",
       "minDuration": 4.3,
+      "beats": [
+        "第 1 项出现并打勾",
+        "第 2 项……(每项一拍,按 items 顺序)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -271,6 +314,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一项出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -280,6 +329,9 @@
       "purpose": "代码块打字机",
       "suitableFor": "口播展示代码、命令行或配置",
       "minDuration": 4,
+      "beats": [
+        "开始逐行打出代码"
+      ],
       "variables": [
         {
           "id": "file",
@@ -310,6 +362,12 @@
           "type": "string",
           "label": "高亮色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:开始逐行打出代码的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -319,6 +377,9 @@
       "purpose": "抖音评论气泡",
       "suitableFor": "口播引用观众评论或提问",
       "minDuration": 4,
+      "beats": [
+        "点赞:爱心变红"
+      ],
       "variables": [
         {
           "id": "nick",
@@ -343,6 +404,12 @@
           "type": "boolean",
           "label": "置顶",
           "default": true
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:点赞(爱心变红)的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -352,6 +419,10 @@
       "purpose": "名词解释卡:术语 + 人话版 + 打个比方(两段自带固定小标题『人话版』『打个比方』)",
       "suitableFor": "口播解释一个专业名词或概念",
       "minDuration": 6,
+      "beats": [
+        "第一行说明出现",
+        "第二行说明出现"
+      ],
       "variables": [
         {
           "id": "term",
@@ -388,6 +459,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:第一行、第二行说明出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -397,6 +474,9 @@
       "purpose": "3-2-1 倒计时 + 结束文案",
       "suitableFor": "口播说『准备好了吗』『马上开始』等倒数时刻",
       "minDuration": 4,
+      "beats": [
+        "开始倒数(之后每秒一个数,最后出 GO)"
+      ],
       "variables": [
         {
           "id": "from",
@@ -420,6 +500,12 @@
           "id": "accent",
           "type": "string",
           "label": "数字颜色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:开始倒数的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -469,6 +555,9 @@
       "purpose": "关注引导卡(点击→已关注)",
       "suitableFor": "口播引导关注账号",
       "minDuration": 4.5,
+      "beats": [
+        "手指点下「关注」"
+      ],
       "variables": [
         {
           "id": "name",
@@ -499,6 +588,12 @@
           "type": "color",
           "label": "按钮色",
           "default": "#fe2c55"
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:手指点下「关注」的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -508,6 +603,9 @@
       "purpose": "钩子大标题:角标 + 两行大字 + 关键词色块",
       "suitableFor": "开头 3 秒的强钩子,口播是一句反常识或强利益的话",
       "minDuration": 3,
+      "beats": [
+        "关键词亮出来"
+      ],
       "variables": [
         {
           "id": "kicker",
@@ -543,6 +641,12 @@
           "id": "accent",
           "type": "string",
           "label": "高亮色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:关键词亮出来的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -592,6 +696,10 @@
       "purpose": "AI 快讯卡:栏目 + 主体 + 标题 + 要点 + 来源",
       "suitableFor": "口播播报某家公司或产品的最新发布、新闻",
       "minDuration": 4.5,
+      "beats": [
+        "第 1 条要点出现",
+        "第 2 条……(每条一拍;来源跟在最后一条后面)"
+      ],
       "variables": [
         {
           "id": "tag",
@@ -640,6 +748,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一条要点出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -649,6 +763,9 @@
       "purpose": "A/B 投票:问题 + 两个选项 + 占比",
       "suitableFor": "口播向观众抛出二选一的问题,引导评论",
       "minDuration": 5,
+      "beats": [
+        "结果条开始涨"
+      ],
       "variables": [
         {
           "id": "question",
@@ -697,6 +814,12 @@
           "type": "string",
           "label": "B 色(留空用主题辅色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:结果条开始涨的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -706,6 +829,9 @@
       "purpose": "带货商品卡",
       "suitableFor": "口播介绍可购买的商品、价格和优惠",
       "minDuration": 5,
+      "beats": [
+        "「去购买」提示条滑入"
+      ],
       "variables": [
         {
           "id": "tag",
@@ -760,6 +886,12 @@
           "type": "color",
           "label": "主色",
           "default": "#fe2c55"
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:提示条(去购买)出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -796,6 +928,10 @@
       "purpose": "提示词模板卡:角色 / 任务 / 要求逐条出现",
       "suitableFor": "口播给出一段可以复制的提示词或模板",
       "minDuration": 3.8,
+      "beats": [
+        "第 1 个字段出现",
+        "第 2 个……(每个字段一拍;按钮跟在最后一个字段后面)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -825,6 +961,12 @@
           "id": "accent",
           "type": "string",
           "label": "主色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每个字段出现的时间(按钮跟在最后一个字段后面);留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -874,6 +1016,9 @@
       "purpose": "手机框录屏:点击波纹、框选高亮、局部放大标注",
       "suitableFor": "口播在演示手机或软件上的实际操作(需要用户录屏)",
       "minDuration": 5,
+      "beats": [
+        "cues 是这个组件自己的 JSON 列表(点击、框选、放大),每项用 t 写出现时间,不是 | 分隔的节拍"
+      ],
       "variables": [
         {
           "id": "src",
@@ -919,6 +1064,9 @@
       "purpose": "AI 结果打成小票:编号明细逐行打出,圈出重复编号,合计标错或标对",
       "suitableFor": "口播说 AI 给出的分类、统计、清单,或「它数错了 / 这回对了」",
       "minDuration": 4,
+      "beats": [
+        "打印完,标出重复项和结论"
+      ],
       "variables": [
         {
           "id": "title",
@@ -973,6 +1121,12 @@
           "type": "string",
           "label": "强调色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:打印完、标出重复和结论的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1017,6 +1171,9 @@
       "purpose": "数据大字页:一个大数字滚动 + 说明",
       "suitableFor": "口播强调一个具体数字、百分比或倍数",
       "minDuration": 4,
+      "beats": [
+        "数字开始往上数"
+      ],
       "variables": [
         {
           "id": "label",
@@ -1059,6 +1216,12 @@
           "type": "string",
           "label": "强调色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:数字开始往上数的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1068,6 +1231,10 @@
       "purpose": "对比页:两侧标题 + 各自条目(上下或左右)",
       "suitableFor": "口播对比以前和现在、用与不用、A 方案和 B 方案",
       "minDuration": 5,
+      "beats": [
+        "重点一侧第 1 条出现",
+        "第 2 条……(每条一拍)"
+      ],
       "variables": [
         {
           "id": "leftTitle",
@@ -1109,6 +1276,12 @@
           "id": "accent",
           "type": "string",
           "label": "强调色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:重点一侧每一条出现的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -1158,6 +1331,9 @@
       "purpose": "图文页:一张截图 + 说明文字,可放大局部",
       "suitableFor": "口播在讲一张截图、界面或图片里的某处(需要用户提供图片)",
       "minDuration": 5,
+      "beats": [
+        "放大到重点区域"
+      ],
       "variables": [
         {
           "id": "src",
@@ -1188,6 +1364,12 @@
           "type": "string",
           "label": "强调色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:放大到重点区域的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1197,6 +1379,10 @@
       "purpose": "要点页:标题 + 3~5 条『标题::说明』要点",
       "suitableFor": "口播列举并列的几点(三个工具、四个技巧、几个原因)",
       "minDuration": 5,
+      "beats": [
+        "第 1 条要点出现",
+        "第 2 条……(每条一拍)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -1220,6 +1406,12 @@
           "id": "accent",
           "type": "string",
           "label": "强调色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一条要点出现的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -1269,6 +1461,10 @@
       "purpose": "步骤页:编号步骤,可高亮当前步",
       "suitableFor": "口播讲有先后顺序的操作流程或方法步骤",
       "minDuration": 5,
+      "beats": [
+        "第 1 步高亮",
+        "第 2 步……(每步一拍;active 不为 0 时不用)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -1299,6 +1495,12 @@
           "type": "string",
           "label": "强调色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一步高亮的时间(active 为 0 时);留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1308,6 +1510,10 @@
       "purpose": "时间线页:标题 + 竖排『时间::事件』节点,进度线推进并高亮当前节点",
       "suitableFor": "口播按时间顺序讲发展历程、这几年的变化、版本演进;连续几个画面讲同一条时间线时用 active 逐个高亮",
       "minDuration": 4,
+      "beats": [
+        "第 1 个节点高亮",
+        "第 2 个……(每个节点一拍;active 不为 0 时不用)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -1337,6 +1543,12 @@
           "id": "accent",
           "type": "string",
           "label": "强调色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每个节点高亮的时间(active 为 0 时);留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -1392,6 +1604,9 @@
       "purpose": "印章盖下来:下结论、拍板、判定",
       "suitableFor": "口播下结论或强调由人拍板,如「你定」「数错了」「通过」",
       "minDuration": 1.5,
+      "beats": [
+        "章盖下去"
+      ],
       "variables": [
         {
           "id": "text",
@@ -1428,6 +1643,12 @@
           "type": "string",
           "label": "强调色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:章盖下去的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1437,6 +1658,9 @@
       "purpose": "数字滚动卡:说明 + 数字 + 对比标签",
       "suitableFor": "口播强调一个数字,但需要叠在录屏或其他画面上",
       "minDuration": 4.5,
+      "beats": [
+        "数字开始往上数"
+      ],
       "variables": [
         {
           "id": "label",
@@ -1479,6 +1703,12 @@
           "type": "string",
           "label": "主色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:数字开始往上数的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1488,6 +1718,9 @@
       "purpose": "花字贴纸弹出",
       "suitableFor": "给画面加情绪强调(太绝了、划重点、注意),只适合作为叠加",
       "minDuration": 2.5,
+      "beats": [
+        "贴纸弹出"
+      ],
       "variables": [
         {
           "id": "text",
@@ -1529,6 +1762,12 @@
           "id": "accent",
           "type": "string",
           "label": "阴影色(留空用主题强调色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:贴纸弹出的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -1572,6 +1811,9 @@
       "purpose": "1 到 N 的编号格子逐个打勾",
       "suitableFor": "口播说「挨个查一遍」「逐条核对」「一个都没漏」",
       "minDuration": 3.5,
+      "beats": [
+        "开始逐个打勾"
+      ],
       "variables": [
         {
           "id": "title",
@@ -1601,6 +1843,12 @@
           "id": "accent",
           "type": "string",
           "label": "强调色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:开始逐个打勾的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]
@@ -1761,6 +2009,10 @@
       "purpose": "PK 对比表:两个名称 + 多行项目,胜方高亮(中间自带固定『VS』)",
       "suitableFor": "口播逐项对比两个产品、模型或方案的参数",
       "minDuration": 4,
+      "beats": [
+        "第 1 行对比出现",
+        "第 2 行……(每行一拍)"
+      ],
       "variables": [
         {
           "id": "leftName",
@@ -1797,6 +2049,12 @@
           "type": "string",
           "label": "右侧色(留空用主题色)",
           "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每一行对比出现的时间;留空按默认节奏铺满整段)",
+          "default": ""
         }
       ]
     },
@@ -1806,6 +2064,10 @@
       "purpose": "纵向流程图,AI 步骤高亮",
       "suitableFor": "口播讲一个包含 AI 环节的工作流程",
       "minDuration": 4,
+      "beats": [
+        "第 1 个节点出现",
+        "第 2 个……(每个节点一拍)"
+      ],
       "variables": [
         {
           "id": "title",
@@ -1835,6 +2097,12 @@
           "id": "accent",
           "type": "string",
           "label": "AI 步骤色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每个节点出现的时间;留空按默认节奏铺满整段)",
           "default": ""
         }
       ]

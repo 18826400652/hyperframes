@@ -7,7 +7,8 @@
   {"id": "points", "type": "string", "label": "要点(| 分隔)", "default": "支持图文音视频输入|推理成本下降 50%|即日起开放 API"},
   {"id": "source", "type": "string", "label": "来源", "default": "来源:官方发布会"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一条要点出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -29,7 +30,7 @@
         <div class="hf-panel" id="nf"><div id="nf-top"><span id="nf-tag"></span><span id="nf-date"></span></div><div id="nf-main"><div id="nf-co"></div><div id="nf-h"></div><div id="nf-pts"></div><div id="nf-src"></div></div></div>
       </div>
       <script>
-        const v = Object.assign({"tag": "AI 快讯", "date": "10 月 9 日", "company": "某某公司", "headline": "发布新一代多模态大模型", "points": "支持图文音视频输入|推理成本下降 50%|即日起开放 API", "source": "来源:官方发布会", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"tag": "AI 快讯", "date": "10 月 9 日", "company": "某某公司", "headline": "发布新一代多模态大模型", "points": "支持图文音视频输入|推理成本下降 50%|即日起开放 API", "source": "来源:官方发布会", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         document.getElementById("nf-tag").textContent = "● " + v.tag;
@@ -48,9 +49,12 @@
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#nf", { x: -700, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
         tl.fromTo("#nf-co, #nf-h", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.15 }, 0.5);
-        ps.forEach((_, i) => tl.fromTo("#nf-p-" + i, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 1.2 + i * 0.7));
-        tl.fromTo("#nf-src", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.2 + ps.length * 0.7);
-        tl.to("#nf", { x: 700, opacity: 0, duration: 0.45, ease: "power2.in" }, 1.2 + ps.length * 0.7 + 2);
+        const D = HF.duration(root, 1.2 + ps.length * 0.7 + 2.45), n = ps.length;
+        const at = HF.cues(v.cues, n, HF.spread(n, 1.2, D - 1.15, 0.7));
+        ps.forEach((_, i) => tl.fromTo("#nf-p-" + i, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, at[i]));
+        const tSrc = (n ? at[n - 1] : 0.5) + 0.7;
+        tl.fromTo("#nf-src", { opacity: 0 }, { opacity: 1, duration: 0.3 }, tSrc);
+        tl.to("#nf", { x: 700, opacity: 0, duration: 0.45, ease: "power2.in" }, HF.exitAt(D, 0.45, tSrc + 0.8));
         window.__timelines["dy-news-flash"] = tl;
       </script>
     </template>

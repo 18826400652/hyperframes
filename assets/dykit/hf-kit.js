@@ -67,6 +67,32 @@
       return d > 0 ? d : fallback;
     },
 
+    // 节拍:cues 变量(秒,| 分隔,相对挂载点开头)→ 前 n 拍的时间。没写、空着或写错的拍用 defaults[i];
+    // 后一拍不早于前一拍。项目(如 vd)把口播里的 @词 换算成秒填进 cues,组件的动作就跟着口播走
+    cues(s, n, defaults) {
+      const parts = String(s == null ? "" : s).split("|");
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const raw = (parts[i] || "").trim();
+        const x = raw === "" ? NaN : Number(raw);
+        let t = isFinite(x) && x >= 0 ? x : defaults[i];
+        if (i > 0 && t < out[i - 1]) t = out[i - 1];
+        out.push(t);
+      }
+      return out;
+    },
+
+    // 默认节奏:n 拍从 first 开始,间隔 max(minGap, (D - first) / n),铺满挂载时长 D(最后一拍也停留同样久)
+    spread(n, first, D, minGap) {
+      const gap = Math.max(minGap, (D - first) / n);
+      return Array.from({ length: n }, (_, i) => Math.round((first + i * gap) * 100) / 100);
+    },
+
+    // 退场开始时间:挂载时长 D 的末尾留出 dur;D 太短时不早于 notBefore(演完最后一拍)
+    exitAt(D, dur, notBefore = 0) {
+      return Math.max(notBefore, D - dur);
+    },
+
     // 超出底部安全区时先上移(不高于 minTop),仍放不下再等比缩小
     fitBox(el, bottom = 1520, minTop = 260) {
       el.style.scale = ""; el.style.top = "";

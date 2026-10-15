@@ -8,7 +8,8 @@
   {"id": "dup", "type": "string", "label": "要圈出的编号(逗号分隔,可选)", "default": "5,20"},
   {"id": "check", "type": "string", "label": "末尾附加行(可选)", "default": ""},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:打印完、标出重复和结论的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -44,7 +45,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ title: "反馈分类 · DeepSeek", sub: "客户反馈 20 条", rows: "涂层脱落::3·7·14::3|售后太慢::4·10·15::3|清洗困难::9·17·20::3|噪音大::5·11·18::3|好评小问题::5·20::2", total: "合计 22 条", verdict: "wrong", dup: "5,20", check: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ title: "反馈分类 · DeepSeek", sub: "客户反馈 20 条", rows: "涂层脱落::3·7·14::3|售后太慢::4·10·15::3|清洗困难::9·17·20::3|噪音大::5·11·18::3|好评小问题::5·20::2", total: "合计 22 条", verdict: "wrong", dup: "5,20", check: "", theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const $ = (id) => document.getElementById(id);
@@ -87,7 +88,8 @@
         // 打印:从上往下逐渐露出(占前 35% 时长)
         const printEnd = Math.max(0.8, D * 0.35);
         tl.fromTo("#rc", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: printEnd - 0.1, ease: "none" }, 0.1);
-        let t = printEnd + 0.2;
+        let [t] = HF.cues(v.cues, 1, [printEnd + 0.2]);
+        t = Math.max(t, printEnd);
         const marks = root.querySelectorAll(".rc-ids i.dup");
         if (marks.length) {
           tl.fromTo(marks, { "--box": 0 }, { "--box": 1, duration: 0.15 }, t);

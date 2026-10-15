@@ -3,7 +3,8 @@
   {"id": "title", "type": "string", "label": "标题", "default": "记住这 3 点"},
   {"id": "items", "type": "string", "label": "要点(| 分隔)", "default": "别盲目跟风|先测试再放量|数据比感觉靠谱"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一项出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -22,7 +23,7 @@
         <div class="hf-panel" id="ck"><div id="ck-title"></div><div id="ck-list"></div></div>
       </div>
       <script>
-        const v = Object.assign({"title": "记住这 3 点", "items": "别盲目跟风|先测试再放量|数据比感觉靠谱", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"title": "记住这 3 点", "items": "别盲目跟风|先测试再放量|数据比感觉靠谱", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         document.getElementById("ck-title").textContent = v.title;
@@ -40,13 +41,15 @@
         });
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#ck", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
+        const D = HF.duration(root, 5.5), n = items.length;
+        const at = HF.cues(v.cues, n, HF.spread(n, 0.7, D - 0.4, 1.2));
         items.forEach((_, i) => {
-          const t = 0.7 + i * 1.2;
+          const t = at[i];
           tl.fromTo("#ck-item-" + i, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, t);
           tl.to("#ck-p-" + i, { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, t + 0.45);
           tl.fromTo("#ck-item-" + i + " .ck-box", { scale: 1 }, { scale: 1.2, duration: 0.12, yoyo: true, repeat: 1 }, t + 0.5);
         });
-        tl.to("#ck", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, 0.7 + items.length * 1.2 + 0.8);
+        tl.to("#ck", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, HF.exitAt(D, 0.4, at[n - 1] + 1));
         window.__timelines["dy-checklist"] = tl;
       </script>
     </template>

@@ -4,7 +4,8 @@
   {"id":"handle","type":"string","label":"抖音号","default":"抖音号:xiaoming666"},
   {"id":"fans","type":"string","label":"粉丝数","default":"128.6万粉丝"},
   {"id":"avatarText","type":"string","label":"头像文字","default":"明"},
-  {"id":"accent","type":"color","label":"按钮色","default":"#fe2c55"}
+  {"id":"accent","type":"color","label":"按钮色","default":"#fe2c55"},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:手指点下「关注」的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -42,24 +43,26 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ name:"小明说干货", handle:"抖音号:xiaoming666", fans:"128.6万粉丝", avatarText:"明", accent:"#fe2c55" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ name:"小明说干货", handle:"抖音号:xiaoming666", fans:"128.6万粉丝", avatarText:"明", accent:"#fe2c55" , "cues": ""}, window.__hyperframes.getVariables());
         const $ = (id) => document.getElementById(id);
         $("dy-follow-card-name").textContent = v.name;
         $("dy-follow-card-handle").textContent = v.handle;
         $("dy-follow-card-fans").textContent = v.fans;
         $("dy-follow-card-avatar").textContent = v.avatarText;
         $("root").style.setProperty("--accent", v.accent);
+        const D = HF.duration(document.getElementById("root"), 4.5);
+        const [b0] = HF.cues(v.cues, 1, [1.95]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#dy-follow-card-card", { y: 400, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.4)" }, 0);
-        tl.fromTo("#dy-follow-card-btn", { scale: 1 }, { scale: 1.08, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0.7);
-        tl.fromTo("#dy-follow-card-finger", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 1.5);
-        tl.to("#dy-follow-card-btn", { scale: 0.9, duration: 0.1, ease: "power2.in" }, 1.95);
-        tl.to("#dy-follow-card-btn", { scale: 1, backgroundColor: "#3a3a44", duration: 0.35, ease: "elastic.out(1,0.4)" }, 2.05);
-        tl.to("#dy-follow-card-t1", { opacity: 0, duration: 0.1 }, 2.05);
-        tl.to("#dy-follow-card-t2", { opacity: 1, duration: 0.1 }, 2.1);
-        tl.fromTo("#dy-follow-card-ring", { scale: 1, opacity: 0.9 }, { scale: 1.6, opacity: 0, duration: 0.5, ease: "power2.out" }, 2.05);
-        tl.to("#dy-follow-card-finger", { opacity: 0, duration: 0.2 }, 2.4);
-        tl.to("#dy-follow-card-card", { y: 400, opacity: 0, duration: 0.4, ease: "power3.in" }, 4.1);
+        tl.fromTo("#dy-follow-card-btn", { scale: 1 }, { scale: 1.08, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, Math.max(0.5, b0 - 1.25));
+        tl.fromTo("#dy-follow-card-finger", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, b0 - 0.45);
+        tl.to("#dy-follow-card-btn", { scale: 0.9, duration: 0.1, ease: "power2.in" }, b0);
+        tl.to("#dy-follow-card-btn", { scale: 1, backgroundColor: "#3a3a44", duration: 0.35, ease: "elastic.out(1,0.4)" }, b0 + 0.1);
+        tl.to("#dy-follow-card-t1", { opacity: 0, duration: 0.1 }, b0 + 0.1);
+        tl.to("#dy-follow-card-t2", { opacity: 1, duration: 0.1 }, b0 + 0.15);
+        tl.fromTo("#dy-follow-card-ring", { scale: 1, opacity: 0.9 }, { scale: 1.6, opacity: 0, duration: 0.5, ease: "power2.out" }, b0 + 0.1);
+        tl.to("#dy-follow-card-finger", { opacity: 0, duration: 0.2 }, b0 + 0.45);
+        tl.to("#dy-follow-card-card", { y: 400, opacity: 0, duration: 0.4, ease: "power3.in" }, HF.exitAt(D, 0.4, b0 + 0.8));
         window.__timelines["dy-follow-card"] = tl;
       </script>
     </template>

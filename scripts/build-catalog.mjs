@@ -25,7 +25,11 @@ export function buildCatalog(root) {
     let variables = [];
     try { variables = readVariables(fs.readFileSync(path.join(root, "compositions", id + ".html"), "utf8")); }
     catch (e) { errors.push(`bad variable declaration in ${id}: ${e.message}`); }
-    components.push({ id, kind: n.kind, purpose: n.purpose, suitableFor: n.suitableFor, minDuration: n.minDuration, variables });
+    // 节拍:有 cues 变量的组件要写 beats(按顺序说明第几拍是什么,项目按口播把时间填进 cues)
+    const hasCues = variables.some(v => v.id === "cues");
+    if (hasCues && !(Array.isArray(n.beats) && n.beats.length)) errors.push(`missing beats: ${id}`);
+    if (!hasCues && n.beats !== undefined) errors.push(`beats without cues variable: ${id}`);
+    components.push({ id, kind: n.kind, purpose: n.purpose, suitableFor: n.suitableFor, minDuration: n.minDuration, ...(hasCues ? { beats: n.beats } : {}), variables });
   }
   for (const id of Object.keys(notes)) if (!ids.includes(id)) errors.push(`notes for unknown component: ${id}`);
   return { catalog: { version: 1, components }, errors };

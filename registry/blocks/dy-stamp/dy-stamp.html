@@ -5,7 +5,8 @@
   {"id": "color", "type": "string", "label": "印章颜色(留空用强调色)", "default": ""},
   {"id": "rotate", "type": "number", "label": "倾斜角度(-20 到 20)", "default": -8},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:章盖下去的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -23,7 +24,7 @@
         <div id="st-wrap"><div id="st"></div><div id="st-note"></div></div>
       </div>
       <script>
-        const v = Object.assign({ text: "你定", note: "", color: "", rotate: -8, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ text: "你定", note: "", color: "", rotate: -8, theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const st = document.getElementById("st"), note = document.getElementById("st-note");
@@ -40,12 +41,13 @@
           HF.centerBox(document.getElementById("st-wrap"));
         });
         const m = HF.motion(root), D = HF.duration(root, 2.5);
+        const [b0] = HF.cues(v.cues, 1, [0.2]);
         const tl = gsap.timeline({ paused: true });
         // 盖章:从放大、透明快速压下来,落地时轻微一震
-        tl.fromTo(st, { opacity: 0, scale: 2.2, rotate: rot }, { opacity: 1, scale: 1, rotate: rot, duration: 0.2, ease: "power4.in" }, 0.2);
-        tl.to(st, { x: 6, duration: 0.05, yoyo: true, repeat: 3, ease: "none" }, 0.4);
-        if (note.isConnected) tl.fromTo(note, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: m.dur, ease: m.ease }, 0.6);
-        tl.to("#st-wrap", { opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.2, D - 0.35));
+        tl.fromTo(st, { opacity: 0, scale: 2.2, rotate: rot }, { opacity: 1, scale: 1, rotate: rot, duration: 0.2, ease: "power4.in" }, b0);
+        tl.to(st, { x: 6, duration: 0.05, yoyo: true, repeat: 3, ease: "none" }, b0 + 0.2);
+        if (note.isConnected) tl.fromTo(note, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: m.dur, ease: m.ease }, b0 + 0.4);
+        tl.to("#st-wrap", { opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(b0 + 1, D - 0.35));
         window.__timelines["dy-stamp"] = tl;
       </script>
     </template>

@@ -6,7 +6,8 @@
   {"id": "suffix", "type": "string", "label": "单位", "default": " 小时"},
   {"id": "note", "type": "string", "label": "备注", "default": "按每天 2 小时文案工作估算"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:数字开始往上数的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -27,7 +28,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ label: "用 AI 之后,每周节省", value: 12, prefix: "", suffix: " 小时", note: "按每天 2 小时文案工作估算", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ label: "用 AI 之后,每周节省", value: 12, prefix: "", suffix: " 小时", note: "按每天 2 小时文案工作估算", theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const label = document.getElementById("sn-label"), num = document.getElementById("sn-num"), note = document.getElementById("sn-note");
@@ -51,12 +52,13 @@
         render();
 
         const m = HF.motion(root), D = HF.duration(root, 4.5);
+        const [b0] = HF.cues(v.cues, 1, [0.3]);
         const tl = gsap.timeline({ paused: true });
         const parts = [label, num, note].filter(e => e.isConnected);
         tl.fromTo(parts, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.1);
-        tl.to(o, { n: target, duration: 1.6, ease: "power3.out", onUpdate: render }, 0.3);
-        tl.fromTo(num, { scale: 1 }, { scale: 1.06, duration: 0.15, yoyo: true, repeat: 1, transformOrigin: "0% 50%" }, 1.9);
-        tl.to("#sn-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(2.3, D - 0.35));
+        tl.to(o, { n: target, duration: 1.6, ease: "power3.out", onUpdate: render }, b0);
+        tl.fromTo(num, { scale: 1 }, { scale: 1.06, duration: 0.15, yoyo: true, repeat: 1, transformOrigin: "0% 50%" }, b0 + 1.6);
+        tl.to("#sn-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(b0 + 2, D - 0.35));
         window.__timelines["dy-scene-big-number"] = tl;
       </script>
     </template>

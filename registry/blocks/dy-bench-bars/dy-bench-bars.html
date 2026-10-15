@@ -6,7 +6,8 @@
   {"id": "unit", "type": "string", "label": "单位", "default": "分"},
   {"id": "note", "type": "string", "label": "数据来源/备注", "default": "数据仅供参考,以官方公布为准"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "领先色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "领先色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一根条出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -28,7 +29,7 @@
         <div class="hf-panel" id="bb"><div id="bb-title"></div><div id="bb-list"></div><div id="bb-note"></div></div>
       </div>
       <script>
-        const v = Object.assign({"title": "数学推理能力评测", "rows": "模型 A|92;模型 B|88;模型 C|76;模型 D|61", "max": 100, "unit": "分", "note": "数据仅供参考,以官方公布为准", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"title": "数学推理能力评测", "rows": "模型 A|92;模型 B|88;模型 C|76;模型 D|61", "max": 100, "unit": "分", "note": "数据仅供参考,以官方公布为准", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         document.getElementById("bb-title").textContent = v.title;
@@ -54,14 +55,15 @@
         });
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#bb", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+        const D = HF.duration(root, 5), n = objs.length;
+        const at = HF.cues(v.cues, n, HF.spread(n, 0.6, D - 0.4, 0.35));
         objs.forEach(([o, render, val], i) => {
-          const t = 0.6 + i * 0.35;
+          const t = at[i];
           tl.fromTo("#bb-r-" + i, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3 }, t);
           tl.to("#bb-f-" + i, { width: Math.min(100, val / mx * 100) + "%", duration: 1.1, ease: "power3.out" }, t + 0.1);
           tl.to(o, { n: val, duration: 1.1, ease: "power3.out", onUpdate: render }, t + 0.1);
         });
-        const te = 0.6 + objs.length * 0.35 + 1.6;
-        tl.to("#bb", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, te + 1.5);
+        tl.to("#bb", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, HF.exitAt(D, 0.4, at[n - 1] + 1.3));
         window.__timelines["dy-bench-bars"] = tl;
       </script>
     </template>

@@ -1,4 +1,4 @@
-{ "component": "dy-stamp", "duration": 2.5, "peak": 1.4,
+{ "component": "dy-stamp", "cues": {"vars": "9", "before": 5, "after": 13}, "duration": 2.5, "peak": 1.4,
   "variants": { "normal": {},
     "long": { "text": "<b>&\" 最后得由你自己拍板决定", "note": "<b>&\" 谁排第一,它这次说这个,下次说那个,优先级必须你自己定", "rotate": 30 },
     "override": { "text": "数错了", "color": "#e5484d", "rotate": 6 } } }

@@ -4,7 +4,8 @@
   {"id": "steps", "type": "string", "label": "步骤(| 分隔;每步可写 标题::说明)", "default": "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历"},
   {"id": "active", "type": "number", "label": "高亮第几步(0 为按时间依次高亮)", "default": 0},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一步高亮的时间(active 为 0 时);留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -34,7 +35,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ title: "3 步生成会议纪要", steps: "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历", active: 0, theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ title: "3 步生成会议纪要", steps: "上传录音::支持 mp3 / m4a|选择模板::按会议类型选|导出待办::一键同步到日历", active: 0, theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const title = document.getElementById("ss-title"), list = document.getElementById("ss-list");
@@ -80,9 +81,10 @@
         } else {
           // 按时间依次高亮:可用时长平均分配给每一步;已完成的步骤保持点亮,未到的步骤变暗
           const span = Math.max(0.6, (D - 0.35 - ready) / Math.max(1, n));
+          const at = HF.cues(v.cues, n, steps.map((_, i) => ready + i * span)).map(t => Math.max(ready, t));
           steps.forEach((s, i) => { if (i > 0) tl.to(s.body, { opacity: dim, duration: 0.2 }, ready); });
           steps.forEach((s, i) => {
-            const t = ready + i * span;
+            const t = at[i];
             light(s, t);
             if (i > 0) tl.to(s.body, { opacity: 1, duration: 0.3 }, t);
             tl.fromTo(s.on, { scale: 1 }, { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1 }, t);

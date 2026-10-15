@@ -17,6 +17,12 @@ const title = catalog.components.find(c => c.id === "dy-scene-title");
 ok(title && title.variables.some(v => v.id === "title"), "dy-scene-title lacks variable title");
 ok(catalog.components.every(c => c.suitableFor && c.purpose && c.kind && c.minDuration > 0), "component missing notes fields");
 
+// 节拍:声明了 cues 变量的组件,说明里要写 beats(第几拍是什么),目录里带上;没有 cues 的不写
+const withCues = catalog.components.filter(c => c.variables.some(v => v.id === "cues"));
+ok(withCues.length > 0, "没有组件声明 cues 变量");
+ok(withCues.every(c => Array.isArray(c.beats) && c.beats.length > 0), "声明了 cues 的组件缺 beats: " + withCues.filter(c => !(c.beats || []).length).map(c => c.id).join(" "));
+ok(catalog.components.filter(c => !withCues.includes(c)).every(c => c.beats === undefined), "没有 cues 变量的组件不该有 beats");
+
 // 临时副本:删掉一条说明、加一条不存在的说明
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "catalog-"));
 fs.cpSync(path.join(ROOT, "compositions"), path.join(tmp, "compositions"), { recursive: true });
