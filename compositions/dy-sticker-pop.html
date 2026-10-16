@@ -6,7 +6,8 @@
   {"id": "rotate", "type": "number", "label": "倾斜角", "default": -8},
   {"id": "x", "type": "number", "label": "水平位置%", "default": 50},
   {"id": "y", "type": "number", "label": "垂直位置%", "default": 38},
-  {"id": "accent", "type": "string", "label": "阴影色(留空用主题强调色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "阴影色(留空用主题强调色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:贴纸弹出的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -21,7 +22,7 @@
         <div id="st"><div id="st-emoji"></div><div id="st-text"></div></div>
       </div>
       <script>
-        const v = Object.assign({"text": "太绝了", "emoji": "🔥", "color": "#ffe14d", "rotate": -8, "x": 50, "y": 38, "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"text": "太绝了", "emoji": "🔥", "color": "#ffe14d", "rotate": -8, "x": 50, "y": 38, "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         if (v.accent) root.style.setProperty("--accent", v.accent);
         const st = document.getElementById("st");
@@ -32,9 +33,11 @@
         HF.refit(() => HF.fit(document.getElementById("st-text"), 1000, 60));
         const tl = gsap.timeline({ paused: true });
         const r = Number(v.rotate);
-        tl.fromTo("#st", { scale: 0, rotation: r - 25, xPercent: -50, yPercent: -50 }, { scale: 1, rotation: r, xPercent: -50, yPercent: -50, duration: 0.6, ease: "elastic.out(1,0.45)" }, 0);
-        tl.to("#st", { rotation: r + 3, duration: 0.25, yoyo: true, repeat: 5, ease: "sine.inOut" }, 0.6);
-        tl.to("#st", { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" }, 2.2);
+        const D = HF.duration(root, 2.5);
+        const [b0] = HF.cues(v.cues, 1, [0]);
+        tl.fromTo("#st", { scale: 0, rotation: r - 25, xPercent: -50, yPercent: -50 }, { scale: 1, rotation: r, xPercent: -50, yPercent: -50, duration: 0.6, ease: "elastic.out(1,0.45)" }, b0);
+        tl.to("#st", { rotation: r + 3, duration: 0.25, yoyo: true, repeat: 5, ease: "sine.inOut" }, b0 + 0.6);
+        tl.to("#st", { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" }, HF.exitAt(D, 0.3, b0 + 1));
         window.__timelines["dy-sticker-pop"] = tl;
       </script>
     </template>

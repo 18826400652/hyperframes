@@ -1,3 +1,3 @@
-{ "component": "dy-sticker-pop", "duration": 2.6, "peak": 1, "themed": false,
+{ "component": "dy-sticker-pop", "cues": {"vars": "9", "before": 5, "after": 13}, "duration": 2.6, "peak": 1, "themed": false,
   "variants": { "normal": {},
     "long": { "text": "<b>&\" 这也太绝了吧", "emoji": "🔥", "x": 50, "y": 40 } } }

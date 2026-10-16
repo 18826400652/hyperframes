@@ -6,7 +6,8 @@
   {"id": "afterValue", "type": "string", "label": "AI 耗时", "default": "3 分钟"},
   {"id": "gain", "type": "string", "label": "提效文案", "default": "效率提升 40 倍"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:「之后」那张卡出现、增长标签弹出的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -34,7 +35,7 @@
           <div id="ba-gain"></div></div>
       </div>
       <script>
-        const v = Object.assign({"beforeLabel": "手动做一份 PPT", "beforeValue": "2 小时", "afterLabel": "AI 一键生成", "afterValue": "3 分钟", "gain": "效率提升 40 倍", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"beforeLabel": "手动做一份 PPT", "beforeValue": "2 小时", "afterLabel": "AI 一键生成", "afterValue": "3 分钟", "gain": "效率提升 40 倍", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const $ = id => document.getElementById(id);
@@ -51,16 +52,17 @@
           HF.fitBox($("ba"));
         });
         const D = HF.duration(root, 6);
+        const [ta, tg] = HF.cues(v.cues, 2, [1.5, 2.6]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#ba-b", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
-        tl.fromTo("#ba-arrow", { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.3 }, 1.2);
-        tl.fromTo("#ba-a", { x: 400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 1.5);
-        tl.fromTo("#ba-av", { scale: 0.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1,0.5)" }, 1.9);
+        tl.fromTo("#ba-arrow", { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.3 }, Math.max(0.5, ta - 0.3));
+        tl.fromTo("#ba-a", { x: 400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, ta);
+        tl.fromTo("#ba-av", { scale: 0.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1,0.5)" }, ta + 0.4);
         if (gain.isConnected) {
-          tl.fromTo("#ba-gain", { scale: 0, rotate: -8 }, { scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2.5)" }, 2.6);
-          tl.to("#ba-gain", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut" }, 3.2);
+          tl.fromTo("#ba-gain", { scale: 0, rotate: -8 }, { scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2.5)" }, tg);
+          tl.to("#ba-gain", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut" }, tg + 0.6);
         }
-        tl.to("#ba", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(4.6, D - 0.9));
+        tl.to("#ba", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(tg + 2, D - 0.9));
         window.__timelines["dy-before-after"] = tl;
       </script>
     </template>

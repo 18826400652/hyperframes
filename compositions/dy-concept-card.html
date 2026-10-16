@@ -5,7 +5,8 @@
   {"id": "plain", "type": "string", "label": "人话版", "default": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。"},
   {"id": "analogy", "type": "string", "label": "打个比方", "default": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:第一行、第二行说明出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -26,7 +27,7 @@
           <div id="cc-b2"><div class="cc-k">打个比方</div><div class="cc-v" id="cc-ana"></div></div></div>
       </div>
       <script>
-        const v = Object.assign({"term": "Token", "en": "/ˈtoʊkən/ · 词元", "plain": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。", "analogy": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"term": "Token", "en": "/ˈtoʊkən/ · 词元", "plain": "AI 读文字时切成的最小“积木块”,1 个汉字大约 1-2 个 Token。", "analogy": "就像乐高:AI 不是整句整句地读,而是一块一块拼起来理解。", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const $ = id => document.getElementById(id);
@@ -43,13 +44,14 @@
           HF.fitBox($("cc"));
         });
         const D = HF.duration(root, 6);
+        const [b1, b2] = HF.cues(v.cues, 2, [1.2, 2.4]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#cc", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" }, 0);
         tl.fromTo("#cc-term", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.3);
         tl.to("#cc-line", { width: "100%", duration: 0.5, ease: "power2.out" }, 0.7);
-        tl.fromTo("#cc-b1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.2);
-        if ($("cc-b2")) tl.fromTo("#cc-b2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 2.4);
-        tl.to("#cc", { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(3.2, D - 0.4));
+        tl.fromTo("#cc-b1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, b1);
+        if ($("cc-b2")) tl.fromTo("#cc-b2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, b2);
+        tl.to("#cc", { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.in" }, Math.max(b2 + 0.8, D - 0.4));
         window.__timelines["dy-concept-card"] = tl;
       </script>
     </template>

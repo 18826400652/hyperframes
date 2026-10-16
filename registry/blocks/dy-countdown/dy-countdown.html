@@ -3,7 +3,8 @@
   {"id": "from", "type": "number", "label": "起始数字", "default": 3},
   {"id": "label", "type": "string", "label": "结束文案", "default": "开始!"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "数字颜色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "数字颜色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:开始倒数的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -17,7 +18,7 @@
         <div id="cd-wrap"></div><div id="cd-go" class="cd"></div>
       </div>
       <script>
-        const v = Object.assign({"from": 3, "label": "开始!", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"from": 3, "label": "开始!", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const n = Math.max(1, Math.round(Number(v.from)));
@@ -27,14 +28,16 @@
         for (let i = n; i >= 1; i--) { const d = document.createElement("div"); d.className = "cd"; d.id = "cd-" + i; d.textContent = i; wrap.appendChild(d); }
         // 结束文案:先单行缩字号,仍放不下就换行并限制在 3 行内
         HF.refit(() => { HF.fit(go, 0, 96); if (go.style.whiteSpace === "normal") HF.fitLines(go, 3, 72); });
+        const D = HF.duration(root, n + 1);
+        const [b0] = HF.cues(v.cues, 1, [0]);
         const tl = gsap.timeline({ paused: true });
         for (let i = n; i >= 1; i--) {
-          const t = n - i;
+          const t = b0 + n - i;
           tl.fromTo("#cd-" + i, { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }, t);
           tl.to("#cd-" + i, { scale: 0.6, opacity: 0, duration: 0.2, ease: "power2.in" }, t + 0.75);
         }
-        tl.fromTo("#cd-go", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "elastic.out(1,0.5)" }, n);
-        tl.to("#cd-go", { opacity: 0, duration: 0.2 }, n + 0.8);
+        tl.fromTo("#cd-go", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "elastic.out(1,0.5)" }, b0 + n);
+        tl.to("#cd-go", { opacity: 0, duration: 0.2 }, HF.exitAt(D, 0.2, b0 + n + 0.8));
         window.__timelines["dy-countdown"] = tl;
       </script>
     </template>

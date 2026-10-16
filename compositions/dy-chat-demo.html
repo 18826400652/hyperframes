@@ -5,7 +5,8 @@
   {"id": "aiName", "type": "string", "label": "AI 名称", "default": "AI 助手"},
   {"id": "hold", "type": "number", "label": "回答后停留(秒)", "default": 1.5},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:提问气泡、AI 回答出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -24,7 +25,7 @@
         <div class="hf-panel" id="cd"><div class="cd-b" id="cd-u"></div><div id="cd-dots"><i></i><i></i><i></i></div><div class="cd-b" id="cd-a"><div id="cd-who"></div><div id="cd-t"></div></div></div>
       </div>
       <script>
-        const v = Object.assign({"prompt": "帮我用三句话讲清楚什么是大模型", "reply": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。", "aiName": "AI 助手", "hold": 1.5, "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"prompt": "帮我用三句话讲清楚什么是大模型", "reply": "大模型就是读过海量文字的“超级接龙高手”:它根据上文预测下一个词,一路接下去就写出了文章、代码和答案。", "aiName": "AI 助手", "hold": 1.5, "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         // 打字效果:未出现的文字先以透明占位,版面从一开始就是最终大小
@@ -45,16 +46,20 @@
         });
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#cd", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
-        tl.fromTo("#cd-u", { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0.4);
-        tl.to(po, { n: prompt.length, duration: pd, ease: "none", onUpdate: () => setP(po.n) }, 0.7);
-        const t1 = 0.7 + pd + 0.3;
-        tl.fromTo("#cd-dots", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t1);
-        tl.fromTo("#cd-dots i", { opacity: 0.25 }, { opacity: 1, duration: 0.3, stagger: 0.15, yoyo: true, repeat: 2 }, t1);
-        tl.to("#cd-dots", { opacity: 0, display: "none", duration: 0.15 }, t1 + 1.0);
-        const t2 = t1 + 1.1;
+        const D = HF.duration(root, 0.7 + pd + 1.4 + 0.3 + rd + Number(v.hold) + 0.4);
+        const [tu, t2] = HF.cues(v.cues, 2, [0.4, 0.4 + 0.3 + pd + 1.4]);
+        tl.fromTo("#cd-u", { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, tu);
+        tl.to(po, { n: prompt.length, duration: pd, ease: "none", onUpdate: () => setP(po.n) }, tu + 0.3);
+        // 「正在输入」的三个点:提问打完到回答出现之间(太短就不显示)
+        const t1 = tu + 0.3 + pd + 0.3;
+        if (t2 - t1 >= 0.4) {
+          tl.fromTo("#cd-dots", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t1);
+          tl.fromTo("#cd-dots i", { opacity: 0.25 }, { opacity: 1, duration: 0.3, stagger: 0.15, yoyo: true, repeat: Math.max(0, Math.floor((t2 - t1 - 0.4) / 0.3)) }, t1);
+        }
+        tl.to("#cd-dots", { opacity: 0, display: "none", duration: 0.15 }, Math.max(t1, t2 - 0.1));
         tl.fromTo("#cd-a", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, t2);
         tl.to(ro, { n: reply.length, duration: rd, ease: "none", onUpdate: () => setR(ro.n) }, t2 + 0.3);
-        tl.to("#cd", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, t2 + 0.3 + rd + Number(v.hold));
+        tl.to("#cd", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, HF.exitAt(D, 0.4, t2 + 0.3 + rd + Number(v.hold)));
         window.__timelines["dy-chat-demo"] = tl;
       </script>
     </template>

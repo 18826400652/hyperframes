@@ -1,5 +1,5 @@
 {
-  "component": "dy-vs-compare",
+  "component": "dy-vs-compare", "cues": {"vars": "1|7|12", "before": 4, "after": 13},
   "duration": 6,
   "peak": 3.5,
   "variants": {

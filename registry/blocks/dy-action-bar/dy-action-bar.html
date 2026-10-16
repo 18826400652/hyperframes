@@ -3,7 +3,8 @@
   {"id":"likes","type":"number","label":"点赞数","default":128000},
   {"id":"comments","type":"number","label":"评论数","default":3568},
   {"id":"favs","type":"number","label":"收藏数","default":45200},
-  {"id":"shares","type":"number","label":"转发数","default":9876}
+  {"id":"shares","type":"number","label":"转发数","default":9876},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:数字开始涨的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -31,20 +32,23 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ likes:128000, comments:3568, favs:45200, shares:9876 }, window.__hyperframes.getVariables());
+        const v = Object.assign({ likes:128000, comments:3568, favs:45200, shares:9876 , "cues": ""}, window.__hyperframes.getVariables());
         const fmt = (n) => n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "w" : String(Math.round(n));
+        const root = document.getElementById("root");
+        const D = HF.duration(root, 4.8);
+        const [b0] = HF.cues(v.cues, 1, [0.5]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#dy-action-bar-col", { x: 200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
         [["dy-ab-n1", v.likes, "#dy-ab-like"], ["dy-ab-n2", v.comments, "#dy-ab-comment"], ["dy-ab-n3", v.favs, "#dy-ab-fav"], ["dy-ab-n4", v.shares, "#dy-ab-share"]].forEach(([id, target, sel], i) => {
           const el = document.getElementById(id);
           const o = { n: 0 };
-          const at = 0.5 + i * 0.12;
+          const at = b0 + i * 0.12;
           tl.to(o, { n: target, duration: 1.6, ease: "power2.out", onUpdate: () => { el.textContent = fmt(o.n); } }, at);
           tl.fromTo(sel + " .dy-ab-icon", { scale: 1 }, { scale: 1.35, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, at + 0.1);
         });
-        tl.to("#dy-action-bar-heart path", { fill: "#fe2c55", duration: 0.12 }, 0.65);
-        tl.fromTo("#dy-ab-like .dy-ab-icon", { rotation: 0 }, { rotation: -12, duration: 0.1, yoyo: true, repeat: 3 }, 2.4);
-        tl.to("#dy-action-bar-col", { x: 200, opacity: 0, duration: 0.4, ease: "power3.in" }, 4.4);
+        tl.to("#dy-action-bar-heart path", { fill: "#fe2c55", duration: 0.12 }, b0 + 0.15);
+        tl.fromTo("#dy-ab-like .dy-ab-icon", { rotation: 0 }, { rotation: -12, duration: 0.1, yoyo: true, repeat: 3 }, b0 + 1.9);
+        tl.to("#dy-action-bar-col", { x: 200, opacity: 0, duration: 0.4, ease: "power3.in" }, HF.exitAt(D, 0.4, b0 + 2.5));
         window.__timelines["dy-action-bar"] = tl;
       </script>
     </template>

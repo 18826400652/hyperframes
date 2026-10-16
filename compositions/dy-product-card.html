@@ -8,7 +8,8 @@
   {"id": "stock", "type": "string", "label": "库存文案", "default": "仅剩 128 件"},
   {"id": "stockPct", "type": "number", "label": "库存条(0-100)", "default": 18},
   {"id": "hint", "type": "string", "label": "引导语", "default": "👇 点左下角小黄车"},
-  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"}
+  {"id": "accent", "type": "color", "label": "主色", "default": "#fe2c55"},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:提示条(去购买)出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -40,7 +41,7 @@
         <div id="pc-hint"></div>
       </div>
       <script>
-        const v = Object.assign({"tag": "限时秒杀", "name": "超轻便携颈挂风扇", "price": 59, "origin": "¥169", "coupon": "拍下立减 20 元", "stock": "仅剩 128 件", "stockPct": 18, "hint": "👇 点左下角小黄车", "accent": "#fe2c55"}, window.__hyperframes.getVariables());
+        const v = Object.assign({"tag": "限时秒杀", "name": "超轻便携颈挂风扇", "price": 59, "origin": "¥169", "coupon": "拍下立减 20 元", "stock": "仅剩 128 件", "stockPct": 18, "hint": "👇 点左下角小黄车", "accent": "#fe2c55", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         root.style.setProperty("--accent", v.accent);
         document.getElementById("pc-tag").textContent = v.tag;
@@ -52,14 +53,16 @@
         const numEl = document.getElementById("pc-num"), o = { n: 0 };
         const render = () => { numEl.textContent = Math.round(o.n); };
         render();
+        const D = HF.duration(root, 4.9);
+        const [b0] = HF.cues(v.cues, 1, [1.2]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#pc", { y: 300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "back.out(1.4)" }, 0);
         tl.to(o, { n: Number(v.price), duration: 0.9, ease: "power3.out", onUpdate: render }, 0.3);
         tl.to("#pc-fill", { width: Math.max(0, Math.min(100, Number(v.stockPct))) + "%", duration: 0.9, ease: "power2.out" }, 0.7);
         tl.fromTo("#pc-coupon", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" }, 0.9);
-        tl.fromTo("#pc-hint", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.2);
-        tl.to("#pc-hint", { scale: 1.08, duration: 0.35, yoyo: true, repeat: 5, ease: "sine.inOut" }, 1.7);
-        tl.to("#pc, #pc-hint", { opacity: 0, y: 60, duration: 0.4, ease: "power2.in" }, 4.5);
+        tl.fromTo("#pc-hint", { x: -200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, b0);
+        tl.to("#pc-hint", { scale: 1.08, duration: 0.35, yoyo: true, repeat: 5, ease: "sine.inOut" }, b0 + 0.5);
+        tl.to("#pc, #pc-hint", { opacity: 0, y: 60, duration: 0.4, ease: "power2.in" }, HF.exitAt(D, 0.4, b0 + 0.8));
         window.__timelines["dy-product-card"] = tl;
       </script>
     </template>

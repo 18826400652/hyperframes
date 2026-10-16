@@ -3,7 +3,8 @@
   {"id": "title", "type": "string", "label": "标题", "default": "这 3 个,直接用"},
   {"id": "items", "type": "string", "label": "要点(| 分隔;每条可写 标题::说明)", "default": "会议纪要::录音上传,自动整理待办|PPT 初稿::一句话主题,生成整套页面|邮件润色::语气、长度,一键改写"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一条要点出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -27,7 +28,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ title: "这 3 个,直接用", items: "会议纪要::录音上传,自动整理待办|PPT 初稿::一句话主题,生成整套页面|邮件润色::语气、长度,一键改写", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ title: "这 3 个,直接用", items: "会议纪要::录音上传,自动整理待办|PPT 初稿::一句话主题,生成整套页面|邮件润色::语气、长度,一键改写", theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const title = document.getElementById("sp-title"), list = document.getElementById("sp-list");
@@ -54,8 +55,9 @@
         if (title.isConnected) tl.fromTo(title, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
         // 要点在前 60% 时长内逐条出现(至少间隔 stagger)
         const gap = Math.max(m.stagger, Math.min(0.8, (D * 0.6 - 0.5) / Math.max(1, rows.length)));
-        rows.forEach((row, i) => tl.fromTo(row, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.4 + i * gap));
-        tl.to("#sp-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(0.4 + rows.length * gap + m.dur, D - 0.35));
+        const at = HF.cues(v.cues, rows.length, rows.map((_, i) => 0.4 + i * gap));
+        rows.forEach((row, i) => tl.fromTo(row, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: m.dur, ease: m.ease }, at[i]));
+        tl.to("#sp-wrap", { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max((rows.length ? at[rows.length - 1] : 0.4) + m.dur, D - 0.35));
         window.__timelines["dy-scene-points"] = tl;
       </script>
     </template>

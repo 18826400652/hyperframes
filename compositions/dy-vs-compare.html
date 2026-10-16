@@ -5,7 +5,8 @@
   {"id": "rows", "type": "string", "label": "对比行(项目|左|右|胜方L或R;用分号分行)", "default": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
   {"id": "leftColor", "type": "string", "label": "左侧色(留空用主题辅色)", "default": ""},
-  {"id": "accent", "type": "string", "label": "右侧色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "右侧色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每一行对比出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -29,7 +30,7 @@
         <div id="vs"><div id="vs-head"><div class="vs-name" id="vs-l"></div><div id="vs-badge">VS</div><div class="vs-name" id="vs-r"></div></div><div id="vs-rows"></div></div>
       </div>
       <script>
-        const v = Object.assign({"leftName": "方案 A", "rightName": "方案 B", "rows": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L", "theme": "", "leftColor": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"leftName": "方案 A", "rightName": "方案 B", "rows": "价格|¥99|¥299|L;续航|8小时|20小时|R;重量|180g|210g|L", "theme": "", "leftColor": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, { theme: v.theme, accent: v.accent, accent2: v.leftColor });
         const L = document.getElementById("vs-l"), R = document.getElementById("vs-r");
@@ -55,8 +56,9 @@
         tl.fromTo("#vs-l", { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#vs-r", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#vs-badge", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2)" }, 0.3);
-        rows.forEach((_, i) => tl.fromTo("#vs-row-" + i, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.9 + i * 0.6));
-        tl.to("#vs", { opacity: 0, y: -40, duration: 0.4, ease: "power2.in" }, Math.max(1.4 + rows.length * 0.6, D - 0.5));
+        const at = HF.cues(v.cues, rows.length, rows.map((_, i) => 0.9 + i * 0.6));
+        rows.forEach((_, i) => tl.fromTo("#vs-row-" + i, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, at[i]));
+        tl.to("#vs", { opacity: 0, y: -40, duration: 0.4, ease: "power2.in" }, Math.max((rows.length ? at[rows.length - 1] : 0.9) + 0.5, D - 0.5));
         window.__timelines["dy-vs-compare"] = tl;
       </script>
     </template>

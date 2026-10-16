@@ -4,7 +4,8 @@
   {"id": "steps", "type": "string", "label": "步骤(| 分隔)", "default": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布"},
   {"id": "aiSteps", "type": "string", "label": "AI 步骤序号(逗号分隔,从1起)", "default": "2,3"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "AI 步骤色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "AI 步骤色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每个节点出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -27,7 +28,7 @@
         <div id="wf"><div id="wf-title"></div><div id="wf-list"></div></div>
       </div>
       <script>
-        const v = Object.assign({"title": "AI 工作流", "steps": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布", "aiSteps": "2,3", "theme": "", "accent": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"title": "AI 工作流", "steps": "输入选题|AI 写脚本|AI 配音配图|人工检查|一键发布", "aiSteps": "2,3", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const title = document.getElementById("wf-title");
@@ -47,12 +48,14 @@
         });
         const tl = gsap.timeline({ paused: true });
         if (title.isConnected) tl.fromTo("#wf-title", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
+        const D = HF.duration(root, 0.5 + st.length * 0.7 + 2.4), n = st.length;
+        const at = HF.cues(v.cues, n, HF.spread(n, 0.5, D - 0.4, 0.7));
         st.forEach((_, i) => {
-          const t = 0.5 + i * 0.7;
+          const t = at[i];
           if (i) tl.fromTo("#wf-a-" + i, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.25, ease: "power2.out" }, t - 0.25);
           tl.fromTo("#wf-n-" + i, { x: -100, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, t);
         });
-        tl.to("#wf", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, 0.5 + st.length * 0.7 + 2);
+        tl.to("#wf", { y: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, HF.exitAt(D, 0.4, (n ? at[n - 1] : 0) + 0.6));
         window.__timelines["dy-workflow-flow"] = tl;
       </script>
     </template>

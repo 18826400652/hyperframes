@@ -7,7 +7,8 @@
   {"id": "cta", "type": "string", "label": "引导语", "default": "评论区扣 A 或 B 👇"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
   {"id": "accent", "type": "string", "label": "A 色(留空用主题色)", "default": ""},
-  {"id": "colorB", "type": "string", "label": "B 色(留空用主题辅色)", "default": ""}
+  {"id": "colorB", "type": "string", "label": "B 色(留空用主题辅色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:结果条开始涨的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -32,7 +33,7 @@
           <div id="pl-cta"></div></div>
       </div>
       <script>
-        const v = Object.assign({"question": "你会选哪个?", "optionA": "先买再说", "optionB": "再等等看", "pctA": 64, "cta": "评论区扣 A 或 B 👇", "theme": "", "accent": "", "colorB": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"question": "你会选哪个?", "optionA": "先买再说", "optionB": "再等等看", "pctA": 64, "cta": "评论区扣 A 或 B 👇", "theme": "", "accent": "", "colorB": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, { theme: v.theme, accent: v.accent, accent2: v.colorB });
         document.getElementById("pl-q").textContent = v.question;
@@ -52,16 +53,17 @@
           HF.fitBox(document.getElementById("pl"));
         });
         const D = HF.duration(root, 6);
+        const [b0] = HF.cues(v.cues, 1, [1.4]);
         const tl = gsap.timeline({ paused: true });
         tl.fromTo("#pl-q", { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
         tl.fromTo("#pl-a", { x: -400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.3);
         tl.fromTo("#pl-b", { x: 400, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.45);
         if (cta.isConnected) tl.fromTo("#pl-cta", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 0.9);
-        tl.to("#pl-ba", { width: pa + "%", duration: 1.4, ease: "power3.out" }, 1.4);
-        tl.to("#pl-bb", { width: (100 - pa) + "%", duration: 1.4, ease: "power3.out" }, 1.4);
-        tl.to(o, { n: 1, duration: 1.4, ease: "power3.out", onUpdate: render }, 1.4);
-        if (cta.isConnected) tl.to("#pl-cta", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, 3);
-        tl.to("#pl", { opacity: 0, y: 40, duration: 0.4, ease: "power2.in" }, Math.max(3, D - 0.5));
+        tl.to("#pl-ba", { width: pa + "%", duration: 1.4, ease: "power3.out" }, b0);
+        tl.to("#pl-bb", { width: (100 - pa) + "%", duration: 1.4, ease: "power3.out" }, b0);
+        tl.to(o, { n: 1, duration: 1.4, ease: "power3.out", onUpdate: render }, b0);
+        if (cta.isConnected) tl.to("#pl-cta", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, b0 + 1.6);
+        tl.to("#pl", { opacity: 0, y: 40, duration: 0.4, ease: "power2.in" }, Math.max(b0 + 1.6, D - 0.5));
         window.__timelines["dy-poll"] = tl;
       </script>
     </template>

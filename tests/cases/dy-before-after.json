@@ -1,5 +1,5 @@
 {
-  "component": "dy-before-after",
+  "component": "dy-before-after", "cues": {"vars": "9|11", "before": 5, "after": 13},
   "duration": 6,
   "peak": 4,
   "variants": {

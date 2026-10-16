@@ -1,5 +1,5 @@
 {
-  "component": "dy-scene-points",
+  "component": "dy-scene-points", "cues": {"vars": "1|7|12", "before": 4, "after": 13},
   "duration": 6,
   "peak": 5,
   "variants": {

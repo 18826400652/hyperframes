@@ -6,7 +6,8 @@
   {"id": "right", "type": "string", "label": "右/下 条目(| 分隔)", "default": "录音自动出纪要|一句话生成初稿|一键改写语气"},
   {"id": "layout", "type": "string", "label": "排列(vertical 上下 / horizontal 左右)", "default": "vertical"},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
-  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""}
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:重点一侧每一条出现的时间;留空按默认节奏铺满整段)", "default": ""}
 ]'>
   <head><meta charset="UTF-8" /></head>
   <body>
@@ -38,7 +39,7 @@
         </div>
       </div>
       <script>
-        const v = Object.assign({ leftTitle: "以前", rightTitle: "用 AI 之后", left: "手动整理会议记录|逐页做 PPT|反复改邮件措辞", right: "录音自动出纪要|一句话生成初稿|一键改写语气", layout: "vertical", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ leftTitle: "以前", rightTitle: "用 AI 之后", left: "手动整理会议记录|逐页做 PPT|反复改邮件措辞", right: "录音自动出纪要|一句话生成初稿|一键改写语气", layout: "vertical", theme: "", accent: "" , "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const wrap = document.getElementById("sc-wrap");
@@ -66,8 +67,9 @@
         if (has("sc-vs")) tl.fromTo("#sc-vs", { scale: 0, rotate: -90 }, { scale: 1, rotate: 0, duration: m.dur, ease: "back.out(2)" }, 0.5);
         if (has("sc-b")) tl.fromTo("#sc-b", horiz ? { x: 80, opacity: 0 } : { y: 60, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.8);
         // 重点一侧的条目逐条出现
-        ib.forEach((d, i) => tl.fromTo(d, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: m.ease }, 1.2 + i * m.stagger));
-        tl.to(wrap, { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max(1.6 + ib.length * m.stagger, D - 0.35));
+        const at = HF.cues(v.cues, ib.length, ib.map((_, i) => 1.2 + i * m.stagger));
+        ib.forEach((d, i) => tl.fromTo(d, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: m.ease }, at[i]));
+        tl.to(wrap, { y: -30, opacity: 0, duration: 0.3, ease: m.easeOut }, Math.max((ib.length ? at[ib.length - 1] : 1.2) + 0.4, D - 0.35));
         window.__timelines["dy-scene-compare"] = tl;
       </script>
     </template>
