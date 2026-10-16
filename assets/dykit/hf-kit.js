@@ -93,8 +93,14 @@
       return Math.max(notBefore, D - dur);
     },
 
+    // 底部安全区(内容下沿)。默认 1520(字幕在画面 79% 以下);宿主字幕更靠上时用 --hf-safe-bottom 指定,如 vd 传 1150
+    safeBottom(el) {
+      const v = parseFloat(cssVar(el, "--hf-safe-bottom"));
+      return Number.isFinite(v) && v > 0 ? v : 1520;
+    },
+
     // 超出底部安全区时先上移(不高于 minTop),仍放不下再等比缩小
-    fitBox(el, bottom = 1520, minTop = 260) {
+    fitBox(el, bottom = this.safeBottom(el), minTop = 260) {
       el.style.scale = ""; el.style.top = "";
       const h = el.offsetHeight;
       if (el.offsetTop + h <= bottom) return;
@@ -111,7 +117,7 @@
     },
 
     // 在 [top, bottom] 安全区内垂直居中;放不下时交给 fitBox(上移,再缩放)
-    centerBox(el, top = 260, bottom = 1520) {
+    centerBox(el, top = 260, bottom = this.safeBottom(el)) {
       el.style.scale = ""; el.style.top = "";
       const h = el.offsetHeight;
       el.style.top = Math.max(top, Math.round((top + bottom) / 2 - h / 2)) + "px";
