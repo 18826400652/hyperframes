@@ -1,0 +1,12 @@
+{
+  "component": "dy-rec-phone",
+  "duration": 12,
+  "peaks": [10.5],
+  "variants": {
+    "normal": { "src": "tests/media/rec-sample.mp4", "title": "录屏 8 秒,段 12 秒:放完停在最后一帧" }
+  },
+  "pixels": [
+    { "variant": "normal", "at": 10.5, "points": [[500, 700], [500, 900], [500, 1100], [420, 900], [580, 900]], "minChroma": 80 },
+    { "variant": "normal", "at": 10.5, "points": [[500, 700], [500, 900], [500, 1100], [420, 900], [580, 900]], "minChroma": 80, "via": "render" }
+  ]
+}

@@ -49,6 +49,8 @@ export function buildFixture(c, theme, sheetVariant = "normal") {
       n++;
     }
   });
+  // case.kicker:在顶部放一行账号栏目标签(位置、字号同作品项目的 brand-kicker),查组件文字会不会压上去
+  const kicker = c.kicker ? `    <div id="fx-kicker" style="position:absolute;left:64px;top:228px;font-family:var(--hf-font-body);font-size:26px;letter-spacing:0.08em;color:var(--hf-muted);z-index:${n + 2}">${c.kicker.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</div>\n` : "";
   const rootStyle = theme === "custom" ? ` style="${customStyle(customPalette(c.component)).replaceAll('"', "&quot;")}"` : "";
   const html = `<!doctype html>
 <html lang="zh-CN" data-resolution="portrait">
@@ -63,7 +65,7 @@ export function buildFixture(c, theme, sheetVariant = "normal") {
 <body>
   <div id="root" data-composition-id="main" data-theme="${theme}"${rootStyle} data-start="0" data-duration="${total}" data-width="1080" data-height="1920">
     <div id="base"></div>
-${hosts}  </div>
+${hosts}${kicker}  </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.to("#base", { opacity: 1, duration: ${total} }, 0);
