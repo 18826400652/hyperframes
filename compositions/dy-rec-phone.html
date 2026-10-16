@@ -41,12 +41,14 @@
         // 录屏视频由脚本创建:渲染器只对顶层变量解析 data-var-src,同一组件多次使用时
         // 需要每个实例各自的 src 和唯一 id;脚本插入的媒体会触发渲染器的浏览器探测。
         // 起点换算成全局时间(data-hf-media-start-basis="global"),避免嵌套时序歧义。
+        // data-duration 设成整段时长:录屏比段短时放完停在最后一帧,不留空手机(P-44)。
+        const D = HF.duration(root, 8);
         let start = 0;
         for (let el = root.parentElement; el; el = el.parentElement) start += parseFloat(el.getAttribute("data-start")) || 0;
         window.__dyRecPhoneN = (window.__dyRecPhoneN || 0) + 1;
         const video = document.createElement("video");
         Object.assign(video, { id: "rp-video-" + window.__dyRecPhoneN, className: "rp-video", muted: true, playsInline: true, preload: "auto" });
-        for (const [k, val] of [["src", String(v.src || "assets/dykit/media/rec-placeholder.mp4")], ["muted", ""], ["playsinline", ""], ["data-start", String(start)], ["data-hf-media-start-basis", "global"]]) video.setAttribute(k, val);
+        for (const [k, val] of [["src", String(v.src || "assets/dykit/media/rec-placeholder.mp4")], ["muted", ""], ["playsinline", ""], ["data-start", String(start)], ["data-duration", String(D)], ["data-hf-media-start-basis", "global"]]) video.setAttribute(k, val);
         $("rp-cam").prepend(video);
         if (v.title) title.textContent = v.title; else title.remove();
 
@@ -71,7 +73,7 @@
         let cues = [];
         try { const p = JSON.parse(v.cues || "[]"); cues = Array.isArray(p) ? p.filter(c => c && typeof c === "object") : []; } catch (e) { cues = []; }
         const pct = n => Math.max(0, Math.min(100, Number(n) || 0));
-        const m = HF.motion(root), D = HF.duration(root, 8);
+        const m = HF.motion(root);
         const tl = gsap.timeline({ paused: true });
         const parts = [title, phone].filter(e => e.isConnected);
         tl.fromTo(parts, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.1);
