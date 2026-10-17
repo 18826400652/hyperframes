@@ -54,9 +54,10 @@
         if (v.title) title.textContent = v.title; else title.remove();
 
         // 安全区内排版:手机框按录屏宽高比缩放,完整显示不裁切
-        const LEFT = 80, WIDTH = 840, BOTTOM = 1520, BEZEL = 16 + 3;
+        const LEFT = 80, WIDTH = 840, BEZEL = 16 + 3;
         const fixedRatio = (() => { const m = String(v.ratio).split(":").map(Number); return m.length === 2 && m[0] > 0 && m[1] > 0 ? m[0] / m[1] : 0; })();
         const layout = () => {
+          const BOTTOM = HF.safeBottom(root); // 宿主可用 --hf-safe-bottom 把底边抬到字幕带上方
           const ratio = fixedRatio || (video.videoWidth && video.videoHeight ? video.videoWidth / video.videoHeight : 886 / 1920);
           let top = 260;
           if (title.isConnected) { HF.fitLines(title, 2, 44); top = title.offsetTop + title.offsetHeight + 32; }
