@@ -3,6 +3,7 @@
   {"id": "title", "type": "string", "label": "标题", "default": "万能提示词模板"},
   {"id": "fields", "type": "string", "label": "字段(名称|内容;分行)", "default": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注"},
   {"id": "cta", "type": "string", "label": "引导语", "default": "⭐ 收藏起来,下次直接复制"},
+  {"id": "layout", "type": "string", "label": "排版(留空:名称一行、内容一行;inline:名称做成圆标和内容同一行,条目多时用)", "default": ""},
   {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
   {"id": "accent", "type": "string", "label": "主色(留空用主题色)", "default": ""},
   {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每个字段出现的时间(按钮跟在最后一个字段后面);留空按默认节奏铺满整段)", "default": ""}
@@ -18,13 +19,17 @@
         .pr-f { margin-bottom: 22px; padding: 22px 28px; border-radius: calc(var(--hf-radius) * 0.6); background: color-mix(in srgb, var(--hf-accent) 12%, transparent); border-left: 10px solid var(--hf-accent); }
         .pr-k { font-size: 36px; font-weight: 900; color: var(--hf-accent); margin-bottom: 8px; }
         .pr-v { font-size: 44px; font-weight: 700; color: var(--hf-text); line-height: 1.45; }
+        #pr.pr-inline .pr-f { display: flex; align-items: center; gap: 22px; margin-bottom: 18px; padding: 16px 22px; }
+        #pr.pr-inline .pr-k { flex: none; min-width: 64px; height: 64px; padding: 0 14px; margin: 0; border-radius: 32px; display: flex; align-items: center; justify-content: center;
+          background: var(--hf-accent); color: var(--hf-on-accent); font-size: 34px; line-height: 1; }
+        #pr.pr-inline .pr-v { flex: 1; min-width: 0; font-size: 42px; line-height: 1.35; overflow-wrap: anywhere; }
         #pr-cta { margin-top: 8px; text-align: center; font-size: 46px; font-weight: 900; line-height: 1.35; color: var(--hf-on-accent); background: var(--hf-accent); border-radius: 40px; padding: 14px 24px; }
       </style>
       <div id="root" data-composition-id="dy-prompt-card" data-width="1080" data-height="1920">
         <div class="hf-panel" id="pr"><div id="pr-title"></div><div id="pr-list"></div><div id="pr-cta"></div></div>
       </div>
       <script>
-        const v = Object.assign({"title": "万能提示词模板", "fields": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注", "cta": "⭐ 收藏起来,下次直接复制", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
+        const v = Object.assign({"title": "万能提示词模板", "fields": "角色|你是一位资深短视频编导;任务|帮我写一条 30 秒口播脚本;要求|开头 3 秒抛钩子,口语化,结尾引导关注", "cta": "⭐ 收藏起来,下次直接复制", "layout": "", "theme": "", "accent": "", "cues": ""}, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const title = document.getElementById("pr-title");
@@ -32,12 +37,14 @@
         title.append(slash, " " + v.title);
         const cta = document.getElementById("pr-cta");
         if (v.cta) cta.textContent = v.cta; else cta.remove();
+        const inline = v.layout === "inline";
+        if (inline) document.getElementById("pr").classList.add("pr-inline");
         const fs = HF.split(v.fields, ";").map(r => r.split("|"));
         const list = document.getElementById("pr-list");
-        fs.forEach((f, i) => { const el = document.createElement("div"); el.className = "pr-f"; el.id = "pr-f-" + i; el.innerHTML = '<div class="pr-k"></div><div class="pr-v"></div>'; el.children[0].textContent = "【" + f[0] + "】"; el.children[1].textContent = f.slice(1).join("|"); list.appendChild(el); });
+        fs.forEach((f, i) => { const el = document.createElement("div"); el.className = "pr-f"; el.id = "pr-f-" + i; el.innerHTML = '<div class="pr-k"></div><div class="pr-v"></div>'; el.children[0].textContent = inline ? f[0] : "【" + f[0] + "】"; el.children[1].textContent = f.slice(1).join("|"); list.appendChild(el); });
         HF.refit(() => {
           HF.fitLines(title, 2, 40);
-          list.querySelectorAll(".pr-v").forEach(e => HF.fitLines(e, 4, 30));
+          list.querySelectorAll(".pr-v").forEach(e => HF.fitLines(e, inline ? 2 : 4, 30));
           if (cta.isConnected) HF.fitLines(cta, 2, 30);
           HF.fitBox(document.getElementById("pr"));
         });
