@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id": "title", "type": "string", "label": "回答来源(卡片顶部小字)", "default": "DeepSeek · 第 2 遍"},
+  {"id": "lines", "type": "string", "label": "AI 回答(| 分隔,每项一行)", "default": "小红书发 3 篇:秋冬穿搭 200+ 赞|另两篇数据一般(60 赞)|完成直播脚本撰写"},
+  {"id": "wrong", "type": "string", "label": "出错的行号(从 1 数,逗号分隔)", "default": "2,3"},
+  {"id": "stamp", "type": "string", "label": "印章文字(留空不盖)", "default": "编的"},
+  {"id": "fix", "type": "string", "label": "改正后的标签(留空不显示)", "default": "待确认"},
+  {"id": "theme", "type": "string", "label": "主题(留空跟随全局)", "default": ""},
+  {"id": "accent", "type": "string", "label": "强调色(留空用主题色)", "default": ""},
+  {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:出错行变色、盖章、改成标签的时间;留空按默认节奏铺满整段)", "default": ""}
+]'>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: var(--hf-font-body); }
+        #ac { position: absolute; left: 80px; width: 840px; top: 380px; padding: 40px 44px 48px; border-radius: var(--hf-radius); }
+        #ac-title { font-family: var(--hf-font-mono); font-size: 30px; line-height: 1.4; color: var(--hf-muted); margin-bottom: 18px; overflow-wrap: anywhere; }
+        #ac.ac-has-stamp #ac-title { padding-right: 250px; }
+        #ac.ac-has-stamp #ac-lines { padding-top: 44px; }
+        #ac.ac-has-stamp:not(:has(#ac-title)) #ac-lines { padding-top: 96px; }
+        .ac-line { position: relative; font-size: 44px; font-weight: 700; line-height: 1.45; color: var(--hf-text); margin-top: 14px; overflow-wrap: anywhere; }
+        .ac-line.ac-bad { background: color-mix(in srgb, var(--hf-accent-2) var(--bad, 0%), transparent); border-radius: 8px; }
+        .ac-line s { position: absolute; left: -6px; right: -6px; top: 50%; height: 7px; margin-top: -3px; background: var(--hf-accent-2); transform-origin: left center; text-decoration: none; }
+        #ac-stamp { position: absolute; right: 28px; top: 24px; padding: 4px 26px; border: 6px solid var(--hf-text); background: var(--hf-accent-2); color: var(--hf-on-accent-2);
+          font-family: var(--hf-font-title); font-size: 76px; font-weight: 900; line-height: 1.2; border-radius: 14px; white-space: nowrap; }
+        #ac-fix { display: inline-block; margin-top: 28px; padding: 10px 28px; border-radius: calc(var(--hf-radius) * 0.6); background: var(--hf-accent); color: var(--hf-on-accent);
+          font-size: 44px; font-weight: 900; line-height: 1.3; overflow-wrap: anywhere; }
+      </style>
+      <div id="root" data-composition-id="dy-answer-check" data-width="1080" data-height="1920">
+        <div class="hf-panel" id="ac">
+          <div id="ac-title"></div>
+          <div id="ac-lines"></div>
+          <div id="ac-fix"></div>
+          <div id="ac-stamp" data-layout-allow-overlap></div>
+        </div>
+      </div>
+      <script>
+        const v = Object.assign({ title: "DeepSeek · 第 2 遍", lines: "小红书发 3 篇:秋冬穿搭 200+ 赞|另两篇数据一般(60 赞)|完成直播脚本撰写", wrong: "2,3", stamp: "编的", fix: "待确认", theme: "", accent: "", cues: "" }, window.__hyperframes.getVariables());
+        const root = document.getElementById("root");
+        HF.applyTheme(root, v);
+        const $ = (id) => document.getElementById(id);
+        if (v.title) $("ac-title").textContent = v.title; else $("ac-title").remove();
+        if (v.stamp) { $("ac-stamp").textContent = v.stamp; $("ac").classList.add("ac-has-stamp"); } else $("ac-stamp").remove();
+        if (v.fix) $("ac-fix").textContent = v.fix; else $("ac-fix").remove();
+
+        // 回答逐行;出错的行加一道删除线(先藏起来)
+        const bad = new Set(String(v.wrong).split(/[,，、\s]+/).filter(Boolean).map(Number));
+        const lines = HF.split(v.lines).map((text, i) => {
+          const el = document.createElement("div"); el.className = "ac-line"; el.textContent = text;
+          if (bad.has(i + 1)) { el.classList.add("ac-bad"); el.setAttribute("data-layout-allow-occlusion", ""); el.append(document.createElement("s")); }
+          $("ac-lines").append(el);
+          return el;
+        });
+        const bads = lines.filter((el) => el.classList.contains("ac-bad"));
+
+        HF.refit(() => {
+          if ($("ac-title")) HF.fitLines($("ac-title"), 2, 24);
+          lines.forEach((el) => HF.fitLines(el, 3, 30));
+          if ($("ac-stamp")) HF.fit($("ac-stamp"), 230, 40);
+          if ($("ac-fix")) HF.fitLines($("ac-fix"), 2, 30);
+          HF.fitBox($("ac"));
+        });
+
+        const m = HF.motion(root), D = HF.duration(root, 6);
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#ac", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: m.dur, ease: m.ease }, 0.1);
+        tl.fromTo(lines, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: m.dur, ease: m.ease, stagger: m.stagger }, 0.3);
+        const ready = 0.3 + m.dur + m.stagger * lines.length;
+        const [tBad, tStamp, tFix] = HF.cues(v.cues, 3, HF.spread(3, Math.max(ready, D * 0.25), D - 0.8, 0.6));
+        gsap.set(root.querySelectorAll(".ac-line s"), { scaleX: 0 });
+        if (bads.length) {
+          tl.fromTo(bads, { "--bad": "0%" }, { "--bad": "28%", duration: 0.15 }, tBad);
+          tl.fromTo("#ac", { x: 0 }, { x: 12, duration: 0.06, yoyo: true, repeat: 5, ease: "none" }, tBad);
+          tl.fromTo(root.querySelectorAll(".ac-line s"), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: m.ease }, tBad + 0.15);
+        }
+        if ($("ac-stamp")) {
+          tl.fromTo("#ac-stamp", { opacity: 0, scale: 2.2, rotation: -12 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.25, ease: "power4.in" }, tStamp);
+        }
+        if ($("ac-fix")) {
+          if ($("ac-stamp")) tl.to("#ac-stamp", { opacity: 0, duration: 0.25 }, tFix - 0.25);
+          if (bads.length) tl.to(bads, { "--bad": "0%", opacity: 0.6, duration: 0.25 }, tFix - 0.25);
+          tl.fromTo("#ac-fix", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(3)" }, tFix);
+        }
+        tl.to("#ac", { opacity: 0, y: -30, duration: 0.3, ease: m.easeOut }, HF.exitAt(D, 0.35, tFix + 0.5));
+        window.__timelines["dy-answer-check"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
