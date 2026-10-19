@@ -16,6 +16,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-answer-check",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-before-after",
       "type": "hyperframes:block"
     },

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "dy-answer-check",
+  "type": "hyperframes:block",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "duration": 4,
+  "title": "dy-answer-check",
+  "description": "dykit 抖音竖屏组件 dy-answer-check(1080×1920,支持 5 种主题)。",
+  "tags": [
+    "dykit",
+    "douyin",
+    "portrait"
+  ],
+  "registryDependencies": [
+    "dykit"
+  ],
+  "files": [
+    {
+      "path": "dy-answer-check.html",
+      "target": "compositions/dy-answer-check.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}

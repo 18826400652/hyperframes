@@ -74,5 +74,13 @@ eq(plain(calls), [
   ["to", "lead", { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 1.5],
 ], "leader:引线从起点画到终点");
 
+// 底部安全区:宿主用 --hf-safe-bottom 指定(如 vd 的字幕带在 1180 起,传 1150);没写或写错用 1520
+const kit = fs.readFileSync(path.join(ROOT, "assets/dykit/hf-kit.js"), "utf8");
+const withVar = v => { const w = {}; vm.runInNewContext(kit, { window: w, getComputedStyle: () => ({ getPropertyValue: n => (n === "--hf-safe-bottom" ? v : "") }) }); return w.HF; };
+eq(withVar("").safeBottom({}), 1520, "没设 --hf-safe-bottom 用 1520");
+eq(withVar(" 1150 ").safeBottom({}), 1150, "宿主设了 1150");
+eq(withVar("1150px").safeBottom({}), 1150, "带 px 也认");
+eq(withVar("abc").safeBottom({}), 1520, "写错用 1520");
+
 if (fails.length) { console.error("FAIL hf-kit.test\n  " + fails.join("\n  ")); process.exit(1); }
 console.log("PASS hf-kit.test");

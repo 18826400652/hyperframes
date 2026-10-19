@@ -122,7 +122,7 @@
 | dy-lower-third | 人设条(姓名 / 头衔 / 标签) | name, title, tags | 4s |
 | dy-rank-item | 榜单 / Top N 卡片 | rank, title, subtitle | 4s |
 | dy-checklist | 要点清单逐条打勾 | title, items | 0.7+条数×1.2+1.2s |
-| dy-prompt-card | 提示词模板卡 | title, fields(`名\|内容;`), cta | 约 3+条数×0.8s |
+| dy-prompt-card | 提示词模板卡 | title, fields(`名\|内容;`), cta, layout(留空 / inline:名称做圆标和内容同一行) | 约 3+条数×0.8s |
 | dy-news-flash | AI 快讯卡 | tag, date, company, headline, points, source | 约 4+要点数×0.7s |
 | dy-stat-counter | 数据大字滚动 | label, value, prefix, suffix, delta | 4.5s |
 | dy-vs-compare | PK 对比表(胜方高亮) | leftName, rightName, rows(`项\|左\|右\|L/R;`), leftColor | 6s |
@@ -134,6 +134,7 @@
 | dy-code-block | 代码块打字机(等宽字体) | file, code(`\|` 分行), speed | 约 3+字符数/speed s |
 | dy-workflow-flow | AI 工作流纵向流程(AI 步骤高亮) | title, steps, aiSteps | 约 3+步数×0.7s |
 | dy-receipt | AI 结果小票:编号明细逐行打出,圈出重复编号,合计标错 / 标对 | title, sub, rows(`名称::编号::数量`,`\|` 分隔), total, verdict(wrong / right), dup, check | 5s |
+| dy-answer-check | AI 回答核对:出错的行标出并划掉、盖章、改成「待确认」 | title, lines(`\|` 分隔), wrong(行号), stamp, fix | 6s |
 | dy-tick-grid | 1 到 N 编号格子逐个打勾 | title, count, cols | 5s |
 | dy-stamp | 印章盖下来(下结论、拍板) | text, note, color, rotate | 2.5s |
 | dy-concept-card | 名词解释卡(术语 / 人话 / 比方) | term, en, plain, analogy | 6s |
