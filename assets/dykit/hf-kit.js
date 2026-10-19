@@ -130,6 +130,39 @@
       if (document.fonts) document.fonts.ready.then(fn);
     },
 
+    // ---- 镜头(dy-shot-*)用的 helper:只往传入的时间线上加 tween,seek 安全 ----
+
+    // 段与段之间的平移转场:enter / exit 是 vd 写的变量("pan-left:0.6");duration 是挂载时长(含转场重叠)
+    panInOut(tl, root, { enter, exit, duration }) {
+      const off = { "pan-left": [1080, 0], "pan-right": [-1080, 0], "pan-up": [0, 1920], "pan-down": [0, -1920] };
+      const parse = v => { if (!v) return null; const [d, t] = String(v).split(":"); return off[d] ? { d: off[d], dur: Number(t) } : null; };
+      const a = parse(enter), b = parse(exit);
+      if (a) {
+        gsap.set(root, { x: a.d[0], y: a.d[1], filter: "blur(12px)" });
+        tl.to(root, { x: 0, y: 0, filter: "blur(0px)", duration: a.dur, ease: "power2.inOut" }, 0);
+      }
+      if (b) tl.to(root, { x: -b.d[0], y: -b.d[1], filter: "blur(12px)", duration: b.dur, ease: "power2.inOut" }, Math.round((duration - b.dur) * 1000) / 1000);
+    },
+
+    // 镜头推拉平移:stage 是比画面大的画布层;keys[0] 是初态,其余按 t(段内秒)移过去,缺省 1 秒
+    camera(tl, stage, keys) {
+      const [first, ...rest] = keys;
+      gsap.set(stage, { x: first.x, y: first.y, scale: first.scale, transformOrigin: "0 0" });
+      for (const k of rest) tl.to(stage, { x: k.x, y: k.y, scale: k.scale, duration: k.dur ?? 1, ease: k.ease ?? "power2.inOut" }, k.t);
+    },
+
+    // 贴纸:白描边 + 三层投影(样式在 dykit.css 的 .hf-sticker)
+    sticker(el) {
+      el.classList.add("hf-sticker");
+    },
+
+    // 引线:SVG line / path 从起点画到终点
+    leader(tl, line, t, dur = 0.4) {
+      const len = line.getTotalLength();
+      gsap.set(line, { strokeDasharray: len, strokeDashoffset: len });
+      tl.to(line, { strokeDashoffset: 0, duration: dur, ease: "power2.out" }, t);
+    },
+
     split(s, sep = "|") {
       return String(s == null ? "" : s).split(sep).map(x => x.trim()).filter(Boolean);
     },

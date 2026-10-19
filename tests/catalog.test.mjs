@@ -35,6 +35,25 @@ const bad = buildCatalog(tmp).errors;
 ok(bad.includes("missing notes: dy-poll"), "missing-notes error not reported: " + bad.join("; "));
 ok(bad.includes("notes for unknown component: dy-nope"), "unknown-notes error not reported: " + bad.join("; "));
 
+// 镜头(kind shot):sfx 拍点和变量的 maxChars 带进目录;sfx 的 beat 超出 beats 报错
+const shotTmp = fs.mkdtempSync(path.join(os.tmpdir(), "catalog-shot-"));
+fs.mkdirSync(path.join(shotTmp, "compositions"));
+fs.mkdirSync(path.join(shotTmp, "catalog"));
+const shotVars = [{ id: "title", type: "string", label: "标题", default: "", maxChars: 14 }, { id: "cues", type: "string", label: "节拍", default: "" }];
+fs.writeFileSync(path.join(shotTmp, "compositions/dy-shot-x.html"), `<div data-composition-variables='${JSON.stringify(shotVars)}'></div>`);
+const shotNote = { kind: "shot", purpose: "p", suitableFor: "s", minDuration: 3, beats: ["变红", "盖章"], sfx: [{ beat: 2, name: "error", volume: 0.6 }, { at: 0.4, name: "tick" }] };
+fs.writeFileSync(path.join(shotTmp, "catalog/notes.json"), JSON.stringify({ "dy-shot-x": shotNote }));
+const shotRes = buildCatalog(shotTmp);
+ok(shotRes.errors.length === 0, "shot catalog errors: " + shotRes.errors.join("; "));
+const shotC = shotRes.catalog.components[0] || {};
+ok(shotC.kind === "shot", "shot kind not accepted");
+ok(JSON.stringify(shotC.sfx) === JSON.stringify(shotNote.sfx), "sfx not carried into catalog");
+ok((shotC.variables || []).find(v => v.id === "title")?.maxChars === 14, "maxChars not carried into catalog");
+fs.writeFileSync(path.join(shotTmp, "catalog/notes.json"), JSON.stringify({ "dy-shot-x": { ...shotNote, sfx: [{ beat: 3, name: "error" }, { name: "" , at: 1 }] } }));
+const shotBad = buildCatalog(shotTmp).errors;
+ok(shotBad.some(e => /bad sfx: dy-shot-x.*beat 3/.test(e)), "sfx beat out of range not reported: " + shotBad.join("; "));
+ok(shotBad.some(e => /bad sfx: dy-shot-x.*name/.test(e)), "sfx without name not reported: " + shotBad.join("; "));
+
 // --check:目录过期时退出码非 0,恢复后为 0
 const file = path.join(ROOT, "catalog/catalog.json");
 const orig = fs.readFileSync(file, "utf8");

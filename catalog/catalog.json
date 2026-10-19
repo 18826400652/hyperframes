@@ -1667,6 +1667,113 @@
       ]
     },
     {
+      "id": "dy-shot-proof",
+      "kind": "shot",
+      "purpose": "证据贴纸:真实截图抠成贴纸,镜头依次推到 1–4 处,每处高亮 + 引线标签,最后拉回列出各处",
+      "suitableFor": "口播在指着一张真实截图、回答、页面讲『这里写了什么』,如「开头一句本周重点」「它把 1800 元写对了」",
+      "minDuration": 4,
+      "beats": [
+        "推到第 1 处标注",
+        "推到第 2 处(每条标注一拍,按 labels 顺序)"
+      ],
+      "sfx": [
+        {
+          "beat": 1,
+          "name": "pop",
+          "volume": 0.4
+        }
+      ],
+      "variables": [
+        {
+          "id": "src",
+          "type": "string",
+          "label": "截图路径(相对项目根目录;真实实测截图)",
+          "default": "tests/media/sample-shot.png"
+        },
+        {
+          "id": "ratio",
+          "type": "number",
+          "label": "截图高/宽(1080×1920 填 1.778,1080×2400 填 2.222)",
+          "default": 1.778
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "上方标题(可选,只在开头出现)",
+          "default": "",
+          "maxChars": 12
+        },
+        {
+          "id": "labels",
+          "type": "string",
+          "label": "推近时的标签,| 分隔,最多 4 条,和 boxes 一一对应",
+          "default": "这里",
+          "maxChars": 10
+        },
+        {
+          "id": "listLabels",
+          "type": "string",
+          "label": "结尾列表的短标签,| 分隔,每条 ≤5 字(留空用 labels)",
+          "default": "",
+          "maxChars": 5
+        },
+        {
+          "id": "boxes",
+          "type": "string",
+          "label": "标注区域,| 分隔,每条 x,y,w,h(截图的百分比;贴着一行字框关键词,不跨行)",
+          "default": "10,10,60,4"
+        },
+        {
+          "id": "hero",
+          "type": "number",
+          "label": "主角是第几处(1 起;0 = 自动:带数字的那处,没有就最后一处)",
+          "default": 0
+        },
+        {
+          "id": "textPx",
+          "type": "number",
+          "label": "截图里正文字的像素高(按截图原尺寸,手机截图约 36–42)",
+          "default": 40
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:每条标注一拍)",
+          "default": ""
+        },
+        {
+          "id": "cueNames",
+          "type": "string",
+          "label": "节拍对应的 @词(vd 自动填,标推近点用)",
+          "default": ""
+        },
+        {
+          "id": "enter",
+          "type": "string",
+          "label": "入场转场(vd 自动填,如 pan-left:0.6)",
+          "default": ""
+        },
+        {
+          "id": "exit",
+          "type": "string",
+          "label": "退场转场(vd 自动填)",
+          "default": ""
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        }
+      ]
+    },
+    {
       "id": "dy-stamp",
       "kind": "overlay",
       "purpose": "印章盖下来:下结论、拍板、判定",

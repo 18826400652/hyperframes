@@ -51,7 +51,9 @@ export function buildFixture(c, theme, sheetVariant = "normal") {
   });
   // case.kicker:在顶部放一行账号栏目标签(位置、字号同作品项目的 brand-kicker),查组件文字会不会压上去
   const kicker = c.kicker ? `    <div id="fx-kicker" style="position:absolute;left:64px;top:228px;font-family:var(--hf-font-body);font-size:26px;letter-spacing:0.08em;color:var(--hf-muted);z-index:${n + 2}">${c.kicker.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</div>\n` : "";
-  const rootStyle = theme === "custom" ? ` style="${customStyle(customPalette(c.component)).replaceAll('"', "&quot;")}"` : "";
+  // case.palette:指定 custom 主题用哪套测试配色(0 浅色 / 1 深色);不写按组件名交替
+  const pal = Number.isInteger(c.palette) ? CUSTOM_PALETTES[c.palette] : customPalette(c.component);
+  const rootStyle = theme === "custom" ? ` style="${customStyle(pal).replaceAll('"', "&quot;")}"` : "";
   const html = `<!doctype html>
 <html lang="zh-CN" data-resolution="portrait">
 <head>
