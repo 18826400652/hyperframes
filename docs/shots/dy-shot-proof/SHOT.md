@@ -47,4 +47,4 @@
 - **typical**（9 秒）：第 1 期 DeepSeek 写的周报，3 处（本周重点 / 首日 1800 元 / 问题要协调），有标题
 - **long**（15 秒）：第 2 期妙记会议纪要长截图（1080×2400），4 处，标题 11 字
 
-素材在 `tests/media/shots-local/`（实测截图，不入库）。单组渲染：`node tests/render-shot.mjs dy-shot-proof <组> <秒> <out.mp4>`。
+素材在 `tests/media/shots/`（第 1、2 期的实测截图，数据是造的；用户 2026-10-20 同意公开）。单组渲染：`node tests/render-shot.mjs dy-shot-proof <组> <秒> <out.mp4>`。

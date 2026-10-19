@@ -14,5 +14,7 @@ if (!c.variants[variant]) { console.error(`用例 ${id} 没有变体 ${variant}(
 const pi = rest.indexOf("--palette");
 const one = { ...c, id: `${id}-${variant}`, duration: Number(seconds), variants: { [variant]: c.variants[variant] }, palette: pi >= 0 ? Number(rest[pi + 1]) : 0 };
 const { dir } = buildFixture(one, "custom");
-const r = spawnSync("npx", [...CLI, "render", dir, "-o", path.resolve(out), "--quiet"], { stdio: "inherit" });
+// FFmpeg 8.0 在 1080 宽时会把最右 8 列转成黑色:用 tests/ffmpeg-accurate 包装(自己设了 HYPERFRAMES_FFMPEG_PATH 就用你的)
+const env = { ...process.env, HYPERFRAMES_FFMPEG_PATH: process.env.HYPERFRAMES_FFMPEG_PATH || path.join(path.dirname(new URL(import.meta.url).pathname), "ffmpeg-accurate") };
+const r = spawnSync("npx", [...CLI, "render", dir, "-o", path.resolve(out), "--quiet"], { stdio: "inherit", env });
 process.exit(r.status ?? 1);

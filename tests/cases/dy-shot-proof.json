@@ -10,7 +10,7 @@
   },
   "variants": {
     "typical": {
-      "src": "tests/media/shots-local/ep1-answer.png",
+      "src": "tests/media/shots/ep1-answer.png",
       "ratio": 1.778,
       "title": "DeepSeek 的回答",
       "labels": "本周重点|首日 1800 元|问题要协调",
@@ -20,7 +20,7 @@
       "cueNames": "本周重点|一千八|协调"
     },
     "short": {
-      "src": "tests/media/shots-local/ep2-quota.png",
+      "src": "tests/media/shots/ep2-quota.png",
       "ratio": 2.222,
       "title": "",
       "labels": "额度用尽",
@@ -30,7 +30,7 @@
       "cueNames": "额度"
     },
     "long": {
-      "src": "tests/media/shots-local/ep2-minutes.png",
+      "src": "tests/media/shots/ep2-minutes.png",
       "ratio": 2.222,
       "title": "飞书妙记的会议纪要全文",
       "labels": "总结写在最前|投放筹备一项项列|单日 1800 元|下一步 3000 元",
