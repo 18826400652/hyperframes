@@ -142,7 +142,7 @@
     camera(tl, stage, keys) {
       const [first, ...rest] = keys;
       gsap.set(stage, { x: first.x, y: first.y, scale: first.scale, transformOrigin: "0 0" });
-      for (const k of rest) tl.to(stage, { x: k.x, y: k.y, scale: k.scale, duration: k.dur ?? 1, ease: "power2.inOut" }, k.t);
+      for (const k of rest) tl.to(stage, { x: k.x, y: k.y, scale: k.scale, duration: k.dur ?? 1, ease: k.ease ?? "power2.inOut" }, k.t);
     },
 
     // 贴纸:白描边 + 三层投影(样式在 dykit.css 的 .hf-sticker)

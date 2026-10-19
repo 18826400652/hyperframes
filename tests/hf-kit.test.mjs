@@ -58,6 +58,10 @@ eq(plain(calls), [
   ["to", "stage", { x: 0, y: 0, scale: 1, duration: 0.8, ease: "power2.inOut" }, 5],
 ], "camera:第一个关键帧是初态,其余按 t 推拉平移,缺省 1 秒");
 
+calls.length = 0;
+K.camera(tl, { id: "stage" }, [{ t: 0, x: 0, y: 0, scale: 1 }, { t: 3, x: -10, y: -5, scale: 1.02, dur: 2, ease: "none" }]);
+eq(plain(calls)[1], ["to", "stage", { x: -10, y: -5, scale: 1.02, duration: 2, ease: "none" }, 3], "camera:关键帧可以指定缓动(停留时匀速慢推)");
+
 const added = [];
 K.sticker({ classList: { add: (c) => added.push(c) } });
 eq(added, ["hf-sticker"], "sticker 加贴纸样式类");
