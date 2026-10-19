@@ -65,6 +65,68 @@
       ]
     },
     {
+      "id": "dy-answer-check",
+      "kind": "overlay",
+      "purpose": "AI 回答核对:回答逐行出现,出错的行标出并划掉,盖章,最后改成「待确认」标签",
+      "suitableFor": "口播说 AI 写错了、编了数字、把没做完的说成做完,或「交之前要核对 / 拿不准的标出来」",
+      "minDuration": 5,
+      "beats": [
+        "出错的行标出并划掉",
+        "盖章",
+        "改成标签"
+      ],
+      "variables": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "回答来源(卡片顶部小字)",
+          "default": "DeepSeek · 第 2 遍"
+        },
+        {
+          "id": "lines",
+          "type": "string",
+          "label": "AI 回答(| 分隔,每项一行)",
+          "default": "小红书发 3 篇:秋冬穿搭 200+ 赞|另两篇数据一般(60 赞)|完成直播脚本撰写"
+        },
+        {
+          "id": "wrong",
+          "type": "string",
+          "label": "出错的行号(从 1 数,逗号分隔)",
+          "default": "2,3"
+        },
+        {
+          "id": "stamp",
+          "type": "string",
+          "label": "印章文字(留空不盖)",
+          "default": "编的"
+        },
+        {
+          "id": "fix",
+          "type": "string",
+          "label": "改正后的标签(留空不显示)",
+          "default": "待确认"
+        },
+        {
+          "id": "theme",
+          "type": "string",
+          "label": "主题(留空跟随全局)",
+          "default": ""
+        },
+        {
+          "id": "accent",
+          "type": "string",
+          "label": "强调色(留空用主题色)",
+          "default": ""
+        },
+        {
+          "id": "cues",
+          "type": "string",
+          "label": "节拍(秒,| 分隔:出错行变色、盖章、改成标签的时间;留空按默认节奏铺满整段)",
+          "default": ""
+        }
+      ]
+    },
+    {
       "id": "dy-before-after",
       "kind": "overlay",
       "purpose": "效率对比:以前耗时 → 用 AI 耗时 + 提效标签(两张卡片自带固定角标『以前』『用 AI』)",
@@ -950,6 +1012,12 @@
           "type": "string",
           "label": "引导语",
           "default": "⭐ 收藏起来,下次直接复制"
+        },
+        {
+          "id": "layout",
+          "type": "string",
+          "label": "排版(留空:名称一行、内容一行;inline:名称做成圆标和内容同一行,条目多时用)",
+          "default": ""
         },
         {
           "id": "theme",
