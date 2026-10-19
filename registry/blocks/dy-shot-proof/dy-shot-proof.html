@@ -25,13 +25,14 @@
           -webkit-mask-image: linear-gradient(to bottom, transparent 300px, black 360px, black 1100px, transparent 1170px);
           mask-image: linear-gradient(to bottom, transparent 300px, black 360px, black 1100px, transparent 1170px); }
         /* 画布层:比画面大,镜头在上面推拉平移;点阵底让镜头运动看得出来 */
-        #pf-stage { position: absolute; left: -540px; top: -960px; width: 2160px; height: 3840px; transform-origin: 0 0;
+        #pf-stage { position: absolute; left: -540px; top: -960px; width: 2160px; height: 3840px; transform-origin: 0 0; }
+        #pf-grid { position: absolute; inset: 0;
           background-image: radial-gradient(color-mix(in srgb, var(--hf-muted) 26%, transparent) 2px, transparent 2.6px); background-size: 36px 36px; }
         #pf-shot { position: absolute; overflow: hidden; }
         #pf-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
         #pf-tape { position: absolute; width: 150px; height: 40px; transform-origin: 0 50%; background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 70%, transparent); }
         /* 聚光:推近时这一处以外压暗(软边),标签压到的字只是暗下去,证据本身最亮 */
-        .pf-dim { position: absolute; border-radius: 10px; box-shadow: 0 0 18px 4000px color-mix(in srgb, var(--hf-bg) var(--pf-dim, 70%), transparent); }
+        .pf-dim { position: absolute; box-shadow: 0 0 var(--pf-blur, 18px) 4000px color-mix(in srgb, var(--hf-bg) var(--pf-dim, 70%), transparent); }
         .pf-box { position: absolute; border-style: solid; border-color: var(--hf-custom-highlight, var(--hf-accent)); background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 22%, transparent); transform-origin: 0 50%; overflow: hidden; }
         .pf-sweep { position: absolute; inset: 0; background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 35%, transparent); transform-origin: 0 50%; }
         #pf-title { position: absolute; left: 90px; right: 90px; top: 300px; font-family: var(--hf-font-title); font-size: 72px; font-weight: 900; line-height: 1.1; white-space: nowrap; }
@@ -44,13 +45,14 @@
         .pf-chip.hero { display: flex; align-items: baseline; gap: 10px; padding: 6px 36px 14px; }
         .pf-chip.hero .num { font-size: 200px; line-height: 1; letter-spacing: -0.02em; }
         .pf-chip.hero .pre, .pf-chip.hero .post { font-size: 64px; }
+        .pf-chip.hero.word { display: block; padding: 10px 40px 16px; line-height: 1.1; }
         .pf-item { position: absolute; left: 650px; width: 270px; display: flex; align-items: center; gap: 14px; font-weight: 900; line-height: 1.25; }
         .pf-item b { flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--hf-text); color: var(--hf-bg); font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 3px var(--hf-bg); }
         .pf-item div { flex: 1; word-break: keep-all; }
         .pf-item span { padding: 2px 8px; background: linear-gradient(transparent 55%, var(--hf-custom-highlight, var(--hf-accent)) 55%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
       </style>
       <div id="root" data-composition-id="dy-shot-proof" data-width="1080" data-height="1920">
-        <div id="pf-view"><div id="pf-stage" data-layout-allow-overflow><div id="pf-shot"><img id="pf-img" alt="" /></div><div id="pf-tape" data-layout-ignore></div></div></div>
+        <div id="pf-view"><div id="pf-stage" data-layout-allow-overflow><div id="pf-grid" data-layout-ignore></div><div id="pf-shot"><img id="pf-img" alt="" /></div><div id="pf-tape" data-layout-ignore></div></div></div>
         <div id="pf-title"></div>
         <svg class="pf-lines" id="pf-lines" viewBox="0 0 1080 1920"></svg>
         <div id="pf-chips"></div>
@@ -75,13 +77,17 @@
         const h = bottom - top, w = Math.round(h / ratio);
         const shot = { x: 540 - w / 2 + 540, y: top + 960, w, h };
         const shotEl = document.getElementById("pf-shot");
-        Object.assign(shotEl.style, { left: shot.x + "px", top: shot.y + "px", width: w + "px", height: h + "px" });
         HF.sticker(shotEl);
+        // 贴纸白边长在图片外面:图片区域严格是 shot(框按它算);主题是 border-box,宽高要把白边加上
+        const B = parseFloat(getComputedStyle(shotEl).borderLeftWidth) || 0;
+        const pad = getComputedStyle(shotEl).boxSizing === "border-box" ? 2 * B : 0;
+        Object.assign(shotEl.style, { left: shot.x - B + "px", top: shot.y - B + "px", width: w + pad + "px", height: h + pad + "px" });
         document.getElementById("pf-img").src = v.src;
         const tape = document.getElementById("pf-tape");
-        Object.assign(tape.style, { left: shot.x + w / 2 - 75 + "px", top: shot.y - 22 + "px" });
+        Object.assign(tape.style, { left: shot.x + w / 2 - 75 + "px", top: shot.y - B - 22 + "px" });
         const titleEl = document.getElementById("pf-title");
         if (hasTitle) titleEl.textContent = v.title; else titleEl.remove();
+        const img = { x: shot.x, y: shot.y };
         const camFor = (cx, cy, s, fx, fy) => ({ x: r2(fx + 540 - s * cx), y: r2(fy + 960 - s * cy), scale: r2(s) });
 
         // ---- 标注 ----
@@ -102,13 +108,14 @@
           const [bx, by, bw, bh] = boxes[i];
           // 框四周只多出一点(左右 0.15 个字、上下 0.25 个字):不切字,也不把相邻的字框进来
           const px = textLayout * 0.15, py = textLayout * 0.25;
-          const r = { x: shot.x + bx / 100 * w - px, y: shot.y + by / 100 * h - py, w: bw / 100 * w + 2 * px, h: bh / 100 * h + 2 * py };
+          const r = { x: img.x + bx / 100 * w - px, y: img.y + by / 100 * h - py, w: bw / 100 * w + 2 * px, h: bh / 100 * h + 2 * py };
           // 推近倍数:字在屏幕上 ≥46px、区域宽约 760px,取大;主角那处再近 1.2 倍(不超过 900px 宽);上限 5
           const base = Math.max(46 / textLayout, Math.min(760 / r.w, 4));
           const s = r2(Math.min(5, i === hero ? Math.max(base, Math.min(base * 1.2, 900 / r.w)) : base));
           const dim = document.createElement("div");
           dim.className = "pf-dim";
-          Object.assign(dim.style, { left: r.x - 4 / s + "px", top: r.y - 4 / s + "px", width: r.w + 8 / s + "px", height: r.h + 8 / s + "px" });
+          Object.assign(dim.style, { left: r.x - 2 / s + "px", top: r.y - 2 / s + "px", width: r.w + 4 / s + "px", height: r.h + 4 / s + "px", borderRadius: 10 / s + "px" });
+          dim.style.setProperty("--pf-blur", r2(18 / s) + "px");
           if (i === hero) dim.style.setProperty("--pf-dim", "80%");
           const box = document.createElement("div");
           box.className = "pf-box";
@@ -121,8 +128,8 @@
           // 标签:推近后放在框下方,左右交替;主角那处是大数字
           const sh = r.h * s, sw = r.w * s, side = i % 2 === 0 ? -1 : 1;
           const chip = document.createElement("div");
-          chip.className = "pf-chip" + (i === hero ? " hero" : "");
           const m = labels[i].match(NUM);
+          chip.className = "pf-chip" + (i === hero ? (m ? " hero" : " hero word") : "");
           if (i === hero && m) {
             for (const [cls, text] of [["pre", labels[i].slice(0, m.index).trim()], ["num", m[0]], ["post", labels[i].slice(m.index + m[0].length).trim()]]) {
               if (!text) continue;
@@ -132,10 +139,19 @@
               chip.appendChild(sp);
             }
           } else chip.textContent = labels[i];
+          // 没有数字的主角:整句做大字(4 字约 150px)
+          if (i === hero && !m) chip.style.fontSize = clamp(Math.floor(640 / [...labels[i]].length), 72, 150) + "px";
           chips.appendChild(chip);
+          // 标签在 y 760 以下,右边 160px 是按钮区:最宽 826px(x 80–906,描边和硬投影还要 14px),放不下就缩字
+          const CHIP_MAX = 826;
+          for (const el of [chip.querySelector(".num"), chip]) {
+            if (!el || chip.offsetWidth <= CHIP_MAX) continue;
+            const f = parseFloat(getComputedStyle(el).fontSize);
+            el.style.fontSize = Math.floor(f * Math.min(1, (CHIP_MAX - 80) / chip.offsetWidth)) + "px";
+          }
           const cy = FOCUS.y + sh / 2 + (i === hero ? 90 : 110);
           chip.style.top = cy + "px";
-          chip.style.left = clamp(540 + (i === hero ? 0 : side * 140) - chip.offsetWidth / 2, 80, 1000 - chip.offsetWidth) + "px";
+          chip.style.left = clamp(540 + (i === hero ? 0 : side * 140) - chip.offsetWidth / 2, 80, 906 - chip.offsetWidth) + "px";
           // 引线:从框底边(离标签最近的地方)竖直下到标签,不斜穿正文
           const chipMid = chip.offsetLeft + chip.offsetWidth / 2;
           const x1 = clamp(chipMid, 540 - sw / 2 + 24, 540 + sw / 2 - 24), y1 = FOCUS.y + sh / 2 + 4;
@@ -180,9 +196,9 @@
           const y = clamp(want, lastY + (i ? gap * 0.4 : 0), 1130 - it.offsetHeight - (n - 1 - i) * (it.offsetHeight + gap * 0.4));
           it.style.top = y + "px";
           lastY = y + it.offsetHeight;
-          const a = toScreen(x.r.x + x.r.w, x.r.y + x.r.h / 2);
-          const ax = Math.min(a.x + 6, 620), iy = y + it.offsetHeight / 2;
-          const line = svgEl("polyline", { points: `${ax},${a.y} 630,${a.y} 642,${iy}` });
+          const a = toScreen(shot.x + w + B, x.r.y + x.r.h / 2);
+          const ax = Math.min(a.x + 4, 624), iy = y + it.offsetHeight / 2;
+          const line = svgEl("polyline", { points: `${ax},${a.y} ${Math.max(ax + 8, 630)},${a.y} 642,${iy}` });
           const dot = svgEl("circle", { cx: ax, cy: a.y, r: 8 });
           links.append(line, dot);
           return { it, line, dot };
@@ -195,6 +211,7 @@
         gsap.set(notes.map((x) => x.sweep), { scaleX: 0 });
         // 开场:贴纸"拍"下来、胶带拍上;第一帧就有主体
         tl.fromTo(shotEl, { scale: 1.08, rotate: -3, transformOrigin: "50% 40%" }, { scale: 1, rotate: -1, duration: 0.35, ease: "back.out(1.6)", immediateRender: true }, 0);
+        const grid = document.getElementById("pf-grid");
         tl.fromTo(tape, { scaleX: 0, rotate: -5 }, { scaleX: 1, rotate: -5, duration: 0.2, ease: "power3.out", immediateRender: true }, 0.22);
         // 每一处的镜头:推近落在 @词 附近;两处挨得近时镜头走得快一点(0.5–0.85 秒)
         const plan = [];
@@ -234,14 +251,22 @@
             tl.to(x.sweep, { scaleX: 1, duration: 0.4, ease: "power2.out" }, land + 0.6);
             tl.to(x.dot, { attr: { r: 13 }, duration: 0.08, yoyo: true, repeat: 1, ease: "power1.inOut" }, land + 0.6);
           }
-          const hide = Math.max(leave - 0.05, land + 0.6);
-          tl.to([x.chip, x.line, x.dot, x.dim, x.box], { opacity: 0, duration: 0.2, ease: "power2.in" }, hide - 0.2);
+          const hide = Math.max(leave, land + 0.6);
+          tl.to(x.chip, { opacity: 0, scale: 0.85, y: -12, duration: 0.15, ease: "power2.in" }, hide - 0.17);
+          tl.to([x.line, x.dot], { opacity: 0, duration: 0.12, ease: "power2.in" }, hide - 0.17);
+          tl.to([x.dim, x.box], { opacity: 0, duration: 0.25, ease: "power2.inOut" }, hide - 0.05);
         });
         keys.push({ t: endAt, ...endCam, dur: 1.0 });
         if (D - endAt - 1.0 > 0.3) keys.push({ t: endAt + 1.0, ...camFor(endMid.x + 6, endMid.y, endS * 1.015, endFocus.x, endFocus.y), dur: r2(D - endAt - 1.0), ease: "sine.inOut" });
         HF.camera(tl, stage, keys);
         if (hasTitle) tl.to(titleEl, { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, Math.max(0.05, firstMove - 0.1));
-        if (n) tl.to(tape, { opacity: 0, duration: 0.2 }, firstMove);
+        if (n) {
+          tl.to(tape, { opacity: 0, duration: 0.2 }, firstMove);
+          tl.to(shotEl, { rotate: 0, duration: 0.4, ease: "power2.inOut" }, Math.max(0.36, firstMove - 0.3));
+          // 推近以后点阵会放大成一块块的,淡掉;拉回时再出来
+          tl.to(grid, { opacity: 0, duration: 0.4, ease: "power1.out" }, firstMove);
+          tl.to(grid, { opacity: 1, duration: 0.5, ease: "power1.in" }, endAt + 0.4);
+        }
         tl.to(tape, { opacity: 1, duration: 0.3 }, endAt + 0.7);
         // 收尾:各处的框重新亮起,引线一条条连到列表
         ends.forEach((e, i) => {
