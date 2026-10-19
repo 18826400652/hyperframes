@@ -1631,27 +1631,40 @@
         {
           "id": "title",
           "type": "string",
-          "label": "上方标题(可选)",
+          "label": "上方标题(可选,只在开头出现)",
           "default": "",
           "maxChars": 12
         },
         {
           "id": "labels",
           "type": "string",
-          "label": "标注文字,| 分隔,最多 4 条,和 boxes 一一对应",
+          "label": "推近时的标签,| 分隔,最多 4 条,和 boxes 一一对应",
           "default": "这里",
           "maxChars": 10
         },
         {
+          "id": "listLabels",
+          "type": "string",
+          "label": "结尾列表的短标签,| 分隔,每条 ≤5 字(留空用 labels)",
+          "default": "",
+          "maxChars": 5
+        },
+        {
           "id": "boxes",
           "type": "string",
-          "label": "标注区域,| 分隔,每条 x,y,w,h(截图的百分比)",
+          "label": "标注区域,| 分隔,每条 x,y,w,h(截图的百分比;贴着一行字框关键词,不跨行)",
           "default": "10,10,60,4"
+        },
+        {
+          "id": "hero",
+          "type": "number",
+          "label": "主角是第几处(1 起;0 = 自动:带数字的那处,没有就最后一处)",
+          "default": 0
         },
         {
           "id": "textPx",
           "type": "number",
-          "label": "截图里正文字的像素高(按截图原尺寸,手机截图约 40)",
+          "label": "截图里正文字的像素高(按截图原尺寸,手机截图约 36–42)",
           "default": 40
         },
         {

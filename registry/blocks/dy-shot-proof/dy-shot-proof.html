@@ -3,10 +3,11 @@
   {"id": "src", "type": "string", "label": "截图路径(相对项目根目录;真实实测截图)", "default": "tests/media/sample-shot.png"},
   {"id": "ratio", "type": "number", "label": "截图高/宽(1080×1920 填 1.778,1080×2400 填 2.222)", "default": 1.778},
   {"id": "title", "type": "string", "label": "上方标题(可选,只在开头出现)", "default": "", "maxChars": 12},
-  {"id": "labels", "type": "string", "label": "标注文字,| 分隔,最多 4 条,和 boxes 一一对应", "default": "这里", "maxChars": 10},
-  {"id": "boxes", "type": "string", "label": "标注区域,| 分隔,每条 x,y,w,h(截图的百分比;框关键词,不框整行)", "default": "10,10,60,4"},
+  {"id": "labels", "type": "string", "label": "推近时的标签,| 分隔,最多 4 条,和 boxes 一一对应", "default": "这里", "maxChars": 10},
+  {"id": "listLabels", "type": "string", "label": "结尾列表的短标签,| 分隔,每条 ≤5 字(留空用 labels)", "default": "", "maxChars": 5},
+  {"id": "boxes", "type": "string", "label": "标注区域,| 分隔,每条 x,y,w,h(截图的百分比;贴着一行字框关键词,不跨行)", "default": "10,10,60,4"},
   {"id": "hero", "type": "number", "label": "主角是第几处(1 起;0 = 自动:带数字的那处,没有就最后一处)", "default": 0},
-  {"id": "textPx", "type": "number", "label": "截图里正文字的像素高(按截图原尺寸,手机截图约 40)", "default": 40},
+  {"id": "textPx", "type": "number", "label": "截图里正文字的像素高(按截图原尺寸,手机截图约 36–42)", "default": 40},
   {"id": "cues", "type": "string", "label": "节拍(秒,| 分隔:每条标注一拍)", "default": ""},
   {"id": "cueNames", "type": "string", "label": "节拍对应的 @词(vd 自动填,标推近点用)", "default": ""},
   {"id": "enter", "type": "string", "label": "入场转场(vd 自动填,如 pan-left:0.6)", "default": ""},
@@ -19,34 +20,37 @@
     <template>
       <style>
         #root { position: absolute; inset: 0; overflow: hidden; font-family: var(--hf-font-body); color: var(--hf-text); }
-        /* 取景:画布在 y 290–1160 之间显示(上面是栏目标签,下面是字幕带),上下边缘羽化,不是刀切的窗 */
+        /* 取景:画布只在 y 300–1170 之间显示(上面是栏目标签,下面是字幕带),边缘羽化;y 300 以上完全看不见 */
         #pf-view { position: absolute; inset: 0;
-          -webkit-mask-image: linear-gradient(to bottom, transparent 250px, #000 330px, #000 1100px, transparent 1175px);
-          mask-image: linear-gradient(to bottom, transparent 250px, #000 330px, #000 1100px, transparent 1175px); }
+          -webkit-mask-image: linear-gradient(to bottom, transparent 300px, black 360px, black 1100px, transparent 1170px);
+          mask-image: linear-gradient(to bottom, transparent 300px, black 360px, black 1100px, transparent 1170px); }
         /* 画布层:比画面大,镜头在上面推拉平移;点阵底让镜头运动看得出来 */
         #pf-stage { position: absolute; left: -540px; top: -960px; width: 2160px; height: 3840px; transform-origin: 0 0;
           background-image: radial-gradient(color-mix(in srgb, var(--hf-muted) 26%, transparent) 2px, transparent 2.6px); background-size: 36px 36px; }
         #pf-shot { position: absolute; overflow: hidden; }
         #pf-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
-        #pf-tape { position: absolute; width: 150px; height: 40px; transform: rotate(-5deg); background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 70%, transparent); }
-        /* 聚光:推近时这一处以外的截图压暗,标签压到的字只是暗下去,证据本身最亮 */
-        .pf-dim { position: absolute; box-shadow: 0 0 0 4000px color-mix(in srgb, var(--hf-bg) 62%, transparent); border-radius: 6px; }
-        .pf-box { position: absolute; border-style: solid; border-color: var(--hf-custom-highlight, var(--hf-accent)); background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 22%, transparent); transform-origin: 0 50%; }
+        #pf-tape { position: absolute; width: 150px; height: 40px; transform-origin: 0 50%; background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 70%, transparent); }
+        /* 聚光:推近时这一处以外压暗(软边),标签压到的字只是暗下去,证据本身最亮 */
+        .pf-dim { position: absolute; border-radius: 10px; box-shadow: 0 0 18px 4000px color-mix(in srgb, var(--hf-bg) var(--pf-dim, 70%), transparent); }
+        .pf-box { position: absolute; border-style: solid; border-color: var(--hf-custom-highlight, var(--hf-accent)); background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 22%, transparent); transform-origin: 0 50%; overflow: hidden; }
+        .pf-sweep { position: absolute; inset: 0; background: color-mix(in srgb, var(--hf-custom-highlight, var(--hf-accent)) 35%, transparent); transform-origin: 0 50%; }
         #pf-title { position: absolute; left: 90px; right: 90px; top: 300px; font-family: var(--hf-font-title); font-size: 72px; font-weight: 900; line-height: 1.1; white-space: nowrap; }
         .pf-lines { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; overflow: visible; }
-        .pf-lines line { stroke: var(--hf-text); stroke-width: 4; }
+        .pf-lines line, .pf-lines polyline { stroke: var(--hf-text); stroke-width: 4; fill: none; stroke-linejoin: round; }
         .pf-lines circle { fill: var(--hf-text); }
         .pf-chip { position: absolute; padding: 14px 30px; border-radius: 14px; background: var(--hf-custom-highlight, var(--hf-accent)); color: var(--hf-custom-on-highlight, var(--hf-on-accent));
           font-size: 54px; font-weight: 900; line-height: 1.15; white-space: nowrap; box-shadow: 0 0 0 4px var(--hf-text), 10px 12px 0 var(--hf-text); }
-        .pf-chip.hero { font-size: 76px; padding: 18px 38px; }
-        /* 列表在 x 650–920:y 760 以下右边 160px 是点赞评论那一列,长标签折两行 */
-        .pf-item { position: absolute; left: 650px; width: 270px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 900; line-height: 1.25; }
+        /* 主角:数字抽出来做成 ≥200px 的大数字,前后的字小一号 */
+        .pf-chip.hero { display: flex; align-items: baseline; gap: 10px; padding: 6px 36px 14px; }
+        .pf-chip.hero .num { font-size: 200px; line-height: 1; letter-spacing: -0.02em; }
+        .pf-chip.hero .pre, .pf-chip.hero .post { font-size: 64px; }
+        .pf-item { position: absolute; left: 650px; width: 270px; display: flex; align-items: center; gap: 14px; font-weight: 900; line-height: 1.25; }
         .pf-item b { flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--hf-text); color: var(--hf-bg); font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 3px var(--hf-bg); }
-        .pf-item div { flex: 1; }
+        .pf-item div { flex: 1; word-break: keep-all; }
         .pf-item span { padding: 2px 8px; background: linear-gradient(transparent 55%, var(--hf-custom-highlight, var(--hf-accent)) 55%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
       </style>
       <div id="root" data-composition-id="dy-shot-proof" data-width="1080" data-height="1920">
-        <div id="pf-view"><div id="pf-stage"><div id="pf-shot"><img id="pf-img" alt="" /></div><div id="pf-tape" data-layout-ignore></div></div></div>
+        <div id="pf-view"><div id="pf-stage" data-layout-allow-overflow><div id="pf-shot"><img id="pf-img" alt="" /></div><div id="pf-tape" data-layout-ignore></div></div></div>
         <div id="pf-title"></div>
         <svg class="pf-lines" id="pf-lines" viewBox="0 0 1080 1920"></svg>
         <div id="pf-chips"></div>
@@ -54,19 +58,20 @@
         <div id="pf-list"></div>
       </div>
       <script>
-        const v = Object.assign({ src: "tests/media/sample-shot.png", ratio: 1.778, title: "", labels: "这里", boxes: "10,10,60,4", hero: 0, textPx: 40, cues: "", cueNames: "", enter: "", exit: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
+        const v = Object.assign({ src: "tests/media/sample-shot.png", ratio: 1.778, title: "", labels: "这里", listLabels: "", boxes: "10,10,60,4", hero: 0, textPx: 40, cues: "", cueNames: "", enter: "", exit: "", theme: "", accent: "" }, window.__hyperframes.getVariables());
         const root = document.getElementById("root");
         HF.applyTheme(root, v);
         const D = HF.duration(root, 8);
         const SVG = "http://www.w3.org/2000/svg";
         const r2 = (x) => Math.round(x * 100) / 100;
         const svgEl = (tag, attrs) => { const e = document.createElementNS(SVG, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+        const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
-        // ---- 版面:标题在上(避开栏目标签),截图贴纸居中,一屏能看全 ----
+        // ---- 版面:标题在上(避开栏目标签),截图贴纸居中 ----
         // 画布层在画面 (-540,-960)、原点 0 0:画面 x = -540 + camX + s·画布x
         const ratio = Number(v.ratio) > 0 ? Number(v.ratio) : 1.778;
         const hasTitle = !!String(v.title).trim();
-        const top = hasTitle ? 420 : 330, bottom = 1130;
+        const top = hasTitle ? 420 : 360, bottom = 1130;
         const h = bottom - top, w = Math.round(h / ratio);
         const shot = { x: 540 - w / 2 + 540, y: top + 960, w, h };
         const shotEl = document.getElementById("pf-shot");
@@ -74,123 +79,174 @@
         HF.sticker(shotEl);
         document.getElementById("pf-img").src = v.src;
         const tape = document.getElementById("pf-tape");
-        Object.assign(tape.style, { left: shot.x + w / 2 - 75 + "px", top: shot.y - 26 + "px" });
+        Object.assign(tape.style, { left: shot.x + w / 2 - 75 + "px", top: shot.y - 22 + "px" });
         const titleEl = document.getElementById("pf-title");
         if (hasTitle) titleEl.textContent = v.title; else titleEl.remove();
         const camFor = (cx, cy, s, fx, fy) => ({ x: r2(fx + 540 - s * cx), y: r2(fy + 960 - s * cy), scale: r2(s) });
 
         // ---- 标注 ----
         const labels = HF.split(v.labels).slice(0, 4);
+        const listLabels = HF.split(v.listLabels);
         const boxes = String(v.boxes).split("|").map((b) => b.split(",").map(Number)).slice(0, labels.length);
         const n = Math.min(labels.length, boxes.length);
         const names = String(v.cueNames || "").split("|");
         const textLayout = Number(v.textPx || 40) * w / 1080;            // 截图里一行字在布局里的高度
-        const autoHero = labels.slice(0, n).findIndex((l) => /\d/.test(l));
+        const NUM = /\d+(?:[.,]\d+)?/;
+        const autoHero = labels.slice(0, n).findIndex((l) => NUM.test(l));
         const hero = Number(v.hero) >= 1 && Number(v.hero) <= n ? Number(v.hero) - 1 : (autoHero >= 0 ? autoHero : n - 1);
-        const FOCUS = { x: 540, y: 600 };
+        const FOCUS = { x: 540, y: 620 };
         const stage = document.getElementById("pf-stage");
         const lines = document.getElementById("pf-lines"), chips = document.getElementById("pf-chips");
         const notes = [];
         for (let i = 0; i < n; i++) {
           const [bx, by, bw, bh] = boxes[i];
-          // 框左右各多出半个字、上下多出四分之一个字,不切字
-          const px = textLayout * 0.5, py = textLayout * 0.25;
+          // 框四周只多出一点(左右 0.15 个字、上下 0.25 个字):不切字,也不把相邻的字框进来
+          const px = textLayout * 0.15, py = textLayout * 0.25;
           const r = { x: shot.x + bx / 100 * w - px, y: shot.y + by / 100 * h - py, w: bw / 100 * w + 2 * px, h: bh / 100 * h + 2 * py };
           // 推近倍数:字在屏幕上 ≥46px、区域宽约 760px,取大;主角那处再近 1.2 倍(不超过 900px 宽);上限 5
           const base = Math.max(46 / textLayout, Math.min(760 / r.w, 4));
           const s = r2(Math.min(5, i === hero ? Math.max(base, Math.min(base * 1.2, 900 / r.w)) : base));
           const dim = document.createElement("div");
           dim.className = "pf-dim";
-          Object.assign(dim.style, { left: r.x + "px", top: r.y + "px", width: r.w + "px", height: r.h + "px" });
+          Object.assign(dim.style, { left: r.x - 4 / s + "px", top: r.y - 4 / s + "px", width: r.w + 8 / s + "px", height: r.h + 8 / s + "px" });
+          if (i === hero) dim.style.setProperty("--pf-dim", "80%");
           const box = document.createElement("div");
           box.className = "pf-box";
           Object.assign(box.style, { left: r.x + "px", top: r.y + "px", width: r.w + "px", height: r.h + "px", borderWidth: 5 / s + "px", borderRadius: 8 / s + "px" });
+          const sweep = document.createElement("div");
+          sweep.className = "pf-sweep";
+          box.appendChild(sweep);
           if (names[i]) { box.setAttribute("data-vd-zoom", "@" + names[i]); box.setAttribute("data-vd-zoom-text", String(r2(textLayout))); }
           stage.append(dim, box);
-          // 标签:推近后放在框下方,左右交替;压到的原文已经被聚光压暗
+          // 标签:推近后放在框下方,左右交替;主角那处是大数字
           const sh = r.h * s, sw = r.w * s, side = i % 2 === 0 ? -1 : 1;
           const chip = document.createElement("div");
           chip.className = "pf-chip" + (i === hero ? " hero" : "");
-          chip.textContent = labels[i];
+          const m = labels[i].match(NUM);
+          if (i === hero && m) {
+            for (const [cls, text] of [["pre", labels[i].slice(0, m.index).trim()], ["num", m[0]], ["post", labels[i].slice(m.index + m[0].length).trim()]]) {
+              if (!text) continue;
+              const sp = document.createElement("span");
+              sp.className = cls;
+              sp.textContent = text;
+              chip.appendChild(sp);
+            }
+          } else chip.textContent = labels[i];
           chips.appendChild(chip);
-          const cy = FOCUS.y + sh / 2 + 110;
+          const cy = FOCUS.y + sh / 2 + (i === hero ? 90 : 110);
           chip.style.top = cy + "px";
-          chip.style.left = Math.max(80, Math.min(1000 - chip.offsetWidth, 540 + side * 140 - chip.offsetWidth / 2)) + "px";
-          const x1 = 540 + side * Math.min(sw / 2 - 30, 220), y1 = FOCUS.y + sh / 2 + 6;
-          const line = svgEl("line", { x1, y1, x2: chip.offsetLeft + chip.offsetWidth / 2, y2: cy });
+          chip.style.left = clamp(540 + (i === hero ? 0 : side * 140) - chip.offsetWidth / 2, 80, 1000 - chip.offsetWidth) + "px";
+          // 引线:从框底边(离标签最近的地方)竖直下到标签,不斜穿正文
+          const chipMid = chip.offsetLeft + chip.offsetWidth / 2;
+          const x1 = clamp(chipMid, 540 - sw / 2 + 24, 540 + sw / 2 - 24), y1 = FOCUS.y + sh / 2 + 4;
+          const line = svgEl("line", { x1, y1, x2: x1, y2: cy });
           const dot = svgEl("circle", { cx: x1, cy: y1, r: 9 });
           lines.append(line, dot);
           const cx = r.x + r.w / 2, cyS = r.y + r.h / 2;
-          notes.push({ r, s, dim, box, chip, line, dot, cam: camFor(cx, cyS, s, FOCUS.x, FOCUS.y), drift: camFor(cx, cyS, s * 1.015, FOCUS.x, FOCUS.y) });
+          notes.push({ r, s, dim, box, sweep, chip, line, dot,
+            cam: camFor(cx, cyS, s, FOCUS.x, FOCUS.y),
+            pre: camFor(cx, cyS, s * 0.97, FOCUS.x, FOCUS.y),
+            drift: camFor(cx + 10 / s, cyS, s * 1.03, FOCUS.x, FOCUS.y) });
         }
 
-        // ---- 收尾:拉回到能看全部标注的程度,截图在左(≥520px 宽),右边列表,每处一条引线连过去 ----
-        const LEFT = { x0: 60, x1: 620, y0: 300, y1: 1150 };
-        const bb = notes.reduce((a, x) => ({ y0: Math.min(a.y0, x.r.y), y1: Math.max(a.y1, x.r.y + x.r.h) }), { y0: Infinity, y1: -Infinity });
-        const endS = r2(Math.min((LEFT.x1 - LEFT.x0) / w, (LEFT.y1 - LEFT.y0) / Math.max(bb.y1 - bb.y0, 200)));
-        const endMid = { x: shot.x + w / 2, y: n ? (bb.y0 + bb.y1) / 2 : shot.y + h / 2 };
-        const endCam = camFor(endMid.x, endMid.y, endS, (LEFT.x0 + LEFT.x1) / 2, (LEFT.y0 + LEFT.y1) / 2);
+        // ---- 收尾:截图完整可见在左,右边短标签列表,每处一条 L 形引线连过去 ----
+        const LEFT = { x0: 60, x1: 620, y0: 330, y1: 1140 };
+        const endS = r2(Math.min((LEFT.x1 - LEFT.x0) / w, (LEFT.y1 - LEFT.y0 - 40) / h));
+        const endMid = { x: shot.x + w / 2, y: shot.y + h / 2 };
+        const endFocus = { x: (LEFT.x0 + LEFT.x1) / 2, y: (LEFT.y0 + LEFT.y1) / 2 };
+        const endCam = camFor(endMid.x, endMid.y, endS, endFocus.x, endFocus.y);
         const toScreen = (px, py) => ({ x: -540 + endCam.x + endS * px, y: -960 + endCam.y + endS * py });
         const links = document.getElementById("pf-links"), list = document.getElementById("pf-list");
-        let lastY = 280;
-        const ends = notes.map((x, i) => {
+        const texts = notes.map((_, i) => listLabels[i] || labels[i]);
+        const longest = Math.max(1, ...texts.map((t) => [...t].length));
+        // 一行放得下:列表宽 270 − 序号 66 − 底色内边距 16 = 188px;最多 5 个字(listLabels 上限)
+        const listFont = clamp(Math.floor(188 / Math.min(longest, 5)), 36, 48);
+        const items = notes.map((x, i) => {
           const it = document.createElement("div");
           it.className = "pf-item";
+          it.style.fontSize = listFont + "px";
           it.innerHTML = "<b></b><div><span></span></div>";
           it.querySelector("b").textContent = String(i + 1);
-          it.querySelector("span").textContent = labels[i];
+          it.querySelector("span").textContent = texts[i];
           list.appendChild(it);
-          const a = toScreen(x.r.x + x.r.w, x.r.y + x.r.h / 2);
-          const y = Math.max(lastY + 20, Math.min(1120 - it.offsetHeight, a.y - it.offsetHeight / 2));
+          return it;
+        });
+        const anchorsY = notes.map((x) => toScreen(x.r.x, x.r.y + x.r.h / 2).y);
+        const gap = listFont * 1.4;
+        let lastY = 320;
+        const ends = notes.map((x, i) => {
+          const it = items[i];
+          const want = n === 1 ? anchorsY[0] - it.offsetHeight / 2 : anchorsY[i] - it.offsetHeight / 2;
+          const y = clamp(want, lastY + (i ? gap * 0.4 : 0), 1130 - it.offsetHeight - (n - 1 - i) * (it.offsetHeight + gap * 0.4));
           it.style.top = y + "px";
           lastY = y + it.offsetHeight;
-          const ax = Math.min(a.x + 6, 630);
-          const line = svgEl("line", { x1: ax, y1: a.y, x2: 650, y2: y + it.offsetHeight / 2 });
+          const a = toScreen(x.r.x + x.r.w, x.r.y + x.r.h / 2);
+          const ax = Math.min(a.x + 6, 620), iy = y + it.offsetHeight / 2;
+          const line = svgEl("polyline", { points: `${ax},${a.y} 630,${a.y} 642,${iy}` });
           const dot = svgEl("circle", { cx: ax, cy: a.y, r: 8 });
           links.append(line, dot);
           return { it, line, dot };
         });
 
         // ---- 时间线 ----
-        const beats = HF.cues(v.cues, n, HF.spread(n, 0.8, Math.max(n * 1.6, D - 2.4), 1.4));
+        const beats = HF.cues(v.cues, n, HF.spread(n, 0.9, Math.max(n * 1.6, D - 2.4), 1.4));
         const tl = gsap.timeline({ paused: true });
         gsap.set([...notes.flatMap((x) => [x.box, x.dim, x.chip, x.line, x.dot]), ...ends.flatMap((e) => [e.it, e.line, e.dot])], { opacity: 0 });
-        // 先排好每一处的镜头:推近落在 @词 附近;两处挨得近时镜头走得快一点(0.5–0.85 秒),不让镜头落后于口播
+        gsap.set(notes.map((x) => x.sweep), { scaleX: 0 });
+        // 开场:贴纸"拍"下来、胶带拍上;第一帧就有主体
+        tl.fromTo(shotEl, { scale: 1.08, rotate: -3, transformOrigin: "50% 40%" }, { scale: 1, rotate: -1, duration: 0.35, ease: "back.out(1.6)", immediateRender: true }, 0);
+        tl.fromTo(tape, { scaleX: 0, rotate: -5 }, { scaleX: 1, rotate: -5, duration: 0.2, ease: "power3.out", immediateRender: true }, 0.22);
+        // 每一处的镜头:推近落在 @词 附近;两处挨得近时镜头走得快一点(0.5–0.85 秒)
         const plan = [];
         notes.forEach((x, i) => {
-          const gap = i ? beats[i] - beats[i - 1] : Infinity;
-          const dur = i ? Math.min(0.85, Math.max(0.5, gap * 0.55)) : 0.85;
-          const start = Math.max(0.1, beats[i] - dur * 0.5, i ? plan[i - 1].land + 0.15 : 0);
+          const gapT = i ? beats[i] - beats[i - 1] : Infinity;
+          const dur = i ? Math.min(0.85, Math.max(0.5, gapT * 0.55)) : 0.8;
+          const start = Math.max(0.45, beats[i] - dur * 0.5, i ? plan[i - 1].land + 0.15 : 0);
           plan.push({ start, dur, land: start + dur });
         });
         const END_MIN = 1.6; // 收尾至少留这么久(1 秒拉回 + 引线连过去)
         const lastLand = n ? plan[n - 1].land : 0.5;
-        const endAt = r2(Math.max(0.5, Math.min(Math.max(lastLand + 0.9, D - 2.4), D - END_MIN)));
+        const endAt = r2(Math.max(0.6, Math.min(Math.max(lastLand + 0.9, D - 2.4), D - END_MIN)));
+        // 开场到第一次推近之间也在慢推
         const keys = [{ t: 0, x: 0, y: 0, scale: 1 }];
+        const firstMove = n ? plan[0].start : endAt;
+        keys.push({ t: 0, ...camFor(endMid.x, endMid.y, 1.02, 540, 960 + (top + h / 2 - 960)), dur: r2(firstMove), ease: "none" });
         notes.forEach((x, i) => {
           const { start, dur, land } = plan[i];
           const leave = i + 1 < n ? plan[i + 1].start : endAt;
-          keys.push({ t: start, ...x.cam, dur });
-          // 停住的时候也在动:匀速慢推 1.5%
-          if (leave - land > 0.3) keys.push({ t: land, ...x.drift, dur: r2(leave - land), ease: "none" });
-          tl.to(x.dim, { opacity: 1, duration: 0.3, ease: "power2.out" }, land - 0.25);
+          if (i === hero) {
+            // 主角:先往回收一点(预备),再快推到位;落地画面轻震
+            keys.push({ t: start, ...x.pre, dur: 0.15, ease: "power1.in" });
+            keys.push({ t: start + 0.15, ...x.cam, dur: r2(Math.max(0.35, dur - 0.15)), ease: "expo.out" });
+            tl.to(root, { x: 2, duration: 0.033, yoyo: true, repeat: 3, ease: "none" }, land);
+            tl.set(root, { x: 0 }, land + 0.14);
+          } else keys.push({ t: start, ...x.cam, dur });
+          // 停住的时候也在动:慢推 3% + 一点横移
+          if (leave - land > 0.3) keys.push({ t: land, ...x.drift, dur: r2(leave - land), ease: "sine.inOut" });
+          tl.to(x.dim, { opacity: 1, duration: 0.35, ease: "power2.out" }, land - 0.3);
           tl.fromTo(x.box, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, land - 0.2);
           tl.to([x.line, x.dot], { opacity: 1, duration: 0.01 }, land - 0.05);
-          HF.leader(tl, x.line, land - 0.05, 0.3);
-          if (i === hero) tl.fromTo(x.chip, { opacity: 0, scale: 0.3, rotate: -6 }, { opacity: 1, scale: 1, rotate: -2, duration: 0.5, ease: "back.out(2.2)", immediateRender: false }, land);
+          HF.leader(tl, x.line, land - 0.05, 0.25);
+          if (i === hero) tl.fromTo(x.chip, { opacity: 0, scale: 0.3, rotate: -6, y: 30 }, { opacity: 1, scale: 1, rotate: -2, y: 0, duration: 0.5, ease: "back.out(1.8)", immediateRender: false }, land);
           else tl.fromTo(x.chip, { opacity: 0, scale: 0.6, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.4)", immediateRender: false }, land);
-          const hide = Math.max(leave - 0.1, land + 0.6);
-          tl.to([x.chip, x.line, x.dot, x.dim], { opacity: 0, duration: 0.2, ease: "power2.in" }, hide - 0.2);
+          // 停得久时再给一次信息变化:荧光笔在框里再扫一遍、圆点跳一下
+          if (leave - land > 1.4) {
+            tl.to(x.sweep, { scaleX: 1, duration: 0.4, ease: "power2.out" }, land + 0.6);
+            tl.to(x.dot, { attr: { r: 13 }, duration: 0.08, yoyo: true, repeat: 1, ease: "power1.inOut" }, land + 0.6);
+          }
+          const hide = Math.max(leave - 0.05, land + 0.6);
+          tl.to([x.chip, x.line, x.dot, x.dim, x.box], { opacity: 0, duration: 0.2, ease: "power2.in" }, hide - 0.2);
         });
         keys.push({ t: endAt, ...endCam, dur: 1.0 });
-        // 收尾停住时也慢推一点
-        if (D - endAt - 1.0 > 0.3) keys.push({ t: endAt + 1.0, ...camFor(endMid.x, endMid.y, endS * 1.012, (LEFT.x0 + LEFT.x1) / 2, (LEFT.y0 + LEFT.y1) / 2), dur: r2(D - endAt - 1.0), ease: "none" });
+        if (D - endAt - 1.0 > 0.3) keys.push({ t: endAt + 1.0, ...camFor(endMid.x + 6, endMid.y, endS * 1.015, endFocus.x, endFocus.y), dur: r2(D - endAt - 1.0), ease: "sine.inOut" });
         HF.camera(tl, stage, keys);
-        if (hasTitle) tl.to(titleEl, { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, Math.max(0.05, (n ? plan[0].start : endAt) - 0.1));
-        if (n) tl.to(tape, { opacity: 0, duration: 0.2 }, plan[0].start);
+        if (hasTitle) tl.to(titleEl, { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, Math.max(0.05, firstMove - 0.1));
+        if (n) tl.to(tape, { opacity: 0, duration: 0.2 }, firstMove);
         tl.to(tape, { opacity: 1, duration: 0.3 }, endAt + 0.7);
+        // 收尾:各处的框重新亮起,引线一条条连到列表
         ends.forEach((e, i) => {
           const t = endAt + 0.85 + i * 0.15;
+          tl.to(notes[i].box, { opacity: 1, duration: 0.25 }, t - 0.1);
           tl.to([e.line, e.dot], { opacity: 1, duration: 0.01 }, t);
           HF.leader(tl, e.line, t, 0.3);
           tl.fromTo(e.it, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out", immediateRender: false }, t + 0.15);
