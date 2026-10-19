@@ -1,0 +1,43 @@
+{
+  "component": "dy-shot-proof",
+  "duration": 9,
+  "peak": 3,
+  "kicker": "— AI 替我干活 · 第 1 期",
+  "cues": {
+    "vars": "2|4.5|7",
+    "before": 1,
+    "after": 8
+  },
+  "variants": {
+    "typical": {
+      "src": "tests/media/shots-local/ep1-answer.png",
+      "ratio": 1.778,
+      "title": "DeepSeek 的回答",
+      "labels": "本周重点|首日 1800 元|问题要协调",
+      "boxes": "12.5,7.4,70,3|31,60,40,3.4|12.5,74.5,60,8.4",
+      "textPx": 40,
+      "cues": "1.0|3.0|5.0",
+      "cueNames": "本周重点|一千八|协调"
+    },
+    "short": {
+      "src": "tests/media/shots-local/ep2-quota.png",
+      "ratio": 2.222,
+      "title": "",
+      "labels": "额度用尽",
+      "boxes": "19,9,28,2.8",
+      "textPx": 40,
+      "cues": "1",
+      "cueNames": "额度"
+    },
+    "long": {
+      "src": "tests/media/shots-local/ep2-minutes.png",
+      "ratio": 2.222,
+      "title": "飞书妙记的会议纪要全文",
+      "labels": "总结写在最前|投放筹备一项项列|单日 1800 元|下一步 3000 元",
+      "boxes": "2,10.5,18,3.5|6,56.5,45,3|66,65.5,27,3|12,83.5,39,3",
+      "textPx": 40,
+      "cues": "1.5|4.5|7.5|10.5",
+      "cueNames": "总结|筹备|负责人|截止"
+    }
+  }
+}

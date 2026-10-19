@@ -144,6 +144,10 @@
       "type": "hyperframes:block"
     },
     {
+      "name": "dy-shot-proof",
+      "type": "hyperframes:block"
+    },
+    {
       "name": "dy-stamp",
       "type": "hyperframes:block"
     },
