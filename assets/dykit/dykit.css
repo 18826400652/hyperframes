@@ -1,3 +1,14 @@
 /* dykit 入口:字体 + 主题。消费项目在 <head> 引入本文件与 hf-kit.js */
 @import url("fonts/fonts.css");
 @import url("theme.css");
+
+/* 镜头(dy-shot-*)的贴纸:真实素材抠成贴纸,白描边 + 三层投影(STYLE.md「贴纸」) */
+.hf-sticker {
+  border: 10px solid #fff;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 2px rgba(25, 22, 18, .9),
+    26px 44px 60px rgba(40, 28, 14, .22),
+    8px 14px 22px rgba(40, 28, 14, .16);
+  background: #fff;
+}

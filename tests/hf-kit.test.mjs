@@ -27,5 +27,48 @@ eq(HF.spread(1, 0.5, 10, 1), [0.5], "只有一拍");
 ok(Math.abs(HF.exitAt(12, 0.4) - 11.6) < 1e-9, "退场在段尾前 0.4 秒开始");
 ok(HF.exitAt(1, 0.4, 2) === 2, "段比演完还短时,退场不早于 notBefore");
 
+// 镜头用的 helper:平移进出、镜头推拉、贴纸、引线(只往传入的时间线上加 tween,seek 安全)
+const calls = [];
+const fakeGsap = { set: (el, v) => calls.push(["set", el.id, v]) };
+const tl = { to: (el, v, at) => calls.push(["to", el.id, v, at]) };
+const w2 = {};
+vm.runInNewContext(fs.readFileSync(path.join(ROOT, "assets/dykit/hf-kit.js"), "utf8"), { window: w2, gsap: fakeGsap, getComputedStyle: () => ({ getPropertyValue: () => "" }) });
+const K = w2.HF;
+const plain = (x) => JSON.parse(JSON.stringify(x));
+
+calls.length = 0;
+K.panInOut(tl, { id: "root" }, { enter: "pan-left:0.6", exit: "pan-up:0.6", duration: 5.6 });
+eq(plain(calls), [
+  ["set", "root", { x: 1080, y: 0, filter: "blur(12px)" }],
+  ["to", "root", { x: 0, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power2.inOut" }, 0],
+  ["to", "root", { x: 0, y: -1920, filter: "blur(12px)", duration: 0.6, ease: "power2.inOut" }, 5],
+], "panInOut:pan-left 从右进;pan-up 在段尾前 0.6 秒往上出");
+calls.length = 0;
+K.panInOut(tl, { id: "root" }, { duration: 4 });
+eq(calls, [], "没有 enter / exit 不动");
+calls.length = 0;
+K.panInOut(tl, { id: "root" }, { enter: "fade:1", duration: 4 });
+eq(calls, [], "不认识的方向不动");
+
+calls.length = 0;
+K.camera(tl, { id: "stage" }, [{ t: 0, x: 0, y: 0, scale: 1 }, { t: 2, x: -300, y: -120, scale: 1.8 }, { t: 5, x: 0, y: 0, scale: 1, dur: 0.8 }]);
+eq(plain(calls), [
+  ["set", "stage", { x: 0, y: 0, scale: 1, transformOrigin: "0 0" }],
+  ["to", "stage", { x: -300, y: -120, scale: 1.8, duration: 1, ease: "power2.inOut" }, 2],
+  ["to", "stage", { x: 0, y: 0, scale: 1, duration: 0.8, ease: "power2.inOut" }, 5],
+], "camera:第一个关键帧是初态,其余按 t 推拉平移,缺省 1 秒");
+
+const added = [];
+K.sticker({ classList: { add: (c) => added.push(c) } });
+eq(added, ["hf-sticker"], "sticker 加贴纸样式类");
+
+calls.length = 0;
+const line = { id: "lead", style: {}, getTotalLength: () => 120 };
+K.leader(tl, line, 1.5);
+eq(plain(calls), [
+  ["set", "lead", { strokeDasharray: 120, strokeDashoffset: 120 }],
+  ["to", "lead", { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 1.5],
+], "leader:引线从起点画到终点");
+
 if (fails.length) { console.error("FAIL hf-kit.test\n  " + fails.join("\n  ")); process.exit(1); }
 console.log("PASS hf-kit.test");

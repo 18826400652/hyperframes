@@ -4,12 +4,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const KINDS = ["scene", "overlay", "transition", "ui", "global", "subtitle", "tool"];
+const KINDS = ["scene", "overlay", "transition", "ui", "global", "subtitle", "tool", "shot"];
 
 export function readVariables(html) {
   const m = html.match(/data-composition-variables='([\s\S]*?)'/);
   if (!m) return [];
-  return JSON.parse(m[1]).map(v => ({ id: v.id, type: v.type, label: v.label || "", default: v.default ?? "" }));
+  return JSON.parse(m[1]).map(v => ({ id: v.id, type: v.type, label: v.label || "", default: v.default ?? "", ...(v.maxChars > 0 ? { maxChars: v.maxChars } : {}) }));
 }
 
 export function buildCatalog(root) {
@@ -29,7 +29,13 @@ export function buildCatalog(root) {
     const hasCues = variables.some(v => v.id === "cues");
     if (hasCues && !(Array.isArray(n.beats) && n.beats.length)) errors.push(`missing beats: ${id}`);
     if (!hasCues && n.beats !== undefined) errors.push(`beats without cues variable: ${id}`);
-    components.push({ id, kind: n.kind, purpose: n.purpose, suitableFor: n.suitableFor, minDuration: n.minDuration, ...(hasCues ? { beats: n.beats } : {}), variables });
+    // 音效拍点(镜头用):beat 是 beats 的第几拍(1 起),或 at 秒数(相对开头);项目混音时换成全片时间
+    for (const x of n.sfx || []) {
+      if (!x || !String(x.name || "").trim()) errors.push(`bad sfx: ${id} needs name`);
+      else if (x.beat !== undefined && !(Number.isInteger(x.beat) && x.beat >= 1 && x.beat <= (n.beats || []).length)) errors.push(`bad sfx: ${id} beat ${x.beat} out of 1..${(n.beats || []).length}`);
+      else if (x.beat === undefined && !(x.at >= 0)) errors.push(`bad sfx: ${id} ${x.name} needs beat or at`);
+    }
+    components.push({ id, kind: n.kind, purpose: n.purpose, suitableFor: n.suitableFor, minDuration: n.minDuration, ...(hasCues ? { beats: n.beats } : {}), ...(n.sfx ? { sfx: n.sfx } : {}), variables });
   }
   for (const id of Object.keys(notes)) if (!ids.includes(id)) errors.push(`notes for unknown component: ${id}`);
   return { catalog: { version: 1, components }, errors };
